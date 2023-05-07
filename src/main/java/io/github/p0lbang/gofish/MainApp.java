@@ -16,6 +16,7 @@ public class MainApp extends Application {
     private Stage primaryStage;
 
     // This is the BorderPane of RootLayout
+    @SuppressWarnings("FieldCanBeLocal")
     private StackPane rootLayout;
 
     @Override

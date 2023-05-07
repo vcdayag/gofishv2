@@ -8,4 +8,6 @@ module io.github.p0lbang.gofish {
 
     opens io.github.p0lbang.gofish to javafx.fxml;
     exports io.github.p0lbang.gofish;
+    /*exports io.github.p0lbang.gofish.network;*/
+    /*opens io.github.p0lbang.gofish.network to javafx.fxml;*/
 }

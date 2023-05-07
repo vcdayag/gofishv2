@@ -6,7 +6,8 @@ import java.util.Random;
 import static java.util.Map.entry;
 
 public class Player {
-    String name;
+    final String name;
+    @SuppressWarnings("CanBeFinal")
     Deck hand;
 
     public Player(String name) {
@@ -36,10 +37,9 @@ public class Player {
         Card selectedCard = hand.getRandomCard();
         String selectedPlayer = playerNames.get(rand.nextInt(playerNames.size()));
 
-        Map<String, String> asktemplate = Map.ofEntries(entry("asker", this.name),
+        return Map.ofEntries(entry("asker", this.name),
                 entry("rank", selectedCard.getRank()),
                 entry("target", selectedPlayer));
-        return asktemplate;
     }
 
     public String getName() {

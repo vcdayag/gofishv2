@@ -1,8 +1,8 @@
 package io.github.p0lbang.gofish.game;
 
 public class Card {
-    private String rank; // hearts, spades, etc.
-    private String name; // ace, king, 6, etc.
+    private final String rank; // hearts, spades, etc.
+    private final String name; // ace, king, 6, etc.
 
     public Card(String rank, String name) {
         this.rank = rank;

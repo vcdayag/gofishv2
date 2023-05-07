@@ -4,7 +4,9 @@ import java.util.Map;
 import java.util.Random;
 
 public class Game {
+    @SuppressWarnings("CanBeFinal")
     PlayerGroup players;
+    @SuppressWarnings("CanBeFinal")
     Deck deck;
 
     public Game() {
@@ -28,7 +30,7 @@ public class Game {
     }
 
     private void setupCards() {
-        Integer amountofcards = 15;
+        int amountofcards = 15;
         Random rand = new Random();
         for (int index = 0; index < amountofcards; index++) {
             for (Player currentPlayer : this.players.PlayerList()) {

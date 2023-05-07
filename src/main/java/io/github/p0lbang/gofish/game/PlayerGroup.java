@@ -5,13 +5,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("CanBeFinal")
 public class PlayerGroup {
     Map<String, Player> players;
     ArrayList<String> playerNames;
 
     public PlayerGroup() {
-        this.players = new HashMap<String, Player>();
-        this.playerNames = new ArrayList<String>();
+        this.players = new HashMap<>();
+        this.playerNames = new ArrayList<>();
     }
 
     public void addPlayer(Player player) {
@@ -33,8 +34,7 @@ public class PlayerGroup {
     }
 
     public ArrayList<String> TargetList(Player asker) {
-        ArrayList<String> output = new ArrayList<>();
-        output.addAll(this.playerNames);
+        ArrayList<String> output = new ArrayList<>(this.playerNames);
         output.remove(asker.name);
         return output;
     }

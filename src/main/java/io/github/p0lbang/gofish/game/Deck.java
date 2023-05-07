@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Deck {
+    @SuppressWarnings("CanBeFinal")
     ArrayList<Card> deck;
-    Random randomizer;
+    final Random randomizer;
 
-    String[] RANKS = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+    final String[] RANKS = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 
     public Deck() {
-        this.deck = new ArrayList<Card>();
+        this.deck = new ArrayList<>();
         this.randomizer = new Random();
     }
 
@@ -18,7 +19,6 @@ public class Deck {
         for (int index = 0; index < 51; index++) {
             this.deck.add(new Card(RANKS[index % 13], Integer.toString(index)));
         }
-        ;
     }
 
     public void addCard(Card card) {
