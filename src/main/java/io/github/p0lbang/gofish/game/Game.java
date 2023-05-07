@@ -53,6 +53,14 @@ public class Game {
             asker.hand.display();
             System.out.println();
         }
+
+        System.out.println();
+
+        for (String playerName : this.players.NameList()) {
+            Player asker = this.players.getPlayer(playerName);
+            System.out.println(asker.getName());
+            asker.hand.display();
+        }
     }
 
     // game funcitons
