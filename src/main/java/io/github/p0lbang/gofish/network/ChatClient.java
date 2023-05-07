@@ -1,5 +1,6 @@
+/*
 
-package io.github.p0lbang.gofish;
+package io.github.p0lbang.gofish.network;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -30,9 +31,9 @@ import javax.swing.JTextField;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import io.github.p0lbang.gofish.Network.ChatMessage;
-import io.github.p0lbang.gofish.Network.RegisterName;
-import io.github.p0lbang.gofish.Network.UpdateNames;
+import io.github.p0lbang.gofish.network.Network.ChatMessage;
+import io.github.p0lbang.gofish.network.Network.RegisterName;
+import io.github.p0lbang.gofish.network.Network.UpdateNames;
 // import com.esotericsoftware.minlog.Log;
 
 public class ChatClient {
@@ -267,3 +268,4 @@ public class ChatClient {
 		new ChatClient();
 	}
 }
+*/

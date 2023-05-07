@@ -1,4 +1,5 @@
-package io.github.p0lbang.gofish;
+/*
+package io.github.p0lbang.gofish.network;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -12,9 +13,9 @@ import javax.swing.JLabel;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
-import io.github.p0lbang.gofish.Network.ChatMessage;
-import io.github.p0lbang.gofish.Network.RegisterName;
-import io.github.p0lbang.gofish.Network.UpdateNames;
+import io.github.p0lbang.gofish.network.Network.ChatMessage;
+import io.github.p0lbang.gofish.network.Network.RegisterName;
+import io.github.p0lbang.gofish.network.Network.UpdateNames;
 // import com.esotericsoftware.minlog.Log;
 
 public class ChatServer {
@@ -143,3 +144,4 @@ public class ChatServer {
 		new ChatServer();
 	}
 }
+*/

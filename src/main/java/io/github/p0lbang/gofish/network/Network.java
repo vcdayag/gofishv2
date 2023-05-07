@@ -1,4 +1,5 @@
-package io.github.p0lbang.gofish;
+/*
+package io.github.p0lbang.gofish.network;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
@@ -28,3 +29,4 @@ public class Network {
 		public String text;
 	}
 }
+*/
