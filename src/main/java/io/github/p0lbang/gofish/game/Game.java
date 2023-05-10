@@ -70,6 +70,10 @@ public class Game {
     }
 
     private void playerGoFish(Player asker) {
+        if(this.deck.isEmpty()){
+            System.out.println("Deck is Empty.");
+            return;
+        }
         asker.addCard(this.deck.getRandomCard());
     }
 
