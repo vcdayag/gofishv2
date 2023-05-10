@@ -58,6 +58,10 @@ public class MainApp extends Application {
         try {
             gameLogic = new Game();
             createSelectionButtons(gameLogic.deck.RANKS);
+            Button gameloop = new Button("Game Loop");
+            rootLayout.getChildren().add(gameloop);
+            gameloop.setTranslateY(50);
+            gameloop.setOnAction(evt -> runLoopAgain());
 
             // Second, show the scene containing the root layout.
             Scene scene = new Scene(rootLayout, 500, 500);
@@ -72,6 +76,12 @@ public class MainApp extends Application {
 
     private void buttonClick(Button button) {
         System.out.println(button.getText());
+        gameLogic.displayPlayerHand("Bot");
+    }
+
+    private void runLoopAgain() {
+        System.out.println("Run Gameloop again");
+        gameLogic.gameloop();
     }
 
     // Shows the employee operations view inside the root layout.
