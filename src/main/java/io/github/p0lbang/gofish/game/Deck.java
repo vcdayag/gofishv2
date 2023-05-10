@@ -82,4 +82,8 @@ public class Deck {
         System.out.println();
     }
 
+    public boolean isEmpty(){
+        return this.deck.isEmpty();
+    }
+
 }
