@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import io.github.p0lbang.gofish.game.Game;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 //Main class which extends from Application Class
 public class MainApp extends Application {
@@ -19,38 +20,47 @@ public class MainApp extends Application {
     @SuppressWarnings("FieldCanBeLocal")
     private StackPane rootLayout;
 
+    Game gameLogic;
     @Override
     public void start(Stage primaryStage) {
         // 1) Declare a primary stage (Everything will be on this stage)
         this.primaryStage = primaryStage;
 
         // Optional: Set a title for primary stage
-        this.primaryStage.setTitle("Sample JavaFX App");
+        this.primaryStage.setTitle("Go Fish");
 
         // 2) Initialize RootLayout
         initRootLayout();
-
-        Game newg = new Game();
 
         // 3) Display the EmployeeOperations View
         // showEmployeeOperationsView();
     }
 
+    public void createSelectionButtons(String[] Ranks){
+        ArrayList<Button> buttonlist = new ArrayList<>();
+
+        int ranklen = 13;
+        int halfrank = ranklen / 2;
+        int transval = 25;
+
+        for (int i = 0; i < ranklen ; i++) {
+            Button temp = new Button(Ranks[i]);
+            buttonlist.add(temp);
+            temp.setOnAction(evt -> buttonClick(temp));
+            temp.setTranslateX((i-halfrank)*transval);
+        }
+        rootLayout = new StackPane();
+        rootLayout.getChildren().addAll(buttonlist);
+    }
+
     // Initializes the root layout.
     public void initRootLayout() {
         try {
-            // First, load root layout from RootLayout.fxml
-            // FXMLLoader loader = new FXMLLoader();
-            // loader.setLocation(App.class.getResource("view/RootLayout.fxml"));
-            // rootLayout = (BorderPane) loader.load();
+            gameLogic = new Game();
+            createSelectionButtons(gameLogic.deck.RANKS);
 
-            Button btn1 = new Button("Button 1 on bottom ");
-            Button btn2 = new Button("Button 2 on top");
-            rootLayout = new StackPane();
-            rootLayout.getChildren().addAll(btn1, btn2);
-            
             // Second, show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout, 200, 200);
+            Scene scene = new Scene(rootLayout, 500, 500);
             primaryStage.setScene(scene); // Set the scene in primary stage.
 
             // Third, show the primary stage
@@ -58,6 +68,10 @@ public class MainApp extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void buttonClick(Button button) {
+        System.out.println(button.getText());
     }
 
     // Shows the employee operations view inside the root layout.
@@ -74,5 +88,4 @@ public class MainApp extends Application {
     //         e.printStackTrace();
     //     }
     // }
-
 }
