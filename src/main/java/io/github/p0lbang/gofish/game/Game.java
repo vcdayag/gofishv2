@@ -7,7 +7,7 @@ public class Game {
     @SuppressWarnings("CanBeFinal")
     PlayerGroup players;
     @SuppressWarnings("CanBeFinal")
-    Deck deck;
+    public Deck deck;
 
     public Game() {
         this.players = new PlayerGroup();
