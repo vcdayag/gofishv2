@@ -84,4 +84,10 @@ public class Game {
         this.getCard(asker, target, rank);
     }
 
+    public void displayPlayerHand(String playername){
+        Player choosen = this.players.getPlayer(playername);
+        System.out.println(choosen.getName());
+        choosen.hand.display();
+    }
+
 }
