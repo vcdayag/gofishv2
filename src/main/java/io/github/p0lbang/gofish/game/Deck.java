@@ -29,8 +29,12 @@ public class Deck {
 
     public void addCard(Card card) {
         this.deck.add(card);
-        this.deck.sort(Comparator.comparing(Card::getHierarchy));
+        this.sortDeck();
         this.ranksheld.computeIfPresent(card.getRank(), (key, value) -> value + 1);
+    }
+
+    public void sortDeck() {
+        this.deck.sort(Comparator.comparing(Card::getHierarchy));
     }
 
     public void addCardMultiple(ArrayList<Card> cards) {

@@ -28,6 +28,7 @@ public class Player {
 
     public void addMultipleCards(ArrayList<Card> cards) {
         this.hand.addCardMultiple(cards);
+        this.hand.sortDeck();
     }
 
     public ArrayList<Card> giveCards(String rank) {
