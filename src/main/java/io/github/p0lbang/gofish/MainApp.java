@@ -31,10 +31,13 @@ public class MainApp extends Application {
     @SuppressWarnings("FieldCanBeLocal")
     private StackPane rootLayout;
 
+    @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Button> playerDeckButtons = new ArrayList<>();
-    private HashMap<Button, double[]> playerDeckButtonsSelected = new HashMap();
+    @SuppressWarnings("FieldMayBeFinal")
+    private HashMap<Button, double[]> playerDeckButtonsSelected = new HashMap<>();
 
     Game gameLogic;
+
     @Override
     public void start(Stage primaryStage) {
         // 1) Declare a primary stage (Everything will be on this stage)
@@ -95,10 +98,9 @@ public class MainApp extends Application {
     }
 
     public void giveCardAnimation(Button button) {
-        final int MOVE = 50;
         // make button not clickable during transition
         button.setDisable(true);
-        // dont change button color when disabled.
+        // don't change button color when disabled.
         button.setStyle("-fx-opacity: 1;");
         TranslateTransition trans_center = new TranslateTransition(new Duration(400), button);
         TranslateTransition trans_hide = new TranslateTransition(new Duration(400), button);
@@ -108,9 +110,7 @@ public class MainApp extends Application {
 
         SequentialTransition seqT = new SequentialTransition(trans_center);
         // on animation finish enable button
-        seqT.setOnFinished(e -> {
-            button.setDisable(false);
-        });
+        seqT.setOnFinished(e -> button.setDisable(false));
 
         if (playerDeckButtonsSelected.containsKey(button)) {
             double[] coords = playerDeckButtonsSelected.get(button);
@@ -177,18 +177,4 @@ public class MainApp extends Application {
         displayPlayerDeck(gameLogic.getPlayerHand("Player"));
     }
 
-    // Shows the employee operations view inside the root layout.
-    // public void showEmployeeOperationsView() {
-    //     try {
-    //         // First, load EmployeeOperationsView from EmployeeOperations.fxml
-    //         FXMLLoader loader = new FXMLLoader();
-    //         loader.setLocation(App.class.getResource("view/EmployeeOperations.fxml"));
-    //         AnchorPane employeeOperationsView = (AnchorPane) loader.load();
-
-    //         // Set Employee Operations view into the center of root layout.
-    //         rootLayout.setCenter(employeeOperationsView);
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
 }
