@@ -1,5 +1,6 @@
 package io.github.p0lbang.gofish;
 
+import io.github.p0lbang.gofish.game.Game;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -7,17 +8,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import io.github.p0lbang.gofish.game.Game;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 
 //Main class which extends from Application Class
 public class MainApp extends Application {
+
+    final int WINDOW_HEIGHT = 700;
+    final int WINDOW_WIDTH = 1200;
 
     // This is our PrimaryStage (It contains everything)
     private Stage primaryStage;
@@ -103,7 +103,7 @@ public class MainApp extends Application {
             displayPlayerDeck(gameLogic.getPlayerHand("Player"));
 
             //Background Image
-            URL url = Objects.requireNonNull(MainApp.class.getResource("background.jpg"));
+            URL url = Objects.requireNonNull(MainApp.class.getResource("background.png"));
             Image backgroundImage = new Image(url.toString());
 
             BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
@@ -112,7 +112,7 @@ public class MainApp extends Application {
             rootLayout.setBackground(background);
             /////////////////////////////////////////////////////////////
             // Second, show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout, 1200, 700);
+            Scene scene = new Scene(rootLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
             primaryStage.setScene(scene); // Set the scene in primary stage.
             primaryStage.setResizable(false);
 
