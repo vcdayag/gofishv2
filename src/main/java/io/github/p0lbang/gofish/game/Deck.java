@@ -30,7 +30,7 @@ public class Deck {
     public void addCard(Card card) {
         this.deck.add(card);
         this.sortDeck();
-        this.ranksheld.computeIfPresent(card.getRank(), (key, value) -> value + 1);
+        this.countRanksHeld();
     }
 
     public void sortDeck() {
@@ -39,6 +39,7 @@ public class Deck {
 
     public void addCardMultiple(ArrayList<Card> cards) {
         this.deck.addAll(cards);
+        this.countRanksHeld();
     }
 
     public Card removeCard(Card card) {
@@ -67,8 +68,6 @@ public class Deck {
             this.removeCard(card);
         }
 
-        this.countRanksHeld();
-
         return stolen;
     }
 
@@ -76,7 +75,7 @@ public class Deck {
         this.ranksheld.clear();
         for (Card card : this.deck) {
             this.ranksheld.computeIfPresent(card.getRank(), (key, value) -> value + 1);
-            this.ranksheld.putIfAbsent(card.getRank(), 1);
+            this.ranksheld.putIfAbsent(String.valueOf(card.getRank()), 1);
         }
     }
 
