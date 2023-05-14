@@ -1,6 +1,7 @@
 package io.github.p0lbang.gofish.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -20,6 +21,8 @@ public class Player {
 
     public void addCard(Card card) {
         this.hand.addCard(card);
+        this.checkCompleted();
+        this.hand.sortDeck();
     }
 
     public Boolean checkHand(String rank) {
@@ -28,6 +31,7 @@ public class Player {
 
     public void addMultipleCards(ArrayList<Card> cards) {
         this.hand.addCardMultiple(cards);
+        this.checkCompleted();
         this.hand.sortDeck();
     }
 
@@ -47,13 +51,13 @@ public class Player {
     }
 
     public void checkCompleted() {
-        this.hand.getRanksHeld().forEach((key, value) -> {
-            if (value != 4) {
-                return;
+        HashMap<String, Integer> test = this.hand.getRanksHeld();
+        for (String key : test.keySet()) {
+            if (test.get(key) != 4) {
+                continue;
             }
-
             this.completed.addCardMultiple(this.hand.stealCard(key));
-        });
+        }
     }
 
     public String getName() {
