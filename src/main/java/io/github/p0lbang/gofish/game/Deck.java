@@ -22,7 +22,7 @@ public class Deck {
     }
 
     public void initializeDeck() {
-        for (int index = 0; index < 51; index++) {
+        for (int index = 0; index < 52; index++) {
             this.deck.add(new Card(HIERARCHY[index % 13], RANKS[index % 13], SUITS[index % 4]));
         }
     }
