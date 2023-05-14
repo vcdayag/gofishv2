@@ -5,9 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import io.github.p0lbang.gofish.game.Game;
 
@@ -27,6 +25,8 @@ public class MainApp extends Application {
     // This is the BorderPane of RootLayout
     @SuppressWarnings("FieldCanBeLocal")
     private StackPane rootLayout;
+
+    private ArrayList<Button> playerDeckButtons = new ArrayList<>();
 
     Game gameLogic;
     @Override
@@ -64,34 +64,27 @@ public class MainApp extends Application {
 
     public void displayPlayerDeck(String[] Deck){
 
-
-        Pane deckPane = new Pane();
-        ArrayList<Button> buttonlist = new ArrayList<>();
+        rootLayout.getChildren().removeAll(playerDeckButtons);
+        playerDeckButtons.clear();
 
         int ranklen = Deck.length;
         int halfrank = ranklen / 2;
         int transval = 40;
 
-        for (int i = 0; i < ranklen ; i++) {
+        for (int i = 0; i < ranklen; i++) {
             String cardName = Deck[i].replace(":", "_"); // Replace ":" with "_"
             URL url = Objects.requireNonNull(MainApp.class.getResource(cardName + ".png"));
-            File newFile = new File(url.getFile());
             Image cardImage = new Image(url.toString());
             ImageView imageView = new ImageView(cardImage);
+            imageView.setFitWidth(75); // Set the desired width
+            imageView.setFitHeight(125);
             Button temp = new Button();
             temp.setGraphic(imageView);
-            buttonlist.add(temp);
-            temp.setTranslateX((i-halfrank)*transval);
-            deckPane.getChildren().add(temp);
-
+            playerDeckButtons.add(temp);
+            temp.setTranslateX((i - halfrank) * transval);
+            temp.setTranslateY(200);
+            rootLayout.getChildren().add(temp);
         }
-
-        deckPane.setTranslateX(600); // Set the x-coordinate
-        deckPane.setTranslateY(500); // Set the y-coordinate
-
-        // Add the updated deck pane to rootLayout
-        rootLayout.getChildren().add(deckPane);
-
     }
 
 
@@ -105,11 +98,23 @@ public class MainApp extends Application {
             rootLayout.getChildren().add(gameloop);
             gameloop.setTranslateY(50);
             gameloop.setOnAction(evt -> runLoopAgain());
+
+            //display the player's deck
             displayPlayerDeck(gameLogic.getPlayerHand("Player"));
 
+            //Background Image
+            URL url = Objects.requireNonNull(MainApp.class.getResource("background.jpg"));
+            Image backgroundImage = new Image(url.toString());
+
+            BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+            BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+            Background background = new Background(backgroundImageObject);
+            rootLayout.setBackground(background);
+            /////////////////////////////////////////////////////////////
             // Second, show the scene containing the root layout.
             Scene scene = new Scene(rootLayout, 1200, 700);
             primaryStage.setScene(scene); // Set the scene in primary stage.
+            primaryStage.setResizable(false);
 
             // Third, show the primary stage
             primaryStage.show(); // Display the primary stage
@@ -128,6 +133,7 @@ public class MainApp extends Application {
     private void runLoopAgain() {
         System.out.println("Run Gameloop again");
         gameLogic.gameloop();
+        displayPlayerDeck(gameLogic.getPlayerHand("Player"));
     }
 
     // Shows the employee operations view inside the root layout.
