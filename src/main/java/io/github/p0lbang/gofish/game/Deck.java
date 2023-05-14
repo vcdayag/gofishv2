@@ -59,6 +59,10 @@ public class Deck {
             }
         }
 
+        for (Card card : stolen) {
+            this.removeCard(card);
+        }
+
         this.countRanksHeld();
 
         return stolen;
