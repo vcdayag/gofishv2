@@ -95,4 +95,10 @@ public class Game {
         Player choosen = this.players.getPlayer(playername);
         choosen.displayHand();
     }
+
+
+    public String[] getPlayerHand(String playername){
+        Player chosen = this.players.getPlayer(playername);
+        return chosen.getHand();
+    }
 }

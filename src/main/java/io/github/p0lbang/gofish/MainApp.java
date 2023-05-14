@@ -3,12 +3,20 @@ package io.github.p0lbang.gofish;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import io.github.p0lbang.gofish.game.Game;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 
 //Main class which extends from Application Class
 public class MainApp extends Application {
@@ -53,6 +61,41 @@ public class MainApp extends Application {
         rootLayout.getChildren().addAll(buttonlist);
     }
 
+
+    public void displayPlayerDeck(String[] Deck){
+
+
+        Pane deckPane = new Pane();
+        ArrayList<Button> buttonlist = new ArrayList<>();
+
+        int ranklen = Deck.length;
+        int halfrank = ranklen / 2;
+        int transval = 40;
+
+        for (int i = 0; i < ranklen ; i++) {
+            String cardName = Deck[i].replace(":", "_"); // Replace ":" with "_"
+            URL url = Objects.requireNonNull(MainApp.class.getResource(cardName + ".png"));
+            File newFile = new File(url.getFile());
+            Image cardImage = new Image(url.toString());
+            ImageView imageView = new ImageView(cardImage);
+            Button temp = new Button();
+            temp.setGraphic(imageView);
+            buttonlist.add(temp);
+            temp.setTranslateX((i-halfrank)*transval);
+            deckPane.getChildren().add(temp);
+
+        }
+
+        deckPane.setTranslateX(600); // Set the x-coordinate
+        deckPane.setTranslateY(500); // Set the y-coordinate
+
+        // Add the updated deck pane to rootLayout
+        rootLayout.getChildren().add(deckPane);
+
+    }
+
+
+
     // Initializes the root layout.
     public void initRootLayout() {
         try {
@@ -62,9 +105,10 @@ public class MainApp extends Application {
             rootLayout.getChildren().add(gameloop);
             gameloop.setTranslateY(50);
             gameloop.setOnAction(evt -> runLoopAgain());
+            displayPlayerDeck(gameLogic.getPlayerHand("Player"));
 
             // Second, show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout, 500, 500);
+            Scene scene = new Scene(rootLayout, 1200, 700);
             primaryStage.setScene(scene); // Set the scene in primary stage.
 
             // Third, show the primary stage
@@ -77,6 +121,8 @@ public class MainApp extends Application {
     private void buttonClick(Button button) {
         System.out.println(button.getText());
         gameLogic.displayPlayerHand("Bot");
+
+
     }
 
     private void runLoopAgain() {
