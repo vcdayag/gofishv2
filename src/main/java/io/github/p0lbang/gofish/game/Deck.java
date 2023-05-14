@@ -1,9 +1,6 @@
 package io.github.p0lbang.gofish.game;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class Deck {
     @SuppressWarnings("CanBeFinal")
@@ -111,6 +108,14 @@ public class Deck {
             System.out.print(" | ");
         }
         System.out.println();
+    }
+
+    public String[] getDeckAsStringArray() {
+        ArrayList<String> deckStrings = new ArrayList<>();
+        for (Card card : this.deck) {
+            deckStrings.add(card.stringify());
+        }
+        return deckStrings.toArray(new String[0]);
     }
 
     public boolean isEmpty(){

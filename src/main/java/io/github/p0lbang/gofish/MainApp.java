@@ -3,12 +3,18 @@ package io.github.p0lbang.gofish;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import io.github.p0lbang.gofish.game.Game;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 
 //Main class which extends from Application Class
 public class MainApp extends Application {
@@ -19,6 +25,8 @@ public class MainApp extends Application {
     // This is the BorderPane of RootLayout
     @SuppressWarnings("FieldCanBeLocal")
     private StackPane rootLayout;
+
+    private ArrayList<Button> playerDeckButtons = new ArrayList<>();
 
     Game gameLogic;
     @Override
@@ -53,6 +61,34 @@ public class MainApp extends Application {
         rootLayout.getChildren().addAll(buttonlist);
     }
 
+
+    public void displayPlayerDeck(String[] Deck){
+
+        rootLayout.getChildren().removeAll(playerDeckButtons);
+        playerDeckButtons.clear();
+
+        int ranklen = Deck.length;
+        int halfrank = ranklen / 2;
+        int transval = 40;
+
+        for (int i = 0; i < ranklen; i++) {
+            String cardName = Deck[i].replace(":", "_"); // Replace ":" with "_"
+            URL url = Objects.requireNonNull(MainApp.class.getResource(cardName + ".png"));
+            Image cardImage = new Image(url.toString());
+            ImageView imageView = new ImageView(cardImage);
+            imageView.setFitWidth(75); // Set the desired width
+            imageView.setFitHeight(125);
+            Button temp = new Button();
+            temp.setGraphic(imageView);
+            playerDeckButtons.add(temp);
+            temp.setTranslateX((i - halfrank) * transval);
+            temp.setTranslateY(200);
+            rootLayout.getChildren().add(temp);
+        }
+    }
+
+
+
     // Initializes the root layout.
     public void initRootLayout() {
         try {
@@ -63,9 +99,22 @@ public class MainApp extends Application {
             gameloop.setTranslateY(50);
             gameloop.setOnAction(evt -> runLoopAgain());
 
+            //display the player's deck
+            displayPlayerDeck(gameLogic.getPlayerHand("Player"));
+
+            //Background Image
+            URL url = Objects.requireNonNull(MainApp.class.getResource("background.jpg"));
+            Image backgroundImage = new Image(url.toString());
+
+            BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+            BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+            Background background = new Background(backgroundImageObject);
+            rootLayout.setBackground(background);
+            /////////////////////////////////////////////////////////////
             // Second, show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout, 500, 500);
+            Scene scene = new Scene(rootLayout, 1200, 700);
             primaryStage.setScene(scene); // Set the scene in primary stage.
+            primaryStage.setResizable(false);
 
             // Third, show the primary stage
             primaryStage.show(); // Display the primary stage
@@ -77,11 +126,14 @@ public class MainApp extends Application {
     private void buttonClick(Button button) {
         System.out.println(button.getText());
         gameLogic.displayPlayerHand("Bot");
+
+
     }
 
     private void runLoopAgain() {
         System.out.println("Run Gameloop again");
         gameLogic.gameloop();
+        displayPlayerDeck(gameLogic.getPlayerHand("Player"));
     }
 
     // Shows the employee operations view inside the root layout.

@@ -1,9 +1,6 @@
 package io.github.p0lbang.gofish.game;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import static java.util.Map.entry;
 
@@ -68,6 +65,8 @@ public class Player {
         this.hand.display();
     }
 
+
+
     public void displayCompleted() {
         this.completed.display();
     }
@@ -79,5 +78,11 @@ public class Player {
         System.out.println("Completed:");
         this.displayCompleted();
     }
+
+
+    public String[] getHand() {
+        return this.hand.getDeckAsStringArray();
+    }
+
 
 }
