@@ -42,6 +42,11 @@ public class Game {
     public void gameloop() {
         for (String playerName : this.players.NameList()) {
             Player asker = this.players.getPlayer(playerName);
+            /* check players hand if empty. if true immediately go fish. */
+            if (asker.hand.isEmpty()) {
+                this.playerGoFish(asker);
+                continue;
+            }
             Map<String, String> askingOutput = asker.ask(this.players.TargetList(asker));
 
             System.out.println("Asker: " + asker.name + " | Target: " + askingOutput.get("target"));
