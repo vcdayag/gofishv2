@@ -2,11 +2,13 @@ package io.github.p0lbang.gofish.game;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Deck {
     @SuppressWarnings("CanBeFinal")
     ArrayList<Card> deck;
+    HashMap<String, Integer> ranksheld;
     final Random randomizer;
 
     final int[] HIERARCHY = { 1,2,3,4,5,6,7,8,9,10,11,12,13 };
@@ -16,6 +18,7 @@ public class Deck {
     public Deck() {
         this.deck = new ArrayList<>();
         this.randomizer = new Random();
+        this.ranksheld = new HashMap<>();
     }
 
     public void initializeDeck() {
@@ -27,6 +30,7 @@ public class Deck {
     public void addCard(Card card) {
         this.deck.add(card);
         this.deck.sort(Comparator.comparing(Card::getHierarchy));
+        this.ranksheld.computeIfPresent(card.getRank(), (key, value) -> value + 1);
     }
 
     public void addCardMultiple(ArrayList<Card> cards) {
@@ -55,8 +59,23 @@ public class Deck {
             }
         }
 
+        this.countRanksHeld();
+
         return stolen;
     }
+
+    public void countRanksHeld() {
+        this.ranksheld.clear();
+        for (Card card : this.deck) {
+            this.ranksheld.computeIfPresent(card.getRank(), (key, value) -> value + 1);
+            this.ranksheld.putIfAbsent(card.getRank(), 1);
+        }
+    }
+
+    public HashMap<String, Integer> getRanksHeld() {
+        return this.ranksheld;
+    }
+
 
     public Boolean checkRank(String rank) {
         for (Card card : this.deck) {
