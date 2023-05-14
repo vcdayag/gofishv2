@@ -38,7 +38,7 @@ public class Player {
     public Map<String, String> ask(ArrayList<String> playerNames) {
         Random rand = new Random();
 
-        Card selectedCard = hand.getRandomCard();
+        Card selectedCard = hand.selectRandomCard();
         String selectedPlayer = playerNames.get(rand.nextInt(playerNames.size()));
 
         return Map.ofEntries(entry("asker", this.name),

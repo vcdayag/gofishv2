@@ -96,6 +96,11 @@ public class Deck {
         return false;
     }
 
+    public Card selectRandomCard() {
+        int index = randomizer.nextInt(this.deck.size());
+        return this.deck.get(index);
+    }
+
     public Card getRandomCard() {
         int index = randomizer.nextInt(this.deck.size());
         return this.removeCard(index);
@@ -103,7 +108,7 @@ public class Deck {
 
     public void display() {
         for (Card card : this.deck) {
-            System.out.printf("%4s",card.stringify());
+            System.out.printf("%4s", card.stringify());
             System.out.print(" | ");
         }
         System.out.println();
