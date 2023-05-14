@@ -45,21 +45,19 @@ public class Game {
             Map<String, String> askingOutput = asker.ask(this.players.TargetList(asker));
 
             System.out.println("Asker: " + asker.name + " | Target: " + askingOutput.get("target"));
-            asker.hand.display();
+            asker.displayHand();
 
             this.checkPlayerCard(asker, this.players.getPlayer(askingOutput.get("target")),
                     askingOutput.get("rank"));
 
-            asker.hand.display();
-            System.out.println();
+            asker.displayHand();
         }
 
         System.out.println();
 
         for (String playerName : this.players.NameList()) {
             Player asker = this.players.getPlayer(playerName);
-            System.out.println(asker.getName());
-            asker.hand.display();
+            asker.displayAll();
         }
     }
 
@@ -90,8 +88,6 @@ public class Game {
 
     public void displayPlayerHand(String playername){
         Player choosen = this.players.getPlayer(playername);
-        System.out.println(choosen.getName());
-        choosen.hand.display();
+        choosen.displayHand();
     }
-
 }
