@@ -1,6 +1,9 @@
 package io.github.p0lbang.gofish.game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import static java.util.Map.entry;
 
@@ -82,6 +85,10 @@ public class Player {
 
     public String[] getHand() {
         return this.hand.getDeckAsStringArray();
+    }
+
+    public String[] getHandRanks() {
+        return this.hand.getRanksHeld().keySet().toArray(new String[0]);
     }
 
 

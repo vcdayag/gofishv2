@@ -1,5 +1,6 @@
 package io.github.p0lbang.gofish.game;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
@@ -80,7 +81,7 @@ public class Game {
         asker.addCard(this.deck.getRandomCard());
     }
 
-    private void checkPlayerCard(Player asker, Player target, String rank) {
+    public void checkPlayerCard(Player asker, Player target, String rank) {
         if (!target.checkHand(rank)) {
             System.out.println("Go fish");
             this.playerGoFish(asker);
@@ -91,14 +92,28 @@ public class Game {
         this.getCard(asker, target, rank);
     }
 
-    public void displayPlayerHand(String playername){
+    public void displayPlayerHand(String playername) {
         Player choosen = this.players.getPlayer(playername);
         choosen.displayHand();
     }
 
 
-    public String[] getPlayerHand(String playername){
+    public String[] getPlayerHand(String playername) {
         Player chosen = this.players.getPlayer(playername);
         return chosen.getHand();
+    }
+
+    public String[] getPlayerHandRanks(String playername) {
+        Player chosen = this.players.getPlayer(playername);
+        return chosen.getHandRanks();
+    }
+
+    public ArrayList<String> getTargetPlayers(String askername) {
+        Player asker = this.players.getPlayer(askername);
+        return this.players.TargetList(asker);
+    }
+
+    public Player getPlayer(String playername) {
+        return this.players.getPlayer(playername);
     }
 }

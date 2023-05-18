@@ -1,6 +1,7 @@
 package io.github.p0lbang.gofish;
 
 import io.github.p0lbang.gofish.game.Game;
+import io.github.p0lbang.gofish.game.Player;
 import javafx.animation.Interpolator;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
@@ -36,6 +37,15 @@ public class MainApp extends Application {
     @SuppressWarnings("FieldMayBeFinal")
     private HashMap<Button, double[]> playerDeckButtonsSelected = new HashMap<>();
 
+
+    private ArrayList<Button> playerRanksButtons = new ArrayList<>();
+    private ArrayList<Button> playerTargetsButtons = new ArrayList<>();
+
+    private String playerSelectedRank = "";
+    private String playerSelectedTarget = "";
+
+    private String currentPlayerName = "Player";
+
     Game gameLogic;
 
     @Override
@@ -53,25 +63,61 @@ public class MainApp extends Application {
         // showEmployeeOperationsView();
     }
 
-    public void createSelectionButtons(String[] Ranks){
-        ArrayList<Button> buttonlist = new ArrayList<>();
+    public void RanksSelectionAction(String rank) {
+        this.playerSelectedRank = rank;
+    }
 
-        int ranklen = 13;
+    public void displayRanksSelectionButtons(String[] Ranks) {
+        rootLayout.getChildren().removeAll(playerRanksButtons);
+        playerRanksButtons.clear();
+
+        int ranklen = Ranks.length;
         int halfrank = ranklen / 2;
         int transval = 25;
 
-        for (int i = 0; i < ranklen ; i++) {
+        for (int i = 0; i < ranklen; i++) {
             Button temp = new Button(Ranks[i]);
-            buttonlist.add(temp);
-            temp.setOnAction(evt -> buttonClick(temp));
-            temp.setTranslateX((i-halfrank)*transval);
+            playerRanksButtons.add(temp);
+            int finalI = i;
+            temp.setOnAction(evt -> RanksSelectionAction(Ranks[finalI]));
+            temp.setTranslateX((i - halfrank) * transval);
         }
-        rootLayout = new StackPane();
-        rootLayout.getChildren().addAll(buttonlist);
+
+        rootLayout.getChildren().addAll(playerRanksButtons);
+    }
+
+    public void TargetSelectionAction(String asker, String target) {
+        this.playerSelectedTarget = target;
+    }
+
+    public void DoActionAction() {
+        Player Pasker = gameLogic.getPlayer(this.currentPlayerName);
+        Player Ptarget = gameLogic.getPlayer(this.playerSelectedTarget);
+        gameLogic.checkPlayerCard(Pasker, Ptarget, this.playerSelectedRank);
+    }
+
+    public void displayTargetsSelectionButtons(ArrayList<String> Targets) {
+        rootLayout.getChildren().removeAll(playerTargetsButtons);
+        playerTargetsButtons.clear();
+
+        int ranklen = Targets.size();
+        int halfrank = ranklen / 2;
+        int transval = 50;
+
+        for (int i = 0; i < ranklen; i++) {
+            Button temp = new Button(Targets.get(i));
+            playerTargetsButtons.add(temp);
+            int finalI = i;
+            temp.setOnAction(evt -> TargetSelectionAction(this.currentPlayerName, Targets.get(finalI)));
+            temp.setTranslateX((i - halfrank) * transval);
+            temp.setTranslateY(100);
+        }
+
+        rootLayout.getChildren().addAll(playerTargetsButtons);
     }
 
 
-    public void displayPlayerDeck(String[] Deck){
+    public void displayPlayerDeck(String[] Deck) {
 
         rootLayout.getChildren().removeAll(playerDeckButtons);
         playerDeckButtons.clear();
@@ -133,15 +179,20 @@ public class MainApp extends Application {
     // Initializes the root layout.
     public void initRootLayout() {
         try {
+            rootLayout = new StackPane();
             gameLogic = new Game();
-            createSelectionButtons(gameLogic.deck.RANKS);
             Button gameloop = new Button("Game Loop");
             rootLayout.getChildren().add(gameloop);
             gameloop.setTranslateY(50);
             gameloop.setOnAction(evt -> runLoopAgain());
 
-            //display the player's deck
-            displayPlayerDeck(gameLogic.getPlayerHand("Player"));
+            Button DoAction = new Button("Do Action");
+            rootLayout.getChildren().add(DoAction);
+            DoAction.setTranslateY(50);
+            DoAction.setTranslateX(50);
+            DoAction.setOnAction(evt -> DoActionAction());
+
+            this.updateUI();
 
             //Background Image
             URL url = Objects.requireNonNull(MainApp.class.getResource("background.png"));
@@ -174,7 +225,14 @@ public class MainApp extends Application {
     private void runLoopAgain() {
         System.out.println("Run Gameloop again");
         gameLogic.gameloop();
-        displayPlayerDeck(gameLogic.getPlayerHand("Player"));
+        this.updateUI();
+    }
+
+    void updateUI() {
+        //display the player's deck
+        displayPlayerDeck(gameLogic.getPlayerHand(this.currentPlayerName));
+        displayRanksSelectionButtons(gameLogic.getPlayerHandRanks(this.currentPlayerName));
+        displayTargetsSelectionButtons(gameLogic.getTargetPlayers(this.currentPlayerName));
     }
 
 }
