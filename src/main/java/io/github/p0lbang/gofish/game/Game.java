@@ -1,5 +1,7 @@
 package io.github.p0lbang.gofish.game;
 
+import io.github.p0lbang.gofish.MainApp;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
@@ -10,7 +12,10 @@ public class Game {
     @SuppressWarnings("CanBeFinal")
     public Deck deck;
 
-    public Game() {
+    MainApp GUI;
+
+    public Game(MainApp gui) {
+        this.GUI = gui;
         this.players = new PlayerGroup();
         this.deck = new Deck();
         this.deck.initializeDeck();
@@ -31,7 +36,7 @@ public class Game {
     }
 
     private void setupCards() {
-        int amountofcards = 15;
+        int amountofcards = 10;
         Random rand = new Random();
         for (int index = 0; index < amountofcards; index++) {
             for (Player currentPlayer : this.players.PlayerList()) {
@@ -50,8 +55,8 @@ public class Game {
             }
             Map<String, String> askingOutput = asker.ask(this.players.TargetList(asker));
 
-            System.out.println("Asker: " + asker.name + " | Target: " + askingOutput.get("target"));
-            asker.displayHand();
+            /*System.out.println("Asker: " + asker.name + " | Target: " + askingOutput.get("target"));
+            asker.displayHand();*/
 
             this.checkPlayerCard(asker, this.players.getPlayer(askingOutput.get("target")),
                     askingOutput.get("rank"));
@@ -61,10 +66,10 @@ public class Game {
 
         System.out.println();
 
-        for (String playerName : this.players.NameList()) {
+        /*for (String playerName : this.players.NameList()) {
             Player asker = this.players.getPlayer(playerName);
             asker.displayAll();
-        }
+        }*/
     }
 
     public void AITurn() {
@@ -78,27 +83,34 @@ public class Game {
             }
             Map<String, String> askingOutput = asker.ask(this.players.TargetList(asker));
 
-            System.out.println("Asker: " + asker.name + " | Target: " + askingOutput.get("target"));
-            asker.displayHand();
+            //System.out.println("Asker: " + asker.name + " | Target: " + askingOutput.get("target"));
+//            asker.displayHand();
 
             this.checkPlayerCard(asker, this.players.getPlayer(askingOutput.get("target")),
                     askingOutput.get("rank"));
 
-            asker.displayHand();
+//            asker.displayHand();
         }
 
         System.out.println();
 
-        for (String playerName : this.players.NameList()) {
+   /*     for (String playerName : this.players.NameList()) {
             Player asker = this.players.getPlayer(playerName);
             asker.displayAll();
-        }
+        }*/
     }
 
     // game funcitons
 
     private void getCard(Player asker, Player target, String rank) {
-        asker.addMultipleCards(target.giveCards(rank));
+        ArrayList<Card> stolencards = target.giveCards(rank);
+        if (this.GUI.currentPlayerName.equals(target.getName())) {
+            for (Card card : stolencards) {
+                this.GUI.takeCardAnimation(card.stringify());
+            }
+        }
+
+        asker.addMultipleCards(stolencards);
     }
 
     private void playerGoFish(Player asker) {

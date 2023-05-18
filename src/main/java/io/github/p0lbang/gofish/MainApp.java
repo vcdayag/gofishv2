@@ -47,7 +47,7 @@ public class MainApp extends Application {
     private String playerSelectedRank = "";
     private String playerSelectedTarget = "";
 
-    private String currentPlayerName = "Player";
+    public String currentPlayerName = "Player";
 
     Game gameLogic;
 
@@ -146,7 +146,17 @@ public class MainApp extends Application {
             playerDeckButtons.add(temp);
             temp.setTranslateX((i - halfrank) * transval);
             temp.setTranslateY(200);
+            temp.setId(Deck[i]);
             rootLayout.getChildren().add(temp);
+        }
+    }
+
+    public void takeCardAnimation(String cardid) {
+        for (int i = 0; i < this.playerDeckButtons.size(); i++) {
+            Button btn = this.playerDeckButtons.get(i);
+            if (btn.getId().equals(cardid)) {
+                this.giveCardAnimation(btn);
+            }
         }
     }
 
@@ -187,7 +197,7 @@ public class MainApp extends Application {
     public void initRootLayout() {
         try {
             rootLayout = new StackPane();
-            gameLogic = new Game();
+            gameLogic = new Game(this);
             /*Button gameloop = new Button("Game Loop");
             rootLayout.getChildren().add(gameloop);
             gameloop.setTranslateY(50);
@@ -231,7 +241,6 @@ public class MainApp extends Application {
     private void AITurnAction() {
         System.out.println("Run Gameloop again");
         gameLogic.AITurn();
-        this.updateUI();
     }
 
     void updateUI() {
