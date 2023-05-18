@@ -41,7 +41,35 @@ public class Game {
     }
 
     public void gameloop() {
+        for (String playerName : this.players.playerNames) {
+            Player asker = this.players.getPlayer(playerName);
+            /* check players hand if empty. if true immediately go fish. */
+            if (asker.hand.isEmpty()) {
+                this.playerGoFish(asker);
+                continue;
+            }
+            Map<String, String> askingOutput = asker.ask(this.players.TargetList(asker));
+
+            System.out.println("Asker: " + asker.name + " | Target: " + askingOutput.get("target"));
+            asker.displayHand();
+
+            this.checkPlayerCard(asker, this.players.getPlayer(askingOutput.get("target")),
+                    askingOutput.get("rank"));
+
+            asker.displayHand();
+        }
+
+        System.out.println();
+
         for (String playerName : this.players.NameList()) {
+            Player asker = this.players.getPlayer(playerName);
+            asker.displayAll();
+        }
+    }
+
+    public void AITurn() {
+        ArrayList<String> others = this.getTargetPlayers("Player");
+        for (String playerName : others) {
             Player asker = this.players.getPlayer(playerName);
             /* check players hand if empty. if true immediately go fish. */
             if (asker.hand.isEmpty()) {
@@ -74,7 +102,7 @@ public class Game {
     }
 
     private void playerGoFish(Player asker) {
-        if(this.deck.isEmpty()){
+        if (this.deck.isEmpty()) {
             System.out.println("Deck is Empty.");
             return;
         }
