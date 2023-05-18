@@ -35,8 +35,12 @@ public class Player {
         this.hand.sortDeck();
     }
 
-    public int getCardAmount() {
+    public int getHandCount() {
         return this.hand.size();
+    }
+
+    public int getCompletedSuits() {
+        return this.completed.size() / 4;
     }
 
     public ArrayList<Card> giveCards(String rank) {

@@ -249,7 +249,9 @@ public class MainApp extends Application {
         int transval = 150;
         for (int i = 0; i < ranklen; i++) {
             String target = targetplayers.get(i);
-            String lbltext = target + "\n" + Integer.toString(gameLogic.getPlayer(target).getCardAmount()) + " cards";
+            String lbltext = target
+                    + "\n" + Integer.toString(gameLogic.getPlayer(target).getHandCount()) + " cards"
+                    + "\n" + Integer.toString(gameLogic.getPlayer(target).getCompletedSuits()) + " suites completed";
             Label temp = new Label(lbltext);
             temp.setTranslateY(-270);
             temp.setTranslateX((i - halfrank) * transval);
