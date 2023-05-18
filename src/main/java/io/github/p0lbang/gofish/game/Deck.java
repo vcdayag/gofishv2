@@ -1,6 +1,9 @@
 package io.github.p0lbang.gofish.game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Random;
 
 public class Deck {
     @SuppressWarnings("CanBeFinal")
@@ -118,8 +121,12 @@ public class Deck {
         return deckStrings.toArray(new String[0]);
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return this.deck.isEmpty();
+    }
+
+    public int size() {
+        return this.deck.size();
     }
 
 }

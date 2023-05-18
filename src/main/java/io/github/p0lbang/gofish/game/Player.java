@@ -35,6 +35,10 @@ public class Player {
         this.hand.sortDeck();
     }
 
+    public int getCardAmount() {
+        return this.hand.size();
+    }
+
     public ArrayList<Card> giveCards(String rank) {
         ArrayList<Card> stolen = this.hand.stealCard(rank);
         this.hand.countRanksHeld();

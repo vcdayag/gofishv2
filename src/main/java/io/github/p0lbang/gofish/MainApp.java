@@ -8,6 +8,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -40,6 +41,7 @@ public class MainApp extends Application {
 
     private ArrayList<Button> playerRanksButtons = new ArrayList<>();
     private ArrayList<Button> playerTargetsButtons = new ArrayList<>();
+    private ArrayList<Label> TargetsLabels = new ArrayList<>();
 
     private String playerSelectedRank = "";
     private String playerSelectedTarget = "";
@@ -94,6 +96,7 @@ public class MainApp extends Application {
         Player Pasker = gameLogic.getPlayer(this.currentPlayerName);
         Player Ptarget = gameLogic.getPlayer(this.playerSelectedTarget);
         gameLogic.checkPlayerCard(Pasker, Ptarget, this.playerSelectedRank);
+        this.updateUI();
     }
 
     public void displayTargetsSelectionButtons(ArrayList<String> Targets) {
@@ -233,6 +236,27 @@ public class MainApp extends Application {
         displayPlayerDeck(gameLogic.getPlayerHand(this.currentPlayerName));
         displayRanksSelectionButtons(gameLogic.getPlayerHandRanks(this.currentPlayerName));
         displayTargetsSelectionButtons(gameLogic.getTargetPlayers(this.currentPlayerName));
+        displayTargets(gameLogic.getTargetPlayers(this.currentPlayerName));
+    }
+
+    void displayTargets(ArrayList<String> targetplayers) {
+
+        rootLayout.getChildren().removeAll(TargetsLabels);
+        TargetsLabels.clear();
+
+        int ranklen = targetplayers.size();
+        int halfrank = ranklen / 2;
+        int transval = 150;
+        for (int i = 0; i < ranklen; i++) {
+            String target = targetplayers.get(i);
+            String lbltext = target + "\n" + Integer.toString(gameLogic.getPlayer(target).getCardAmount()) + " cards";
+            Label temp = new Label(lbltext);
+            temp.setTranslateY(-270);
+            temp.setTranslateX((i - halfrank) * transval);
+            TargetsLabels.add(temp);
+        }
+
+        rootLayout.getChildren().addAll(TargetsLabels);
     }
 
 }
