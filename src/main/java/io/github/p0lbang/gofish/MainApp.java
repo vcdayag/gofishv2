@@ -42,6 +42,7 @@ public class MainApp extends Application {
     private ArrayList<Button> playerRanksButtons = new ArrayList<>();
     private ArrayList<Button> playerTargetsButtons = new ArrayList<>();
     private ArrayList<Label> TargetsLabels = new ArrayList<>();
+    private ArrayList<Label> playerInfoLabels = new ArrayList<>();
 
     private String playerSelectedRank = "";
     private String playerSelectedTarget = "";
@@ -67,6 +68,7 @@ public class MainApp extends Application {
 
     public void RanksSelectionAction(String rank) {
         this.playerSelectedRank = rank;
+        displaySelected();
     }
 
     public void displayRanksSelectionButtons(String[] Ranks) {
@@ -90,6 +92,7 @@ public class MainApp extends Application {
 
     public void TargetSelectionAction(String asker, String target) {
         this.playerSelectedTarget = target;
+        this.displaySelected();
     }
 
     public void DoActionAction() {
@@ -97,6 +100,7 @@ public class MainApp extends Application {
         Player Ptarget = gameLogic.getPlayer(this.playerSelectedTarget);
         gameLogic.checkPlayerCard(Pasker, Ptarget, this.playerSelectedRank);
         this.updateUI();
+        this.AITurnAction();
     }
 
     public void displayTargetsSelectionButtons(ArrayList<String> Targets) {
@@ -113,7 +117,7 @@ public class MainApp extends Application {
             int finalI = i;
             temp.setOnAction(evt -> TargetSelectionAction(this.currentPlayerName, Targets.get(finalI)));
             temp.setTranslateX((i - halfrank) * transval);
-            temp.setTranslateY(100);
+            temp.setTranslateY(50);
         }
 
         rootLayout.getChildren().addAll(playerTargetsButtons);
@@ -184,15 +188,14 @@ public class MainApp extends Application {
         try {
             rootLayout = new StackPane();
             gameLogic = new Game();
-            Button gameloop = new Button("Game Loop");
+            /*Button gameloop = new Button("Game Loop");
             rootLayout.getChildren().add(gameloop);
             gameloop.setTranslateY(50);
-            gameloop.setOnAction(evt -> runLoopAgain());
+            gameloop.setOnAction(evt -> AITurnAction());*/
 
             Button DoAction = new Button("Do Action");
             rootLayout.getChildren().add(DoAction);
-            DoAction.setTranslateY(50);
-            DoAction.setTranslateX(50);
+            DoAction.setTranslateY(100);
             DoAction.setOnAction(evt -> DoActionAction());
 
             this.updateUI();
@@ -225,9 +228,9 @@ public class MainApp extends Application {
 
     }
 
-    private void runLoopAgain() {
+    private void AITurnAction() {
         System.out.println("Run Gameloop again");
-        gameLogic.gameloop();
+        gameLogic.AITurn();
         this.updateUI();
     }
 
@@ -237,6 +240,7 @@ public class MainApp extends Application {
         displayRanksSelectionButtons(gameLogic.getPlayerHandRanks(this.currentPlayerName));
         displayTargetsSelectionButtons(gameLogic.getTargetPlayers(this.currentPlayerName));
         displayTargets(gameLogic.getTargetPlayers(this.currentPlayerName));
+        displaySelected();
     }
 
     void displayTargets(ArrayList<String> targetplayers) {
@@ -259,6 +263,36 @@ public class MainApp extends Application {
         }
 
         rootLayout.getChildren().addAll(TargetsLabels);
+    }
+
+    void displaySelected() {
+        rootLayout.getChildren().removeAll(this.playerInfoLabels);
+        this.playerInfoLabels.clear();
+
+        int initialY = 50;
+
+        String lbltext = "Selected Rank: " + this.playerSelectedRank + " | "
+                + "Selected Target: " + this.playerSelectedTarget;
+        Label temp = new Label(lbltext);
+        temp.setTranslateX(-300);
+        temp.setTranslateY(initialY);
+        this.playerInfoLabels.add(temp);
+
+        lbltext = Integer.toString(gameLogic.getPlayer(this.currentPlayerName).getHandCount()) + " cards | "
+                + Integer.toString(gameLogic.getPlayer(this.currentPlayerName).getCompletedSuits()) + " suites completed";
+        temp = new Label(lbltext);
+        temp.setTranslateX(-300);
+        temp.setTranslateY(initialY + 25);
+        this.playerInfoLabels.add(temp);
+
+        /*lbltext = "Selected Rank: " + this.playerSelectedRank + " | "
+                + "Selected Target: " + this.playerSelectedTarget;
+        temp = new Label(lbltext);
+        temp.setTranslateX(-300);
+        temp.setTranslateY(initialY+50);
+        this.playerInfoLabels.add(temp);*/
+
+        rootLayout.getChildren().addAll(this.playerInfoLabels);
     }
 
 }
