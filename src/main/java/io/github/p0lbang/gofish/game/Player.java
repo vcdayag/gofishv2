@@ -36,7 +36,9 @@ public class Player {
     }
 
     public ArrayList<Card> giveCards(String rank) {
-        return this.hand.stealCard(rank);
+        ArrayList<Card> stolen = this.hand.stealCard(rank);
+        this.hand.countRanksHeld();
+        return stolen;
     }
 
     public Map<String, String> ask(ArrayList<String> playerNames) {
@@ -58,6 +60,7 @@ public class Player {
             }
             this.completed.addCardMultiple(this.hand.stealCard(key));
         }
+        this.hand.countRanksHeld();
     }
 
     public String getName() {
