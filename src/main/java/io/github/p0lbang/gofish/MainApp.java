@@ -1,19 +1,29 @@
 package io.github.p0lbang.gofish;
 
+import io.github.p0lbang.gofish.exp2.ChatClient;
+import io.github.p0lbang.gofish.exp2.ChatInterface;
 import io.github.p0lbang.gofish.game.Game;
 import io.github.p0lbang.gofish.game.Player;
 import javafx.animation.Interpolator;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -35,6 +45,9 @@ public class MainApp extends Application {
     @SuppressWarnings("FieldCanBeLocal")
     private StackPane rootLayout;
 
+    ChatInterface chatInterface;
+    private BorderPane mainLayout;
+
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<ImageView> playerDeckImageViews = new ArrayList<>();
 
@@ -55,6 +68,7 @@ public class MainApp extends Application {
     private VBox mainMenuLayout;
 
     Game gameLogic;
+    private TextFlow chatLayout;
 
     @Override
     public void start(Stage primaryStage) {
@@ -103,6 +117,10 @@ public class MainApp extends Application {
 
     private void startGame() {
         // Initialize RootLayout and start the game
+        chatInterface = new ChatClient(this, "Playername");
+//        chatInterface = new ChatServer(this,"Playername");
+
+        // 2) Initialize RootLayout
         initRootLayout();
     }
 
@@ -224,17 +242,77 @@ public class MainApp extends Application {
             transCenter.setToY(0);
             transHide.setToY(-500);
 
-            double[] d = { imageView.getTranslateX(), imageView.getTranslateY() };
+            double[] d = {imageView.getTranslateX(), imageView.getTranslateY()};
             playerDeckImageViewsSelected.put(imageView, d);
         }
         seqT.play();
     }
 
+    public void addToChatBar(String chatinput) {
+//        required to wrap gui code into this platform runlater to work
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Text text;
+                if (chatLayout.getChildren().size() == 0) {
+                    text = new Text(chatinput);
+                } else {
+                    // Add new line if not the first child
+                    text = new Text("\n" + chatinput);
+                }
+                chatLayout.getChildren().add(text);
+            }
+        });
+
+    }
+
+    private void initChatmenu() {
+        ScrollPane sp = new ScrollPane();
+        chatLayout = new TextFlow();
+        chatLayout.setLineSpacing(10);
+        TextField textField = new TextField();
+        textField.setPrefSize(150, 30);
+        Button button = new Button("Send");
+        button.setPrefSize(80, 30);
+        VBox container = new VBox();
+        VBox box = new VBox();
+        box.getChildren().addAll(sp, chatLayout);
+        container.setPadding(new Insets(10));
+        container.getChildren().addAll(box, new HBox(textField, button));
+
+
+        VBox.setVgrow(sp, Priority.ALWAYS);
+        VBox.setVgrow(chatLayout, Priority.ALWAYS);
+
+        // On Enter press
+        textField.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                button.fire();
+            }
+        });
+
+        button.setOnAction(e -> {
+            addToChatBar(textField.getText());
+            chatInterface.sendMessage(textField.getText());
+            textField.clear();
+            textField.requestFocus();
+        });
+        VBox vb = new VBox();
+        vb.getChildren().addAll(chatLayout);
+        sp.setVmax(440);
+        sp.setPrefSize(200, 300);
+        sp.setContent(vb);
+        sp.vvalueProperty().bind((ObservableValue<? extends Number>) vb.heightProperty());
+        sp.setPannable(true);
+        mainLayout.setLeft(container);
+    }
 
     // Initializes the root layout.
     public void initRootLayout() {
         try {
             rootLayout = new StackPane();
+            mainLayout = new BorderPane();
+            mainLayout.setCenter(rootLayout);
             gameLogic = new Game(this);
             /*Button gameloop = new Button("Game Loop");
             rootLayout.getChildren().add(gameloop);
@@ -258,7 +336,8 @@ public class MainApp extends Application {
             rootLayout.setBackground(background);
             /////////////////////////////////////////////////////////////
             // Second, show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+            initChatmenu();
+            Scene scene = new Scene(mainLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
             primaryStage.setScene(scene); // Set the scene in primary stage.
             primaryStage.setResizable(false);
 

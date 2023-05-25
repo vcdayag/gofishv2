@@ -38,7 +38,8 @@ dependencies {
 application {
     // Define the main class for the application.
     mainModule.set("io.github.p0lbang.gofish")
-    mainClass.set("io.github.p0lbang.gofish.exp2App")
+//    mainClass.set("io.github.p0lbang.gofish.exp2App")
+    mainClass.set("io.github.p0lbang.gofish.MainApp")
 }
 
 javafx {
