@@ -6,12 +6,14 @@ import javafx.animation.Interpolator;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -34,9 +36,10 @@ public class MainApp extends Application {
     private StackPane rootLayout;
 
     @SuppressWarnings("FieldMayBeFinal")
-    private ArrayList<Button> playerDeckButtons = new ArrayList<>();
+    private ArrayList<ImageView> playerDeckImageViews = new ArrayList<>();
+
     @SuppressWarnings("FieldMayBeFinal")
-    private HashMap<Button, double[]> playerDeckButtonsSelected = new HashMap<>();
+    private HashMap<ImageView, double[]> playerDeckImageViewsSelected = new HashMap<ImageView, double[]>();
 
 
     private ArrayList<Button> playerRanksButtons = new ArrayList<>();
@@ -49,6 +52,8 @@ public class MainApp extends Application {
 
     public String currentPlayerName = "Player";
 
+    private VBox mainMenuLayout;
+
     Game gameLogic;
 
     @Override
@@ -59,11 +64,46 @@ public class MainApp extends Application {
         // Optional: Set a title for primary stage
         this.primaryStage.setTitle("Go Fish");
 
-        // 2) Initialize RootLayout
-        initRootLayout();
 
-        // 3) Display the EmployeeOperations View
-        // showEmployeeOperationsView();
+        showMainMenu();
+
+
+    }
+
+    private void showMainMenu() {
+        Button startButton = new Button("Start Game");
+        startButton.setOnAction(evt -> {
+            startGame();
+        });
+
+        Button themeButton = new Button("Choose Theme");
+        themeButton.setOnAction(evt -> chooseTheme());
+
+        mainMenuLayout = new VBox(10); // Spacing between buttons
+        mainMenuLayout.getChildren().addAll(startButton, themeButton);
+        mainMenuLayout.setAlignment(Pos.CENTER);
+
+        // Background Image
+        URL url = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
+        Image backgroundImage = new Image(url.toString());
+
+        BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+        BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        Background background = new Background(backgroundImageObject);
+        mainMenuLayout.setBackground(background); // Set background to the main menu layout
+
+        Scene mainMenuScene = new Scene(mainMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+        primaryStage.setScene(mainMenuScene);
+        primaryStage.show();
+    }
+
+    public void chooseTheme(){
+        //TO DO: implement choosing theme
+    }
+
+    private void startGame() {
+        // Initialize RootLayout and start the game
+        initRootLayout();
     }
 
     public void RanksSelectionAction(String rank) {
@@ -125,69 +165,67 @@ public class MainApp extends Application {
 
 
     public void displayPlayerDeck(String[] Deck) {
-
-        rootLayout.getChildren().removeAll(playerDeckButtons);
-        playerDeckButtons.clear();
+        rootLayout.getChildren().removeAll(playerDeckImageViews);
+        playerDeckImageViews.clear();
 
         int ranklen = Deck.length;
         int halfrank = ranklen / 2;
         int transval = 40;
 
         for (int i = 0; i < ranklen; i++) {
-            String cardName = Deck[i].replace(":", "_"); // Replace ":" with "_"
-            URL url = Objects.requireNonNull(MainApp.class.getResource(cardName + ".png"));
+            String cardName = Deck[i].replace(":", "_");
+            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/test/" + cardName + ".png"));
             Image cardImage = new Image(url.toString());
             ImageView imageView = new ImageView(cardImage);
-            imageView.setFitWidth(75); // Set the desired width
+            imageView.setFitWidth(75);
             imageView.setFitHeight(125);
-            Button temp = new Button();
-            temp.setOnAction(evt -> giveCardAnimation(temp));
-            temp.setGraphic(imageView);
-            playerDeckButtons.add(temp);
-            temp.setTranslateX((i - halfrank) * transval);
-            temp.setTranslateY(200);
-            temp.setId(Deck[i]);
-            rootLayout.getChildren().add(temp);
+            imageView.setOnMouseClicked(evt -> giveCardAnimation(imageView));
+            imageView.setTranslateX((i - halfrank) * transval);
+            imageView.setTranslateY(200);
+            imageView.setId(Deck[i]);
+            imageView.setStyle("-fx-border-color: red; -fx-border-width: 5px;");
+            rootLayout.getChildren().add(imageView);
+            playerDeckImageViews.add(imageView);
         }
     }
 
     public void takeCardAnimation(String cardid) {
-        for (int i = 0; i < this.playerDeckButtons.size(); i++) {
-            Button btn = this.playerDeckButtons.get(i);
-            if (btn.getId().equals(cardid)) {
-                this.giveCardAnimation(btn);
+        for (int i = 0; i < this.playerDeckImageViews.size(); i++) {
+            ImageView imageView = this.playerDeckImageViews.get(i);
+            if (imageView.getId().equals(cardid)) {
+                this.giveCardAnimation(imageView);
             }
         }
     }
 
-    public void giveCardAnimation(Button button) {
-        // make button not clickable during transition
-        button.setDisable(true);
-        // don't change button color when disabled.
-        button.setStyle("-fx-opacity: 1;");
-        TranslateTransition trans_center = new TranslateTransition(new Duration(400), button);
-        TranslateTransition trans_hide = new TranslateTransition(new Duration(400), button);
-        TranslateTransition trans_pause = new TranslateTransition(new Duration(200), button);
-        trans_center.setInterpolator(Interpolator.EASE_BOTH);
-        trans_hide.setInterpolator(Interpolator.EASE_BOTH);
+    public void giveCardAnimation(ImageView imageView) {
+        // Make imageView not clickable during transition
+        imageView.setDisable(true);
+        // Don't change imageView opacity when disabled
+        imageView.setStyle("-fx-opacity: 1;");
+        TranslateTransition transCenter = new TranslateTransition(new Duration(400), imageView);
+        TranslateTransition transHide = new TranslateTransition(new Duration(400), imageView);
+        TranslateTransition transPause = new TranslateTransition(new Duration(200), imageView);
+        transCenter.setInterpolator(Interpolator.EASE_BOTH);
+        transHide.setInterpolator(Interpolator.EASE_BOTH);
 
-        SequentialTransition seqT = new SequentialTransition(trans_center);
-        // on animation finish enable button
-        seqT.setOnFinished(e -> button.setDisable(false));
+        SequentialTransition seqT = new SequentialTransition(transCenter);
+        // On animation finish, enable imageView
+        seqT.setOnFinished(e -> imageView.setDisable(false));
 
-        if (playerDeckButtonsSelected.containsKey(button)) {
-            double[] coords = playerDeckButtonsSelected.get(button);
-            trans_center.setToX(coords[0]);
-            trans_center.setToY(coords[1]);
-            playerDeckButtonsSelected.remove(button);
+        if (playerDeckImageViewsSelected.containsKey(imageView)) {
+            double[] coords = playerDeckImageViewsSelected.get(imageView);
+            transCenter.setToX(coords[0]);
+            transCenter.setToY(coords[1]);
+            playerDeckImageViewsSelected.remove(imageView);
         } else {
-            seqT = new SequentialTransition(trans_center, trans_pause, trans_hide);
-            trans_center.setToX(0);
-            trans_center.setToY(0);
-            trans_hide.setToY(-500);
+            seqT = new SequentialTransition(transCenter, transPause, transHide);
+            transCenter.setToX(0);
+            transCenter.setToY(0);
+            transHide.setToY(-500);
 
-            double[] d = {button.getTranslateX(), button.getTranslateY()};
-            playerDeckButtonsSelected.put(button, d);
+            double[] d = { imageView.getTranslateX(), imageView.getTranslateY() };
+            playerDeckImageViewsSelected.put(imageView, d);
         }
         seqT.play();
     }
@@ -253,25 +291,53 @@ public class MainApp extends Application {
     }
 
     void displayTargets(ArrayList<String> targetplayers) {
-
+        ArrayList<ImageView> targetImages = new ArrayList<>();
         rootLayout.getChildren().removeAll(TargetsLabels);
+        TargetsLabels.clear();
+
+        rootLayout.getChildren().removeAll(targetImages);
         TargetsLabels.clear();
 
         int ranklen = targetplayers.size();
         int halfrank = ranklen / 2;
-        int transval = 150;
+        int transval = 200;
+        int transvalcard =220;
+        int transval2 = 10;
+        int imageWidth = 30;
+        int imageHeight = 30;
+
         for (int i = 0; i < ranklen; i++) {
             String target = targetplayers.get(i);
+            int handCount = gameLogic.getPlayer(target).getHandCount();
+
+            // Create label for target player
             String lbltext = target
-                    + "\n" + Integer.toString(gameLogic.getPlayer(target).getHandCount()) + " cards"
-                    + "\n" + Integer.toString(gameLogic.getPlayer(target).getCompletedSuits()) + " suites completed";
+                    + "\n" + handCount + " cards"
+                    + "\n" + gameLogic.getPlayer(target).getCompletedSuits() + " suits completed";
             Label temp = new Label(lbltext);
             temp.setTranslateY(-270);
             temp.setTranslateX((i - halfrank) * transval);
+            temp.setTextFill(Color.WHITE);
+
+            // Add the label to the root layout
             TargetsLabels.add(temp);
+
+            for (int j = 0; j < handCount; j++) {
+                URL url = Objects.requireNonNull(MainApp.class.getResource("back_card.png"));
+                Image backCardImage = new Image(url.toString());
+                ImageView backCardImageImageView = new ImageView(backCardImage);
+                backCardImageImageView.setFitWidth(imageWidth);
+                backCardImageImageView.setFitHeight(imageHeight);
+                backCardImageImageView.setTranslateX((i - halfrank) * transvalcard + j * transval2);
+                backCardImageImageView.setTranslateY(-220); // Keep the Y translation constant to maintain the same vertical position
+
+                // Add the image view to the ArrayList
+                targetImages.add(backCardImageImageView);
+            }
         }
 
         rootLayout.getChildren().addAll(TargetsLabels);
+        rootLayout.getChildren().addAll(targetImages); // Add the ImageView instances to the root layout
     }
 
     void displaySelected() {
@@ -285,6 +351,7 @@ public class MainApp extends Application {
         Label temp = new Label(lbltext);
         temp.setTranslateX(-300);
         temp.setTranslateY(initialY);
+        temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
 
         lbltext = Integer.toString(gameLogic.getPlayer(this.currentPlayerName).getHandCount()) + " cards | "
@@ -292,6 +359,7 @@ public class MainApp extends Application {
         temp = new Label(lbltext);
         temp.setTranslateX(-300);
         temp.setTranslateY(initialY + 25);
+        temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
 
         /*lbltext = "Selected Rank: " + this.playerSelectedRank + " | "
