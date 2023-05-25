@@ -73,11 +73,7 @@ public class MainApp extends Application {
     private void showMainMenu() {
         Button startButton = new Button("Start Game");
         startButton.setOnAction(evt -> {
-            TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.5), mainMenuLayout);
-            translateTransition.setFromX(0);
-            translateTransition.setToX(-WINDOW_WIDTH);
-            translateTransition.setOnFinished(e -> startGame()); // Execute startGame() after the transition finishes
-            translateTransition.play();
+            startGame();
         });
 
         Button themeButton = new Button("Choose Theme");
@@ -178,7 +174,7 @@ public class MainApp extends Application {
 
         for (int i = 0; i < ranklen; i++) {
             String cardName = Deck[i].replace(":", "_");
-            URL url = Objects.requireNonNull(MainApp.class.getResource(cardName + ".png"));
+            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/test/" + cardName + ".png"));
             Image cardImage = new Image(url.toString());
             ImageView imageView = new ImageView(cardImage);
             imageView.setFitWidth(75);
@@ -295,18 +291,20 @@ public class MainApp extends Application {
     }
 
     void displayTargets(ArrayList<String> targetplayers) {
+        ArrayList<ImageView> targetImages = new ArrayList<>();
         rootLayout.getChildren().removeAll(TargetsLabels);
         TargetsLabels.clear();
 
+        rootLayout.getChildren().removeAll(targetImages);
+        TargetsLabels.clear();
 
         int ranklen = targetplayers.size();
         int halfrank = ranklen / 2;
-        int transval = 250;
+        int transval = 200;
+        int transvalcard =220;
         int transval2 = 10;
         int imageWidth = 30;
         int imageHeight = 30;
-
-        ArrayList<ImageView> targetImages = new ArrayList<>(); // ArrayList to store ImageView instances
 
         for (int i = 0; i < ranklen; i++) {
             String target = targetplayers.get(i);
@@ -330,14 +328,14 @@ public class MainApp extends Application {
                 ImageView backCardImageImageView = new ImageView(backCardImage);
                 backCardImageImageView.setFitWidth(imageWidth);
                 backCardImageImageView.setFitHeight(imageHeight);
-                backCardImageImageView.setTranslateX((j - halfrank) * transval2);
-                backCardImageImageView.setTranslateY(-220);  // Keep the Y translation constant to maintain the same vertical position
+                backCardImageImageView.setTranslateX((i - halfrank) * transvalcard + j * transval2);
+                backCardImageImageView.setTranslateY(-220); // Keep the Y translation constant to maintain the same vertical position
 
                 // Add the image view to the ArrayList
                 targetImages.add(backCardImageImageView);
             }
-
         }
+
         rootLayout.getChildren().addAll(TargetsLabels);
         rootLayout.getChildren().addAll(targetImages); // Add the ImageView instances to the root layout
     }
