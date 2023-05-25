@@ -1,4 +1,4 @@
-package io.github.p0lbang.gofish.exp2;// ChatMessage.java
+package io.github.p0lbang.gofish.network;// ChatMessage.java
 
 public class ChatMessage {
     public String senderName;

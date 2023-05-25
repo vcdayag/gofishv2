@@ -1,4 +1,4 @@
-package io.github.p0lbang.gofish.exp2;
+package io.github.p0lbang.gofish.network;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;

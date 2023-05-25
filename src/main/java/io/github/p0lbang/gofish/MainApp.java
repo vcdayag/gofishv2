@@ -1,9 +1,9 @@
 package io.github.p0lbang.gofish;
 
-import io.github.p0lbang.gofish.exp2.ChatClient;
-import io.github.p0lbang.gofish.exp2.ChatInterface;
 import io.github.p0lbang.gofish.game.Game;
 import io.github.p0lbang.gofish.game.Player;
+import io.github.p0lbang.gofish.network.ChatClient;
+import io.github.p0lbang.gofish.network.ChatInterface;
 import javafx.animation.Interpolator;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
