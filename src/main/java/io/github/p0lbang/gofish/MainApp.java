@@ -463,13 +463,6 @@ public class MainApp extends Application {
         }
     }
 
-    private void buttonClick(Button button) {
-        System.out.println(button.getText());
-        gameLogic.displayPlayerHand("Bot");
-
-
-    }
-
     private void AITurnAction() {
         System.out.println("Run Gameloop again");
         gameLogic.AITurn();
