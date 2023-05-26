@@ -48,6 +48,8 @@ public class MainApp extends Application {
     ChatInterface chatInterface;
     private BorderPane mainLayout;
 
+
+
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<ImageView> playerDeckImageViews = new ArrayList<>();
 
@@ -64,6 +66,9 @@ public class MainApp extends Application {
     private String playerSelectedTarget = "";
 
     public String currentPlayerName = "Player";
+
+
+    private String theme = "animal";
 
     private VBox mainMenuLayout;
 
@@ -111,9 +116,55 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
-    public void chooseTheme(){
-        //TO DO: implement choosing theme
+    public void chooseTheme() {
+        Button animalThemeButton = new Button("Animal Theme");
+        animalThemeButton.setOnAction(evt -> {
+            theme = "animal";
+        });
+
+        Button fruitThemeButton = new Button("Fruit Theme");
+        fruitThemeButton.setOnAction(evt -> {
+            theme = "fruit";
+        });
+
+        Button defaultThemeButton = new Button("Default Theme");
+        defaultThemeButton.setOnAction(evt -> {
+            theme = "default";
+        });
+
+        Button okButton = new Button("OK");
+        okButton.setOnAction(evt -> {
+            showMainMenu();
+        });
+
+        HBox buttonContainer = new HBox(10);
+        buttonContainer.getChildren().addAll(animalThemeButton, fruitThemeButton, defaultThemeButton);
+        buttonContainer.setAlignment(Pos.CENTER);
+
+        VBox themeMenuLayout = new VBox(10);
+        themeMenuLayout.setAlignment(Pos.CENTER);
+        themeMenuLayout.getChildren().addAll(buttonContainer, okButton);
+
+
+        URL url = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
+        Image backgroundImage = new Image(url.toString());
+
+        BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+        BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        Background background = new Background(backgroundImageObject);
+        themeMenuLayout.setBackground(background); // Set background to the main menu layout
+
+        Scene scene = new Scene(themeMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+        primaryStage.setScene(scene);
     }
+
+
+
+
+
+
+
+
 
     private void startGame() {
         // Initialize RootLayout and start the game
@@ -192,7 +243,7 @@ public class MainApp extends Application {
 
         for (int i = 0; i < ranklen; i++) {
             String cardName = Deck[i].replace(":", "_");
-            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/test/" + cardName + ".png"));
+            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/"+theme+"_pack/" + cardName + ".png"));
             Image cardImage = new Image(url.toString());
             ImageView imageView = new ImageView(cardImage);
             imageView.setFitWidth(75);
@@ -327,7 +378,7 @@ public class MainApp extends Application {
             this.updateUI();
 
             //Background Image
-            URL url = Objects.requireNonNull(MainApp.class.getResource("background.png"));
+            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/"+theme+"_pack/background.png"));
             Image backgroundImage = new Image(url.toString());
 
             BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
