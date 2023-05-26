@@ -10,7 +10,6 @@ import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -347,7 +346,7 @@ public class MainApp extends Application {
         sp.setVmax(440);
         sp.setPrefSize(200, 300);
         sp.setContent(vb);
-        sp.vvalueProperty().bind((ObservableValue<? extends Number>) vb.heightProperty());
+        sp.vvalueProperty().bind(vb.heightProperty());
         sp.setPannable(true);
         mainLayout.setLeft(container);
     }
@@ -478,8 +477,8 @@ public class MainApp extends Application {
         temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
 
-        lbltext = Integer.toString(gameLogic.getPlayer(this.currentPlayerName).getHandCount()) + " cards | "
-                + Integer.toString(gameLogic.getPlayer(this.currentPlayerName).getCompletedSuits()) + " suites completed";
+        lbltext = gameLogic.getPlayer(this.currentPlayerName).getHandCount() + " cards | "
+                + gameLogic.getPlayer(this.currentPlayerName).getCompletedSuits() + " suites completed";
         temp = new Label(lbltext);
         temp.setTranslateX(-300);
         temp.setTranslateY(initialY + 25);
