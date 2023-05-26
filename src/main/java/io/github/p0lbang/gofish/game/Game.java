@@ -8,10 +8,9 @@ import java.util.Random;
 
 public class Game {
     @SuppressWarnings("CanBeFinal")
-    PlayerGroup players;
-    @SuppressWarnings("CanBeFinal")
     public Deck deck;
-
+    @SuppressWarnings("CanBeFinal")
+    PlayerGroup players;
     MainApp GUI;
 
     public Game(MainApp gui) {
@@ -24,9 +23,9 @@ public class Game {
     }
 
     public void start() {
-        this.getPlayers();
-        this.setupCards();
-        this.gameloop();
+//        this.getPlayers();
+//        this.setupCards();
+//        this.gameloop();
     }
 
     private void getPlayers() {

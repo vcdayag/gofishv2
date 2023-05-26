@@ -112,6 +112,9 @@ public class MainApp extends Application {
 
     private void showMultiplayerMenu() {
         mainMenuLayout = new VBox(10); // Spacing between buttons
+
+        Label ErrorPrompt = new Label();
+
         HBox clientnameGroup = new HBox();
         TextField clientName = new TextField();
         clientnameGroup.getChildren().addAll(new Label("Username:"), clientName);
@@ -130,13 +133,21 @@ public class MainApp extends Application {
         Button clientButton = new Button("Join Server");
         clientButton.setOnAction(evt -> {
             if (txtipaddr.getText().isEmpty() || txtport.getText().isEmpty() || clientName.getText().isEmpty()) {
+                ErrorPrompt.setText("Inputs must not be empty.");
                 return;
             }
             try {
-                Integer.parseInt(txtport.getText());
+                int port = Integer.parseInt(txtport.getText());
+                if (port <= 1024 || port > 65536) {
+                    ErrorPrompt.setText("Invalid port value.");
+                    return;
+                }
             } catch (NumberFormatException e) {
+                ErrorPrompt.setText("Port must be an integer.");
+                txtport.requestFocus();
                 return;
             }
+            this.currentPlayerName = clientName.getText();
             chatInterface = new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
             startGame();
         });
@@ -149,8 +160,11 @@ public class MainApp extends Application {
         Button serverButton = new Button("Create Server");
         serverButton.setOnAction(evt -> {
             if (serverName.getText().isEmpty()) {
+                ErrorPrompt.setText("Username should not be empty.");
+                serverName.requestFocus();
                 return;
             }
+            this.currentPlayerName = serverName.getText();
             chatInterface = new ChatServer(this, serverName.getText());
             startGame();
         });
@@ -160,7 +174,8 @@ public class MainApp extends Application {
             showMainMenu();
         });
 
-        mainMenuLayout.getChildren().addAll(clientnameGroup, ipaddrGroup, portGroup, clientButton, new Label("or"), servernameGroup, serverButton, backButton);
+
+        mainMenuLayout.getChildren().addAll(clientnameGroup, ipaddrGroup, portGroup, clientButton, new Label("or"), servernameGroup, serverButton, backButton, ErrorPrompt);
         mainMenuLayout.setAlignment(Pos.CENTER);
 
         // Background Image
@@ -424,7 +439,7 @@ public class MainApp extends Application {
             DoAction.setTranslateY(100);
             DoAction.setOnAction(evt -> DoActionAction());
 
-            this.updateUI();
+//            this.updateUI();
 
             //Background Image
             URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/background.png"));
