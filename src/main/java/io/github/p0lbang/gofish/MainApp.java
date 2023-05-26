@@ -84,27 +84,71 @@ public class MainApp extends Application {
             startGame();
         });
 
-        Button clientButton = new Button("Join Server");
-        clientButton.setOnAction(evt -> {
-            System.out.println("client");
-            chatInterface = new ChatClient(this, "Client");
-            System.out.println("after");
-            startGame();
-        });
-
-        Button serverButton = new Button("Create Server");
-        serverButton.setOnAction(evt -> {
-            System.out.println("server");
-            chatInterface = new ChatServer(this, "Server");
-            System.out.println("after");
-            startGame();
+        Button multiplayerButton = new Button("Multiplayer");
+        multiplayerButton.setOnAction(evt -> {
+            showMultiplayerMenu();
         });
 
         Button themeButton = new Button("Choose Theme");
         themeButton.setOnAction(evt -> chooseTheme());
 
         mainMenuLayout = new VBox(10); // Spacing between buttons
-        mainMenuLayout.getChildren().addAll(startButton, clientButton, serverButton, themeButton);
+        mainMenuLayout.getChildren().addAll(startButton, multiplayerButton, themeButton);
+        mainMenuLayout.setAlignment(Pos.CENTER);
+
+        // Background Image
+        URL url = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
+        Image backgroundImage = new Image(url.toString());
+
+        BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+        BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        Background background = new Background(backgroundImageObject);
+        mainMenuLayout.setBackground(background); // Set background to the main menu layout
+
+        Scene mainMenuScene = new Scene(mainMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+        primaryStage.setScene(mainMenuScene);
+        primaryStage.show();
+    }
+
+    private void showMultiplayerMenu() {
+        mainMenuLayout = new VBox(10); // Spacing between buttons
+        HBox ipaddrGroup = new HBox();
+        HBox portGroup = new HBox();
+        TextField txtipaddr = new TextField();
+        TextField txtport = new TextField();
+
+        ipaddrGroup.getChildren().addAll(new Label("IP Address:"), txtipaddr);
+        ipaddrGroup.setAlignment(Pos.CENTER);
+
+        portGroup.getChildren().addAll(new Label("Port:"), txtport);
+        portGroup.setAlignment(Pos.CENTER);
+
+        Button clientButton = new Button("Join Server");
+        clientButton.setOnAction(evt -> {
+            if (txtipaddr.getText().isEmpty() || txtport.getText().isEmpty()) {
+                return;
+            }
+            try {
+                Integer.parseInt(txtport.getText());
+            } catch (NumberFormatException e) {
+                return;
+            }
+            chatInterface = new ChatClient(this, "Client", txtipaddr.getText(), Integer.parseInt(txtport.getText()));
+            startGame();
+        });
+
+        Button serverButton = new Button("Create Server");
+        serverButton.setOnAction(evt -> {
+            chatInterface = new ChatServer(this, "Server");
+            startGame();
+        });
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(evt -> {
+            showMainMenu();
+        });
+
+        mainMenuLayout.getChildren().addAll(ipaddrGroup, portGroup, clientButton, new Label("or"), serverButton, backButton);
         mainMenuLayout.setAlignment(Pos.CENTER);
 
         // Background Image
