@@ -122,11 +122,13 @@ public class MainApp extends Application {
 
         HBox ipaddrGroup = new HBox();
         TextField txtipaddr = new TextField();
+        txtipaddr.setText("localhost");
         ipaddrGroup.getChildren().addAll(new Label("IP Address:"), txtipaddr);
         ipaddrGroup.setAlignment(Pos.CENTER);
 
         HBox portGroup = new HBox();
         TextField txtport = new TextField();
+        txtport.setText("13700");
         portGroup.getChildren().addAll(new Label("Port:"), txtport);
         portGroup.setAlignment(Pos.CENTER);
 
@@ -159,6 +161,7 @@ public class MainApp extends Application {
 
         HBox serverportGroup = new HBox();
         TextField txtserverport = new TextField();
+        txtserverport.setText("13700");
         serverportGroup.getChildren().addAll(new Label("Port:"), txtserverport);
         serverportGroup.setAlignment(Pos.CENTER);
 
