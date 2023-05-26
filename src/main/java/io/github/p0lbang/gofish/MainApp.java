@@ -112,20 +112,24 @@ public class MainApp extends Application {
 
     private void showMultiplayerMenu() {
         mainMenuLayout = new VBox(10); // Spacing between buttons
-        HBox ipaddrGroup = new HBox();
-        HBox portGroup = new HBox();
-        TextField txtipaddr = new TextField();
-        TextField txtport = new TextField();
+        HBox clientnameGroup = new HBox();
+        TextField clientName = new TextField();
+        clientnameGroup.getChildren().addAll(new Label("Username:"), clientName);
+        clientnameGroup.setAlignment(Pos.CENTER);
 
+        HBox ipaddrGroup = new HBox();
+        TextField txtipaddr = new TextField();
         ipaddrGroup.getChildren().addAll(new Label("IP Address:"), txtipaddr);
         ipaddrGroup.setAlignment(Pos.CENTER);
 
+        HBox portGroup = new HBox();
+        TextField txtport = new TextField();
         portGroup.getChildren().addAll(new Label("Port:"), txtport);
         portGroup.setAlignment(Pos.CENTER);
 
         Button clientButton = new Button("Join Server");
         clientButton.setOnAction(evt -> {
-            if (txtipaddr.getText().isEmpty() || txtport.getText().isEmpty()) {
+            if (txtipaddr.getText().isEmpty() || txtport.getText().isEmpty() || clientName.getText().isEmpty()) {
                 return;
             }
             try {
@@ -133,13 +137,21 @@ public class MainApp extends Application {
             } catch (NumberFormatException e) {
                 return;
             }
-            chatInterface = new ChatClient(this, "Client", txtipaddr.getText(), Integer.parseInt(txtport.getText()));
+            chatInterface = new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
             startGame();
         });
 
+        HBox servernameGroup = new HBox();
+        TextField serverName = new TextField();
+        servernameGroup.getChildren().addAll(new Label("Username:"), serverName);
+        servernameGroup.setAlignment(Pos.CENTER);
+
         Button serverButton = new Button("Create Server");
         serverButton.setOnAction(evt -> {
-            chatInterface = new ChatServer(this, "Server");
+            if (serverName.getText().isEmpty()) {
+                return;
+            }
+            chatInterface = new ChatServer(this, serverName.getText());
             startGame();
         });
 
@@ -148,7 +160,7 @@ public class MainApp extends Application {
             showMainMenu();
         });
 
-        mainMenuLayout.getChildren().addAll(ipaddrGroup, portGroup, clientButton, new Label("or"), serverButton, backButton);
+        mainMenuLayout.getChildren().addAll(clientnameGroup, ipaddrGroup, portGroup, clientButton, new Label("or"), servernameGroup, serverButton, backButton);
         mainMenuLayout.setAlignment(Pos.CENTER);
 
         // Background Image
