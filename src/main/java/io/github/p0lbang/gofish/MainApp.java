@@ -422,7 +422,7 @@ public class MainApp extends Application {
         });
 
         button.setOnAction(e -> {
-            addToChatBar(textField.getText());
+            addToChatBar(this.currentPlayerName + ": " + textField.getText());
             chatInterface.sendMessage(textField.getText());
             textField.clear();
             textField.requestFocus();
