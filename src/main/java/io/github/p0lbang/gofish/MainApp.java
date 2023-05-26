@@ -4,6 +4,7 @@ import io.github.p0lbang.gofish.game.Game;
 import io.github.p0lbang.gofish.game.Player;
 import io.github.p0lbang.gofish.network.ChatClient;
 import io.github.p0lbang.gofish.network.ChatInterface;
+import io.github.p0lbang.gofish.network.ChatServer;
 import javafx.animation.Interpolator;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
@@ -37,42 +38,31 @@ public class MainApp extends Application {
 
     final int WINDOW_HEIGHT = 700;
     final int WINDOW_WIDTH = 1200;
-
+    public String currentPlayerName = "Player";
+    ChatInterface chatInterface;
+    Game gameLogic;
     // This is our PrimaryStage (It contains everything)
     private Stage primaryStage;
-
     // This is the BorderPane of RootLayout
     @SuppressWarnings("FieldCanBeLocal")
     private StackPane rootLayout;
-
-    ChatInterface chatInterface;
     private BorderPane mainLayout;
-
-
-
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<ImageView> playerDeckImageViews = new ArrayList<>();
-
     @SuppressWarnings("FieldMayBeFinal")
     private HashMap<ImageView, double[]> playerDeckImageViewsSelected = new HashMap<ImageView, double[]>();
-
-
+    @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Button> playerRanksButtons = new ArrayList<>();
+    @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Button> playerTargetsButtons = new ArrayList<>();
+    @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Label> TargetsLabels = new ArrayList<>();
+    @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Label> playerInfoLabels = new ArrayList<>();
-
     private String playerSelectedRank = "";
     private String playerSelectedTarget = "";
-
-    public String currentPlayerName = "Player";
-
-
     private String theme = "animal";
-
     private VBox mainMenuLayout;
-
-    Game gameLogic;
     private TextFlow chatLayout;
 
     @Override
@@ -95,11 +85,27 @@ public class MainApp extends Application {
             startGame();
         });
 
+        Button clientButton = new Button("Join Server");
+        clientButton.setOnAction(evt -> {
+            System.out.println("client");
+            chatInterface = new ChatClient(this, "Client");
+            System.out.println("after");
+            startGame();
+        });
+
+        Button serverButton = new Button("Create Server");
+        serverButton.setOnAction(evt -> {
+            System.out.println("server");
+            chatInterface = new ChatServer(this, "Server");
+            System.out.println("after");
+            startGame();
+        });
+
         Button themeButton = new Button("Choose Theme");
         themeButton.setOnAction(evt -> chooseTheme());
 
         mainMenuLayout = new VBox(10); // Spacing between buttons
-        mainMenuLayout.getChildren().addAll(startButton, themeButton);
+        mainMenuLayout.getChildren().addAll(startButton, clientButton, serverButton, themeButton);
         mainMenuLayout.setAlignment(Pos.CENTER);
 
         // Background Image
@@ -159,19 +165,7 @@ public class MainApp extends Application {
     }
 
 
-
-
-
-
-
-
-
     private void startGame() {
-        // Initialize RootLayout and start the game
-        chatInterface = new ChatClient(this, "Playername");
-//        chatInterface = new ChatServer(this,"Playername");
-
-        // 2) Initialize RootLayout
         initRootLayout();
     }
 
@@ -243,7 +237,7 @@ public class MainApp extends Application {
 
         for (int i = 0; i < ranklen; i++) {
             String cardName = Deck[i].replace(":", "_");
-            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/"+theme+"_pack/" + cardName + ".png"));
+            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/" + cardName + ".png"));
             Image cardImage = new Image(url.toString());
             ImageView imageView = new ImageView(cardImage);
             imageView.setFitWidth(75);
@@ -378,7 +372,7 @@ public class MainApp extends Application {
             this.updateUI();
 
             //Background Image
-            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/"+theme+"_pack/background.png"));
+            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/background.png"));
             Image backgroundImage = new Image(url.toString());
 
             BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
@@ -431,7 +425,7 @@ public class MainApp extends Application {
         int ranklen = targetplayers.size();
         int halfrank = ranklen / 2;
         int transval = 200;
-        int transvalcard =220;
+        int transvalcard = 220;
         int transval2 = 10;
         int imageWidth = 30;
         int imageHeight = 30;
