@@ -157,15 +157,30 @@ public class MainApp extends Application {
         servernameGroup.getChildren().addAll(new Label("Username:"), serverName);
         servernameGroup.setAlignment(Pos.CENTER);
 
+        HBox serverportGroup = new HBox();
+        TextField txtserverport = new TextField();
+        serverportGroup.getChildren().addAll(new Label("Port:"), txtserverport);
+        serverportGroup.setAlignment(Pos.CENTER);
+
         Button serverButton = new Button("Create Server");
         serverButton.setOnAction(evt -> {
-            if (serverName.getText().isEmpty()) {
-                ErrorPrompt.setText("Username should not be empty.");
-                serverName.requestFocus();
+            if (txtserverport.getText().isEmpty() || serverName.getText().isEmpty()) {
+                ErrorPrompt.setText("Inputs must not be empty.");
+                return;
+            }
+            try {
+                int port = Integer.parseInt(txtserverport.getText());
+                if (port <= 1024 || port > 65536) {
+                    ErrorPrompt.setText("Invalid port value.");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                ErrorPrompt.setText("Port must be an integer.");
+                txtserverport.requestFocus();
                 return;
             }
             this.currentPlayerName = serverName.getText();
-            chatInterface = new ChatServer(this, serverName.getText());
+            chatInterface = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             startGame();
         });
 
@@ -175,7 +190,7 @@ public class MainApp extends Application {
         });
 
 
-        mainMenuLayout.getChildren().addAll(clientnameGroup, ipaddrGroup, portGroup, clientButton, new Label("or"), servernameGroup, serverButton, backButton, ErrorPrompt);
+        mainMenuLayout.getChildren().addAll(clientnameGroup, ipaddrGroup, portGroup, clientButton, new Label("or"), servernameGroup, serverportGroup, serverButton, backButton, ErrorPrompt);
         mainMenuLayout.setAlignment(Pos.CENTER);
 
         // Background Image
