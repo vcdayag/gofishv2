@@ -24,27 +24,15 @@ public class Network {
         kryo.register(String[].class);
         kryo.register(ArrayList.class);
         kryo.register(HashMap.class);
-        kryo.register(PacketPlayerAction.class);
 
         kryo.register(Player.class);
-//        kryo.addDefaultSerializer(Player.class,new JavaSerializer());
-
         kryo.register(Deck.class);
-//        kryo.addDefaultSerializer(Deck.class,new JavaSerializer());
-
         kryo.register(Card.class);
-//        kryo.addDefaultSerializer(Card.class,new JavaSerializer());
-        /*Registration regplayer = kryo.register(Player.class);
-        regplayer.setInstantiator((ObjectInstantiator<Player>) () -> new Player("name",0));
-        Registration regcard = kryo.register(Player.class);
-        regcard.setInstantiator((ObjectInstantiator<Player>) () -> new Player("name",0));
-        Registration regdeck = kryo.register(Player.class);
-        regdeck.setInstantiator((ObjectInstantiator<Player>) () -> new Player("name",0));*/
-        //kryo.register(Deck.class);
-
         kryo.register(PacketChatMessage.class);
         kryo.register(PacketGameStart.class);
         kryo.register(PacketPlayerJoin.class);
+        kryo.register(PacketPlayerAction.class);
+
     }
 
 }
