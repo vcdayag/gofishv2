@@ -10,12 +10,10 @@ public class GameServer extends GameBase {
     @SuppressWarnings("CanBeFinal")
     public Deck deck;
     @SuppressWarnings("CanBeFinal")
-    public
-    PlayerGroup players;
+
 
     public GameServer(MainApp gui) {
         super(gui);
-        this.players = new PlayerGroup();
         this.deck = new Deck();
         this.deck.initializeDeck();
 

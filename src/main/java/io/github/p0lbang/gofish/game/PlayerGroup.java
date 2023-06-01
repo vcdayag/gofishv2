@@ -7,8 +7,8 @@ import java.util.Map;
 
 @SuppressWarnings("CanBeFinal")
 public class PlayerGroup {
-    Map<String, Player> players;
-    ArrayList<String> playerNames;
+    public Map<String, Player> players;
+    public ArrayList<String> playerNames;
 
     public PlayerGroup() {
         this.players = new HashMap<>();

@@ -49,11 +49,13 @@ public class ChatClient implements ChatInterface {
                 } else if (object instanceof PacketGameStart) {
                     PacketGameStart packetGameStart = (PacketGameStart) object;
                     GUI.gameHandler.setSelf(packetGameStart.player);
-//                    GUI.gameHandler.getSelf().
+                    GUI.gameHandler.players = packetGameStart.playerGroup;
+                    GUI.gameHandler.targetPlayers = packetGameStart.targets;
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            GUI.displayPlayerDeck(GUI.gameHandler.getSelf().getHand());
+//                            GUI.displayPlayerDeck(GUI.gameHandler.getSelf().getHand());
+                            GUI.updateUI();
                         }
                     });
                 }
@@ -73,6 +75,10 @@ public class ChatClient implements ChatInterface {
         PacketPlayerJoin packet = new PacketPlayerJoin();
         packet.name = name;
         client.sendTCP(packet);
+    }
+
+    public void GAME_Action() {
+
     }
 
     @Override

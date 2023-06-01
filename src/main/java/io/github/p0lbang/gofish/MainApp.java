@@ -38,7 +38,8 @@ public class MainApp extends Application {
     final int WINDOW_HEIGHT = 700;
     final int WINDOW_WIDTH = 1200;
     public String currentPlayerName = "Player";
-    public ChatInterface chatInterface;
+    public ChatInterface NetworkClient;
+    public ChatServer NetworkServer;
     public GameBase gameHandler;
 
     // This is our PrimaryStage (It contains everything)
@@ -160,8 +161,8 @@ public class MainApp extends Application {
             }
             this.currentPlayerName = clientName.getText();
             gameHandler = new GameBase(this);
-            chatInterface = (ChatClient) new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
-            chatInterface.joinServer(this.currentPlayerName);
+            NetworkClient = (ChatClient) new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
+            NetworkClient.joinServer(this.currentPlayerName);
             startGame();
         });
 
@@ -195,7 +196,9 @@ public class MainApp extends Application {
             }
             this.currentPlayerName = serverName.getText();
             gameHandler = new GameServer(this);
-            chatInterface = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
+            NetworkServer = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
+            NetworkClient = (ChatClient) new ChatClient(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
+            NetworkClient.joinServer(this.currentPlayerName);
             startGame();
         });
 
@@ -438,7 +441,7 @@ public class MainApp extends Application {
 
         button.setOnAction(e -> {
             addToChatBar(this.currentPlayerName + ": " + textField.getText());
-            chatInterface.sendMessage(textField.getText());
+            NetworkClient.sendMessage(textField.getText());
             textField.clear();
             textField.requestFocus();
         });
@@ -468,13 +471,15 @@ public class MainApp extends Application {
 //            rootLayout.getChildren().add(DoAction);
 //            DoAction.setTranslateY(100);
 //            DoAction.setOnAction(evt -> DoActionAction());
+            if (NetworkServer != null) {
+                Button StartGame = new Button("Start Game");
+                rootLayout.getChildren().add(StartGame);
+                StartGame.setTranslateY(100);
+                StartGame.setOnAction(evt -> {
+                    NetworkServer.GUI_startGame();
+                });
+            }
 
-            Button StartGame = new Button("Start Game");
-            rootLayout.getChildren().add(StartGame);
-            StartGame.setTranslateY(100);
-            StartGame.setOnAction(evt -> {
-                chatInterface.GUI_startGame();
-            });
 
 //            this.updateUI();
 
@@ -505,12 +510,12 @@ public class MainApp extends Application {
         //gameHandler.AITurn();
     }
 
-    void updateUI() {
+    public void updateUI() {
         //display the player's deck
-        /*displayPlayerDeck(gameHandler.getPlayerHand(this.currentPlayerName));
-        displayRanksSelectionButtons(gameHandler.getPlayerHandRanks(this.currentPlayerName));
-        displayTargetsSelectionButtons(gameHandler.getTargetPlayers(this.currentPlayerName));
-        displayTargets(gameHandler.getTargetPlayers(this.currentPlayerName));*/
+        displayPlayerDeck(gameHandler.getSelf().getHand());
+        displayRanksSelectionButtons(gameHandler.getSelf().getHandRanks());
+        displayTargetsSelectionButtons(gameHandler.targetPlayers);
+        displayTargets(gameHandler.targetPlayers);
         displaySelected();
     }
 

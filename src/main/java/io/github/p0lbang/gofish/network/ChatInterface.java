@@ -5,5 +5,7 @@ public interface ChatInterface {
 
     void joinServer(String name);
 
+    void GAME_Action();
+
     void GUI_startGame();
 }

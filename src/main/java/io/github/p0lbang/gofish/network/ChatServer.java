@@ -39,6 +39,7 @@ public class ChatServer implements ChatInterface {
     public static void initialize() throws IOException {
         server = new Server();
         Network.register(server);
+        System.out.println(server.getConnections().size());
 
         server.addListener(new Listener() {
             public void connected(Connection connection) {
@@ -48,13 +49,14 @@ public class ChatServer implements ChatInterface {
             public void received(Connection connection, Object object) {
                 if (object instanceof PacketChatMessage) {
                     PacketChatMessage chatMessage = (PacketChatMessage) object;
-                    GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
+//                    GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
                     server.sendToAllExceptTCP(connection.getID(), chatMessage);
                 } else if (object instanceof PacketPlayerJoin) {
                     PacketPlayerJoin packet = (PacketPlayerJoin) object;
                     GAMEServer.Network_AddPlayer(packet.name, connection.getID());
                 } else if (object instanceof PacketPlayerAction) {
                     PacketPlayerAction action = (PacketPlayerAction) object;
+//                    GAMEServer.checkPlayerCard();
 //                    GUI.gameLogic.
                     /*server.sendToAllExceptTCP(connection.getID(), action);*/
                 }
@@ -70,20 +72,26 @@ public class ChatServer implements ChatInterface {
         for (Player player : GAMEServer.players.PlayerList()) {
             PacketGameStart packet = new PacketGameStart();
             packet.player = player;
+            packet.targets = GAMEServer.getTargetPlayers(player.getName());
             server.sendToTCP(player.getID(), packet);
             player.displayHand();
         }
     }
 
     public void sendMessage(String message) {
-        PacketChatMessage chatMessage = new PacketChatMessage();
+        /*PacketChatMessage chatMessage = new PacketChatMessage();
         chatMessage.senderName = USERNAME;
         chatMessage.messageText = message;
-        server.sendToAllTCP(chatMessage);
+        server.sendToAllTCP(chatMessage);*/
     }
 
     @Override
     public void joinServer(String name) {
+
+    }
+
+    @Override
+    public void GAME_Action() {
 
     }
 

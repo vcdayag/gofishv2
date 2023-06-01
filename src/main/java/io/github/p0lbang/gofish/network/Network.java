@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.EndPoint;
 import io.github.p0lbang.gofish.game.Card;
 import io.github.p0lbang.gofish.game.Deck;
 import io.github.p0lbang.gofish.game.Player;
+import io.github.p0lbang.gofish.game.PlayerGroup;
 import io.github.p0lbang.gofish.network.packets.PacketChatMessage;
 import io.github.p0lbang.gofish.network.packets.PacketGameStart;
 import io.github.p0lbang.gofish.network.packets.PacketPlayerAction;
@@ -26,6 +27,7 @@ public class Network {
         kryo.register(HashMap.class);
 
         kryo.register(Player.class);
+        kryo.register(PlayerGroup.class);
         kryo.register(Deck.class);
         kryo.register(Card.class);
         kryo.register(PacketChatMessage.class);

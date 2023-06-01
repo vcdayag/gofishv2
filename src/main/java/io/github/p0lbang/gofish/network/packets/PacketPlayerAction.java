@@ -1,7 +1,7 @@
 package io.github.p0lbang.gofish.network.packets;
 
 public class PacketPlayerAction {
-    public final int askerID;
+    public int askerID;
     public String asker;
     public String target;
     public int targetID;
