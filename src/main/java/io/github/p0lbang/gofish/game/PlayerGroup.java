@@ -43,4 +43,15 @@ public class PlayerGroup {
         return this.players.get(playername);
     }
 
+    public Player getPlayer(int playerid) {
+        Player output = null;
+        for (Player player : this.players.values()) {
+            if (player.getID() == playerid) {
+                output = player;
+                break;
+            }
+        }
+        return output;
+    }
+
 }
