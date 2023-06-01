@@ -32,6 +32,7 @@ public class Network {
         kryo.register(PacketPlayerAction.class);
         kryo.register(PacketPlayerJoin.class);
         kryo.register(PacketUpdatePlayer.class);
+        kryo.register(PacketPlayerTurn.class);
 
     }
 

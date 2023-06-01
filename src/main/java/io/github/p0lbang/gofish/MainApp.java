@@ -1,6 +1,5 @@
 package io.github.p0lbang.gofish;
 
-import io.github.p0lbang.gofish.game.GameServer;
 import io.github.p0lbang.gofish.network.ChatClient;
 import io.github.p0lbang.gofish.network.ChatServer;
 import javafx.animation.Interpolator;
@@ -38,8 +37,11 @@ public class MainApp extends Application {
     public String currentPlayerName = "Player";
     public ChatClient NetworkClient;
     public ChatServer NetworkServer = null;
-//    public GameBase NetworkClient.gameHandler;
+    //    public GameBase NetworkClient.gameHandler;
+    int CurrentPlayersTurnID = -1;
+    String CurrentPlayersTurnName = "";
 
+    Label CurrentPlayerLabel;
     // This is our PrimaryStage (It contains everything)
     private Stage primaryStage;
     // This is the BorderPane of RootLayout
@@ -63,7 +65,6 @@ public class MainApp extends Application {
     private double selectedImageRankX;
     private double selectedImageRankY;
     private String playerSelectedTarget = "";
-
     private String theme = "animal";
     private VBox mainMenuLayout;
     private TextFlow chatLayout;
@@ -80,6 +81,11 @@ public class MainApp extends Application {
         showMainMenu();
 
 
+    }
+
+    public void setCurrentPlayer(int id, String name) {
+        CurrentPlayersTurnID = id;
+        CurrentPlayersTurnName = name;
     }
 
     private void showMainMenu() {
@@ -196,7 +202,7 @@ public class MainApp extends Application {
                 return;
             }
             this.currentPlayerName = serverName.getText();
-            NetworkClient.gameHandler = new GameServer(this);
+//            NetworkClient.gameHandler = new GameServer(this);
             NetworkServer = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             NetworkClient = (ChatClient) new ChatClient(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             NetworkClient.joinServer(this.currentPlayerName);
@@ -302,24 +308,6 @@ public class MainApp extends Application {
         this.displaySelected();
     }
 
-    public void DoActionAction() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if (playerSelectedTarget.isBlank() || playerSelectedTarget.isEmpty() || playerSelectedRank.isBlank() || playerSelectedRank.isEmpty()) {
-                    System.out.println("please select a target and rank");
-                    return;
-                }
-                NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
-                selectedImageRank = null;
-                playerSelectedRank = "";
-                playerSelectedTarget = "";
-            }
-        });
-//        this.updateUI();
-//        this.AITurnAction();
-    }
-
     public void displayTargetsSelectionButtons(ArrayList<String> Targets) {
         rootLayout.getChildren().removeAll(playerTargetsButtons);
         playerTargetsButtons.clear();
@@ -338,6 +326,15 @@ public class MainApp extends Application {
         }
 
         rootLayout.getChildren().addAll(playerTargetsButtons);
+    }
+
+    public void displayCurrentPlayer() {
+        rootLayout.getChildren().removeAll(CurrentPlayerLabel);
+        CurrentPlayerLabel = new Label(CurrentPlayersTurnName);
+        CurrentPlayerLabel.setTranslateX(-300);
+        CurrentPlayerLabel.setTranslateY(0);
+        CurrentPlayerLabel.setTextFill(Color.WHITE);
+        rootLayout.getChildren().addAll(CurrentPlayerLabel);
     }
 
 
@@ -506,7 +503,25 @@ public class MainApp extends Application {
             rootLayout.getChildren().add(DoAction);
             DoAction.setTranslateY(100);
             DoAction.setTranslateX(100);
-            DoAction.setOnAction(evt -> DoActionAction());
+            DoAction.setOnAction(evt -> {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (CurrentPlayersTurnID != NetworkClient.gameHandler.getSelf().getID()) {
+                            System.out.println("not your turn");
+                            return;
+                        }
+                        if (playerSelectedTarget.isBlank() || playerSelectedTarget.isEmpty() || playerSelectedRank.isBlank() || playerSelectedRank.isEmpty()) {
+                            System.out.println("please select a target and rank");
+                            return;
+                        }
+                        NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
+                        selectedImageRank = null;
+                        playerSelectedRank = "";
+                        playerSelectedTarget = "";
+                    }
+                });
+            });
             if (NetworkServer != null) {
                 Button StartGame = new Button("Start Game");
                 rootLayout.getChildren().add(StartGame);
@@ -557,6 +572,7 @@ public class MainApp extends Application {
                 displayTargetsSelectionButtons(targets);
                 displayTargets(targets);
                 displaySelected();
+                displayCurrentPlayer();
             }
         });
     }

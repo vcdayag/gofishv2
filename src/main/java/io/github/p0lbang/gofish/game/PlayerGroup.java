@@ -9,20 +9,29 @@ import java.util.Map;
 public class PlayerGroup {
     public Map<String, Player> players;
     public ArrayList<String> playerNames;
+    public ArrayList<Integer> playerIDS;
+
+    public int PlayerCount;
 
     public PlayerGroup() {
         this.players = new HashMap<>();
         this.playerNames = new ArrayList<>();
+        this.playerIDS = new ArrayList<>();
+        this.PlayerCount = 0;
     }
 
     public void addPlayer(Player player) {
         this.players.put(player.getName(), player);
         this.playerNames.add(player.getName());
+        this.playerIDS.add(player.getID());
+        this.PlayerCount += 1;
     }
 
     public void removePlayer(Player player) {
         this.players.remove(player.getName());
         this.playerNames.remove(player.getName());
+        this.playerIDS.remove(player.getID());
+        this.PlayerCount -= 1;
     }
 
     public Collection<Player> PlayerList() {

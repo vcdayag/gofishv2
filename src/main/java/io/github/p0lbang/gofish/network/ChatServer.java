@@ -26,7 +26,7 @@ public class ChatServer implements ChatInterface {
         USERNAME = name;
         IPADDR = ipaddr;
         PORT = port;
-        GAMEServer = new GameServer(GUI);
+        GAMEServer = new GameServer(GUI, this);
         try {
             initialize();
         } catch (IOException e) {
@@ -97,6 +97,7 @@ public class ChatServer implements ChatInterface {
                     server.sendToTCP(player.getID(), packet);
                     player.displayHand();
                 }
+                GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
             }
         });
 
@@ -122,6 +123,13 @@ public class ChatServer implements ChatInterface {
     @Override
     public void GAME_Action() {
 
+    }
+
+    public void GAME_sendPlayerTurn(Player player) {
+        PacketPlayerTurn packet = new PacketPlayerTurn();
+        packet.id = player.getID();
+        packet.name = player.getName();
+        server.sendToAllTCP(packet);
     }
 
     /*public void sendAction(PlayerAction action) {

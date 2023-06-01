@@ -1,6 +1,7 @@
 package io.github.p0lbang.gofish.game;
 
 import io.github.p0lbang.gofish.MainApp;
+import io.github.p0lbang.gofish.network.ChatServer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,19 +14,31 @@ public class GameServer extends GameBase {
 
     @SuppressWarnings("CanBeFinal")
 
+    public int TurnIndex;
 
-    public GameServer(MainApp gui) {
+    ChatServer NETWORK;
+
+
+    public GameServer(MainApp gui, ChatServer network) {
         super(gui);
         this.deck = new Deck();
         this.deck.initializeDeck();
+        this.TurnIndex = 0;
+        this.NETWORK = network;
 
         this.start();
     }
 
     public void start() {
-//        this.getPlayers();
-//        this.setupCards();
-//        this.gameloop();
+
+    }
+
+    public Player getNextPlayer() {
+        return this.players.getPlayer(this.players.playerIDS.get(TurnIndex++ % this.players.PlayerCount));
+    }
+
+    public Player getCurrentPlayer() {
+        return this.players.getPlayer(this.players.playerIDS.get(TurnIndex % this.players.PlayerCount));
     }
 
     private void getPlayers() {
@@ -110,14 +123,16 @@ public class GameServer extends GameBase {
         }
 
         asker.addMultipleCards(stolencards);
+        NETWORK.GAME_sendPlayerTurn(this.getCurrentPlayer());
     }
 
     private void playerGoFish(Player asker) {
         if (this.deck.isEmpty()) {
             System.out.println("Deck is Empty.");
-            return;
+        } else {
+            asker.addCard(this.deck.getRandomCard());
         }
-        asker.addCard(this.deck.getRandomCard());
+        NETWORK.GAME_sendPlayerTurn(this.getNextPlayer());
     }
 
     public void checkPlayerCard(Player asker, Player target, String rank) {

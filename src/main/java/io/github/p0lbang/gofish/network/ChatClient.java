@@ -16,11 +16,8 @@ public class ChatClient implements ChatInterface {
 
     public static Client client;
     public static String USERNAME;
-
-    private static MainApp GUI;
-
     public static GameBase gameHandler;
-
+    private static MainApp GUI;
     private static String IPADDR;
     private static int PORT;
 
@@ -69,6 +66,14 @@ public class ChatClient implements ChatInterface {
                         @Override
                         public void run() {
                             GUI.updateUI();
+                        }
+                    });
+                } else if (object instanceof PacketPlayerTurn) {
+                    PacketPlayerTurn packet = (PacketPlayerTurn) object;
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            GUI.setCurrentPlayer(packet.id, packet.name);
                         }
                     });
                 }
