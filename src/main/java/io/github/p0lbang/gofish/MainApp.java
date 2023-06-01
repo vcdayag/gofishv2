@@ -59,7 +59,11 @@ public class MainApp extends Application {
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Label> playerInfoLabels = new ArrayList<>();
     private String playerSelectedRank = "";
+    private ImageView selectedImageRank = null;
+    private double selectedImageRankX;
+    private double selectedImageRankY;
     private String playerSelectedTarget = "";
+
     private String theme = "animal";
     private VBox mainMenuLayout;
     private TextFlow chatLayout;
@@ -299,19 +303,17 @@ public class MainApp extends Application {
     }
 
     public void DoActionAction() {
-//        Player Pasker = NetworkClient.gameHandler.getSelf();
-//        Player Ptarget = NetworkClient.gameHandler.targetPlayers.;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                System.out.println(NetworkClient.gameHandler.getSelf().toString());
-                System.out.println(playerSelectedTarget);
-                System.out.println(NetworkClient.gameHandler.PlayerMap.size());
-                System.out.println(NetworkClient.gameHandler.PlayerMap.keySet());
-                System.out.println(NetworkClient.gameHandler.PlayerMap.values());
-                System.out.println(NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget).name);
-                System.out.println(playerSelectedRank);
+                if (playerSelectedTarget.isBlank() || playerSelectedTarget.isEmpty() || playerSelectedRank.isBlank() || playerSelectedRank.isEmpty()) {
+                    System.out.println("please select a target and rank");
+                    return;
+                }
                 NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
+                selectedImageRank = null;
+                playerSelectedRank = "";
+                playerSelectedTarget = "";
             }
         });
 //        this.updateUI();
@@ -354,7 +356,31 @@ public class MainApp extends Application {
             ImageView imageView = new ImageView(cardImage);
             imageView.setFitWidth(75);
             imageView.setFitHeight(125);
-            imageView.setOnMouseClicked(evt -> giveCardAnimation(imageView));
+            int finalI = i;
+            imageView.setOnMouseClicked(evt -> {
+                if (selectedImageRank != null) {
+                    selectedImageRank.setTranslateX(this.selectedImageRankX);
+                    selectedImageRank.setTranslateY(this.selectedImageRankY);
+                    if (!selectedImageRank.equals(imageView)) {
+                        this.playerSelectedRank = Deck[finalI].split(":")[0];
+                        this.selectedImageRank = imageView;
+                        this.selectedImageRankX = imageView.getTranslateX();
+                        this.selectedImageRankY = imageView.getTranslateY();
+                        imageView.setTranslateY(this.selectedImageRankY - 20);
+                    } else {
+                        this.selectedImageRank = null;
+                        this.playerSelectedRank = null;
+                    }
+
+                } else {
+                    this.playerSelectedRank = Deck[finalI].split(":")[0];
+                    this.selectedImageRank = imageView;
+                    this.selectedImageRankX = imageView.getTranslateX();
+                    this.selectedImageRankY = imageView.getTranslateY();
+                    imageView.setTranslateY(this.selectedImageRankY - 20);
+                }
+                displaySelected();
+            });
             imageView.setTranslateX((i - halfrank) * transval);
             imageView.setTranslateY(200);
             imageView.setId(Deck[i]);
@@ -479,6 +505,7 @@ public class MainApp extends Application {
             Button DoAction = new Button("Do Action");
             rootLayout.getChildren().add(DoAction);
             DoAction.setTranslateY(100);
+            DoAction.setTranslateX(100);
             DoAction.setOnAction(evt -> DoActionAction());
             if (NetworkServer != null) {
                 Button StartGame = new Button("Start Game");
@@ -525,7 +552,7 @@ public class MainApp extends Application {
             public void run() {
                 //display the player's deck
                 displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
-                displayRanksSelectionButtons(NetworkClient.gameHandler.getSelf().getHandRanks());
+//                displayRanksSelectionButtons(NetworkClient.gameHandler.getSelf().getHandRanks());
                 ArrayList<String> targets = new ArrayList<>(NetworkClient.gameHandler.PlayerMap.keySet());
                 displayTargetsSelectionButtons(targets);
                 displayTargets(targets);
