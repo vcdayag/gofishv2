@@ -6,10 +6,8 @@ import com.esotericsoftware.kryonet.Server;
 import io.github.p0lbang.gofish.MainApp;
 import io.github.p0lbang.gofish.game.GameServer;
 import io.github.p0lbang.gofish.game.Player;
-import io.github.p0lbang.gofish.network.packets.PacketChatMessage;
-import io.github.p0lbang.gofish.network.packets.PacketGameStart;
-import io.github.p0lbang.gofish.network.packets.PacketPlayerAction;
-import io.github.p0lbang.gofish.network.packets.PacketPlayerJoin;
+import io.github.p0lbang.gofish.network.packets.*;
+import javafx.application.Platform;
 
 import java.io.IOException;
 
@@ -53,12 +51,31 @@ public class ChatServer implements ChatInterface {
                     server.sendToAllExceptTCP(connection.getID(), chatMessage);
                 } else if (object instanceof PacketPlayerJoin) {
                     PacketPlayerJoin packet = (PacketPlayerJoin) object;
-                    GAMEServer.Network_AddPlayer(packet.name, connection.getID());
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            GAMEServer.Network_AddPlayer(packet.name, connection.getID());
+                            System.out.println(packet.name);
+                            System.out.println(connection.getID());
+                        }
+                    });
                 } else if (object instanceof PacketPlayerAction) {
-                    PacketPlayerAction action = (PacketPlayerAction) object;
-//                    GAMEServer.checkPlayerCard();
-//                    GUI.gameLogic.
-                    /*server.sendToAllExceptTCP(connection.getID(), action);*/
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            PacketPlayerAction action = (PacketPlayerAction) object;
+                            GAMEServer.NETWORK_checkPlayerCard(action.askerID, action.targetID, action.rank);
+
+                            PacketUpdatePlayer askerupdate = new PacketUpdatePlayer();
+                            askerupdate.player = GAMEServer.getPlayer(action.asker);
+                            server.sendToTCP(action.askerID, askerupdate);
+
+                            PacketUpdatePlayer targetupdate = new PacketUpdatePlayer();
+                            targetupdate.player = GAMEServer.getPlayer(action.target);
+                            server.sendToTCP(action.targetID, targetupdate);
+                        }
+                    });
                 }
             }
         });
@@ -68,14 +85,26 @@ public class ChatServer implements ChatInterface {
     }
 
     public void GUI_startGame() {
-        GAMEServer.setupCards();
-        for (Player player : GAMEServer.players.PlayerList()) {
-            PacketGameStart packet = new PacketGameStart();
-            packet.player = player;
-            packet.targets = GAMEServer.getTargetPlayers(player.getName());
-            server.sendToTCP(player.getID(), packet);
-            player.displayHand();
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                GAMEServer.setupCards();
+                for (Player player : GAMEServer.players.PlayerList()) {
+                    PacketGameStart packet = new PacketGameStart();
+                    packet.player = player;
+//                    packet.targets = GAMEServer.getTargetPlayers(player.getName());
+                    packet.PlayerMap = GAMEServer.getTargetPlayersMap(player.getName());
+                    server.sendToTCP(player.getID(), packet);
+                    player.displayHand();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void checkPlayerCard(Player self, Player player, String playerSelectedRank) {
+
     }
 
     public void sendMessage(String message) {
@@ -102,3 +131,13 @@ public class ChatServer implements ChatInterface {
         server.sendToAllTCP(chatMessage);
     }*/
 }
+
+/*
+ Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            }
+                        }
+                    });
+
+*/

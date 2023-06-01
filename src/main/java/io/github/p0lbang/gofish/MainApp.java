@@ -39,7 +39,7 @@ public class MainApp extends Application {
     final int WINDOW_WIDTH = 1200;
     public String currentPlayerName = "Player";
     public ChatInterface NetworkClient;
-    public ChatServer NetworkServer;
+    public ChatServer NetworkServer = null;
     public GameBase gameHandler;
 
     // This is our PrimaryStage (It contains everything)
@@ -302,11 +302,23 @@ public class MainApp extends Application {
     }
 
     public void DoActionAction() {
-        /*Player Pasker = gameHandler.getPlayer(this.currentPlayerName);
-        Player Ptarget = gameHandler.getPlayer(this.playerSelectedTarget);
-        gameHandler.checkPlayerCard(Pasker, Ptarget, this.playerSelectedRank);*/
-        this.updateUI();
-        this.AITurnAction();
+//        Player Pasker = gameHandler.getSelf();
+//        Player Ptarget = gameHandler.targetPlayers.;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(gameHandler.getSelf().toString());
+                System.out.println(playerSelectedTarget);
+                System.out.println(gameHandler.PlayerMap.size());
+                System.out.println(gameHandler.PlayerMap.keySet());
+                System.out.println(gameHandler.PlayerMap.values());
+                System.out.println(gameHandler.PlayerMap.get(playerSelectedTarget).name);
+                System.out.println(playerSelectedRank);
+                NetworkClient.checkPlayerCard(gameHandler.getSelf(), gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
+            }
+        });
+//        this.updateUI();
+//        this.AITurnAction();
     }
 
     public void displayTargetsSelectionButtons(ArrayList<String> Targets) {
@@ -467,10 +479,10 @@ public class MainApp extends Application {
             gameloop.setTranslateY(50);
             gameloop.setOnAction(evt -> AITurnAction());*/
 
-//            Button DoAction = new Button("Do Action");
-//            rootLayout.getChildren().add(DoAction);
-//            DoAction.setTranslateY(100);
-//            DoAction.setOnAction(evt -> DoActionAction());
+            Button DoAction = new Button("Do Action");
+            rootLayout.getChildren().add(DoAction);
+            DoAction.setTranslateY(100);
+            DoAction.setOnAction(evt -> DoActionAction());
             if (NetworkServer != null) {
                 Button StartGame = new Button("Start Game");
                 rootLayout.getChildren().add(StartGame);
@@ -511,12 +523,18 @@ public class MainApp extends Application {
     }
 
     public void updateUI() {
-        //display the player's deck
-        displayPlayerDeck(gameHandler.getSelf().getHand());
-        displayRanksSelectionButtons(gameHandler.getSelf().getHandRanks());
-        displayTargetsSelectionButtons(gameHandler.targetPlayers);
-        displayTargets(gameHandler.targetPlayers);
-        displaySelected();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //display the player's deck
+                displayPlayerDeck(gameHandler.getSelf().getHand());
+                displayRanksSelectionButtons(gameHandler.getSelf().getHandRanks());
+                ArrayList<String> targets = new ArrayList<>(gameHandler.PlayerMap.keySet());
+                displayTargetsSelectionButtons(targets);
+                displayTargets(targets);
+                displaySelected();
+            }
+        });
     }
 
     void displayTargets(ArrayList<String> targetplayers) {

@@ -3,12 +3,14 @@ package io.github.p0lbang.gofish.game;
 import io.github.p0lbang.gofish.MainApp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 public class GameServer extends GameBase {
     @SuppressWarnings("CanBeFinal")
     public Deck deck;
+
     @SuppressWarnings("CanBeFinal")
 
 
@@ -129,6 +131,20 @@ public class GameServer extends GameBase {
         this.getCard(asker, target, rank);
     }
 
+    public void NETWORK_checkPlayerCard(int askerid, int targetid, String rank) {
+        Player asker = this.players.getPlayer(askerid);
+        Player target = this.players.getPlayer(targetid);
+
+        if (!target.checkHand(rank)) {
+            System.out.println("Go fish");
+            this.playerGoFish(asker);
+            return;
+        }
+
+        System.out.println("Stolen");
+        this.getCard(asker, target, rank);
+    }
+
     public void displayPlayerHand(String playername) {
         Player choosen = this.players.getPlayer(playername);
         choosen.displayHand();
@@ -148,6 +164,15 @@ public class GameServer extends GameBase {
     public ArrayList<String> getTargetPlayers(String askername) {
         Player asker = this.players.getPlayer(askername);
         return this.players.TargetList(asker);
+    }
+
+    public HashMap<String, Player> getTargetPlayersMap(String askername) {
+
+        HashMap<String, Player> targets = new HashMap<String, Player>(this.players.players);
+        targets.remove(askername);
+        System.out.println("gettargetplayersmap");
+        System.out.println(targets.size());
+        return targets;
     }
 
     public Player getPlayer(String playername) {

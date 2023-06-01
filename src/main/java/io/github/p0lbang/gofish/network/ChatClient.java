@@ -4,9 +4,8 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import io.github.p0lbang.gofish.MainApp;
-import io.github.p0lbang.gofish.network.packets.PacketChatMessage;
-import io.github.p0lbang.gofish.network.packets.PacketGameStart;
-import io.github.p0lbang.gofish.network.packets.PacketPlayerJoin;
+import io.github.p0lbang.gofish.game.Player;
+import io.github.p0lbang.gofish.network.packets.*;
 import javafx.application.Platform;
 
 import java.io.IOException;
@@ -50,11 +49,21 @@ public class ChatClient implements ChatInterface {
                     PacketGameStart packetGameStart = (PacketGameStart) object;
                     GUI.gameHandler.setSelf(packetGameStart.player);
                     GUI.gameHandler.players = packetGameStart.playerGroup;
-                    GUI.gameHandler.targetPlayers = packetGameStart.targets;
+//                    GUI.gameHandler.targetPlayers = packetGameStart.targets;
+                    GUI.gameHandler.PlayerMap = packetGameStart.PlayerMap;
+
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-//                            GUI.displayPlayerDeck(GUI.gameHandler.getSelf().getHand());
+                            GUI.updateUI();
+                        }
+                    });
+                } else if (object instanceof PacketUpdatePlayer) {
+                    PacketUpdatePlayer packet = (PacketUpdatePlayer) object;
+                    GUI.gameHandler.setSelf(packet.player);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
                             GUI.updateUI();
                         }
                     });
@@ -83,6 +92,23 @@ public class ChatClient implements ChatInterface {
 
     @Override
     public void GUI_startGame() {
+
+    }
+
+    @Override
+    public void checkPlayerCard(Player asker, Player target, String playerSelectedRank) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                PacketPlayerAction packet = new PacketPlayerAction();
+                packet.askerID = asker.getID();
+                packet.asker = asker.getName();
+                packet.target = target.getName();
+                packet.targetID = target.getID();
+                packet.rank = playerSelectedRank;
+                client.sendTCP(packet);
+            }
+        });
 
     }
 }
