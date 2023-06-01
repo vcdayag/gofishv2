@@ -1,10 +1,15 @@
 package io.github.p0lbang.gofish.game;
 
 public class Card {
-    private final int hierarchy; // for sorting purposes
-    private final String rank; // hearts, spades, etc.
-    private final String name; // ace, king, 6, etc.
+    public final int hierarchy; // for sorting purposes
+    public final String rank; // hearts, spades, etc.
+    public final String name; // ace, king, 6, etc.
 
+    public Card() {
+        this.hierarchy = 0;
+        this.rank = "rank";
+        this.name = "name";
+    }
 
     public Card(int hierarchy, String rank, String name) {
         this.hierarchy = hierarchy;

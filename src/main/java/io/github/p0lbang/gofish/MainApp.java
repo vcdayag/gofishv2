@@ -1,7 +1,7 @@
 package io.github.p0lbang.gofish;
 
-import io.github.p0lbang.gofish.game.Game;
-import io.github.p0lbang.gofish.game.Player;
+import io.github.p0lbang.gofish.game.GameBase;
+import io.github.p0lbang.gofish.game.GameServer;
 import io.github.p0lbang.gofish.network.ChatClient;
 import io.github.p0lbang.gofish.network.ChatInterface;
 import io.github.p0lbang.gofish.network.ChatServer;
@@ -38,8 +38,9 @@ public class MainApp extends Application {
     final int WINDOW_HEIGHT = 700;
     final int WINDOW_WIDTH = 1200;
     public String currentPlayerName = "Player";
-    ChatInterface chatInterface;
-    Game gameLogic;
+    public ChatInterface chatInterface;
+    public GameBase gameHandler;
+
     // This is our PrimaryStage (It contains everything)
     private Stage primaryStage;
     // This is the BorderPane of RootLayout
@@ -158,7 +159,9 @@ public class MainApp extends Application {
                 return;
             }
             this.currentPlayerName = clientName.getText();
-            chatInterface = new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
+            gameHandler = new GameBase(this);
+            chatInterface = (ChatClient) new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
+            chatInterface.joinServer(this.currentPlayerName);
             startGame();
         });
 
@@ -191,6 +194,7 @@ public class MainApp extends Application {
                 return;
             }
             this.currentPlayerName = serverName.getText();
+            gameHandler = new GameServer(this);
             chatInterface = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             startGame();
         });
@@ -295,9 +299,9 @@ public class MainApp extends Application {
     }
 
     public void DoActionAction() {
-        Player Pasker = gameLogic.getPlayer(this.currentPlayerName);
-        Player Ptarget = gameLogic.getPlayer(this.playerSelectedTarget);
-        gameLogic.checkPlayerCard(Pasker, Ptarget, this.playerSelectedRank);
+        /*Player Pasker = gameHandler.getPlayer(this.currentPlayerName);
+        Player Ptarget = gameHandler.getPlayer(this.playerSelectedTarget);
+        gameHandler.checkPlayerCard(Pasker, Ptarget, this.playerSelectedRank);*/
         this.updateUI();
         this.AITurnAction();
     }
@@ -454,16 +458,23 @@ public class MainApp extends Application {
             rootLayout = new StackPane();
             mainLayout = new BorderPane();
             mainLayout.setCenter(rootLayout);
-            gameLogic = new Game(this);
+//            gameHandler = new GameServer(this);
             /*Button gameloop = new Button("Game Loop");
             rootLayout.getChildren().add(gameloop);
             gameloop.setTranslateY(50);
             gameloop.setOnAction(evt -> AITurnAction());*/
 
-            Button DoAction = new Button("Do Action");
-            rootLayout.getChildren().add(DoAction);
-            DoAction.setTranslateY(100);
-            DoAction.setOnAction(evt -> DoActionAction());
+//            Button DoAction = new Button("Do Action");
+//            rootLayout.getChildren().add(DoAction);
+//            DoAction.setTranslateY(100);
+//            DoAction.setOnAction(evt -> DoActionAction());
+
+            Button StartGame = new Button("Start Game");
+            rootLayout.getChildren().add(StartGame);
+            StartGame.setTranslateY(100);
+            StartGame.setOnAction(evt -> {
+                chatInterface.GUI_startGame();
+            });
 
 //            this.updateUI();
 
@@ -491,15 +502,15 @@ public class MainApp extends Application {
 
     private void AITurnAction() {
         System.out.println("Run Gameloop again");
-        gameLogic.AITurn();
+        //gameHandler.AITurn();
     }
 
     void updateUI() {
         //display the player's deck
-        displayPlayerDeck(gameLogic.getPlayerHand(this.currentPlayerName));
-        displayRanksSelectionButtons(gameLogic.getPlayerHandRanks(this.currentPlayerName));
-        displayTargetsSelectionButtons(gameLogic.getTargetPlayers(this.currentPlayerName));
-        displayTargets(gameLogic.getTargetPlayers(this.currentPlayerName));
+        /*displayPlayerDeck(gameHandler.getPlayerHand(this.currentPlayerName));
+        displayRanksSelectionButtons(gameHandler.getPlayerHandRanks(this.currentPlayerName));
+        displayTargetsSelectionButtons(gameHandler.getTargetPlayers(this.currentPlayerName));
+        displayTargets(gameHandler.getTargetPlayers(this.currentPlayerName));*/
         displaySelected();
     }
 
@@ -519,14 +530,14 @@ public class MainApp extends Application {
         int imageWidth = 30;
         int imageHeight = 30;
 
-        for (int i = 0; i < ranklen; i++) {
+        /*for (int i = 0; i < ranklen; i++) {
             String target = targetplayers.get(i);
-            int handCount = gameLogic.getPlayer(target).getHandCount();
+            int handCount = gameHandler.getPlayer(target).getHandCount();
 
             // Create label for target player
             String lbltext = target
                     + "\n" + handCount + " cards"
-                    + "\n" + gameLogic.getPlayer(target).getCompletedSuits() + " suits completed";
+                    + "\n" + gameHandler.getPlayer(target).getCompletedSuits() + " suits completed";
             Label temp = new Label(lbltext);
             temp.setTranslateY(-270);
             temp.setTranslateX((i - halfrank) * transval);
@@ -547,7 +558,7 @@ public class MainApp extends Application {
                 // Add the image view to the ArrayList
                 targetImages.add(backCardImageImageView);
             }
-        }
+        }*/
 
         rootLayout.getChildren().addAll(TargetsLabels);
         rootLayout.getChildren().addAll(targetImages); // Add the ImageView instances to the root layout
@@ -567,8 +578,8 @@ public class MainApp extends Application {
         temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
 
-        lbltext = gameLogic.getPlayer(this.currentPlayerName).getHandCount() + " cards | "
-                + gameLogic.getPlayer(this.currentPlayerName).getCompletedSuits() + " suites completed";
+        lbltext = gameHandler.getSelf().getHandCount() + " cards | "
+                + gameHandler.getSelf().getCompletedSuits() + " suites completed";
         temp = new Label(lbltext);
         temp.setTranslateX(-300);
         temp.setTranslateY(initialY + 25);

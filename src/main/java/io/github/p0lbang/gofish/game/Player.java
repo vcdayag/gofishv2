@@ -8,15 +8,35 @@ import java.util.Random;
 import static java.util.Map.entry;
 
 public class Player {
-    final String name;
+    public final String name;
+    public final int ID;
     @SuppressWarnings("CanBeFinal")
-    Deck hand;
-    Deck completed;
+    public Deck hand;
+    public Deck completed;
+
+    public Player() {
+        this.name = "name";
+        this.hand = new Deck();
+        this.completed = new Deck();
+        this.ID = 0;
+    }
 
     public Player(String name) {
         this.name = name;
         this.hand = new Deck();
         this.completed = new Deck();
+        this.ID = 0;
+    }
+
+    public Player(String name, int id) {
+        this.name = name;
+        this.hand = new Deck();
+        this.completed = new Deck();
+        this.ID = id;
+    }
+
+    public int getID() {
+        return this.ID;
     }
 
     public void addCard(Card card) {
@@ -102,5 +122,12 @@ public class Player {
         return this.hand.getRanksHeld().keySet().toArray(new String[0]);
     }
 
+    public Deck Network_getHand() {
+        return this.hand;
+    }
 
+
+    public void parseNetworkCards(String[] cards) {
+
+    }
 }

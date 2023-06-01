@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
-public class Game {
+public class GameServer extends GameBase {
     @SuppressWarnings("CanBeFinal")
     public Deck deck;
     @SuppressWarnings("CanBeFinal")
+    public
     PlayerGroup players;
-    MainApp GUI;
 
-    public Game(MainApp gui) {
-        this.GUI = gui;
+    public GameServer(MainApp gui) {
+        super(gui);
         this.players = new PlayerGroup();
         this.deck = new Deck();
         this.deck.initializeDeck();
@@ -34,7 +34,7 @@ public class Game {
         this.players.addPlayer(new Player("Player"));
     }
 
-    private void setupCards() {
+    public void setupCards() {
         int amountofcards = 10;
         Random rand = new Random();
         for (int index = 0; index < amountofcards; index++) {
@@ -154,5 +154,10 @@ public class Game {
 
     public Player getPlayer(String playername) {
         return this.players.getPlayer(playername);
+    }
+
+    public void Network_AddPlayer(String playername, int id) {
+        Player newplayer = new Player(playername, id);
+        this.players.addPlayer(newplayer);
     }
 }

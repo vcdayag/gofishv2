@@ -6,18 +6,15 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Deck {
+    public final int[] HIERARCHY = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    public final String[] RANKS = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+    public final String[] SUITS = {"C", "S", "H", "D"};
     @SuppressWarnings("CanBeFinal")
-    ArrayList<Card> deck;
-    HashMap<String, Integer> ranksheld;
-    final Random randomizer;
-
-    final int[] HIERARCHY = { 1,2,3,4,5,6,7,8,9,10,11,12,13 };
-    public final String[] RANKS = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
-    final String[] SUITS = { "C", "S", "H", "D" };
+    public ArrayList<Card> deck;
+    public HashMap<String, Integer> ranksheld;
 
     public Deck() {
         this.deck = new ArrayList<>();
-        this.randomizer = new Random();
         this.ranksheld = new HashMap<>();
     }
 
@@ -96,12 +93,12 @@ public class Deck {
     }
 
     public Card selectRandomCard() {
-        int index = randomizer.nextInt(this.deck.size());
+        int index = new Random().nextInt(this.deck.size());
         return this.deck.get(index);
     }
 
     public Card getRandomCard() {
-        int index = randomizer.nextInt(this.deck.size());
+        int index = new Random().nextInt(this.deck.size());
         return this.removeCard(index);
     }
 
