@@ -10,6 +10,7 @@ import io.github.p0lbang.gofish.network.packets.*;
 import javafx.application.Platform;
 
 import java.io.IOException;
+import java.util.Objects;
 
 // ChatServer.java
 public class ChatServer implements ChatInterface {
@@ -60,22 +61,28 @@ public class ChatServer implements ChatInterface {
                         }
                     });
                 } else if (object instanceof PacketPlayerAction) {
-                    Platform.runLater(new Runnable() {
+                    /*Platform.runLater(new Runnable() {
                         @Override
-                        public void run() {
+                        public void run() {*/
 
-                            PacketPlayerAction action = (PacketPlayerAction) object;
-                            GAMEServer.NETWORK_checkPlayerCard(action.askerID, action.targetID, action.rank);
+                    PacketPlayerAction action = (PacketPlayerAction) object;
+                    String status = GAMEServer.NETWORK_checkPlayerCard(action.askerID, action.targetID, action.rank);
 
-                            PacketUpdatePlayer askerupdate = new PacketUpdatePlayer();
-                            askerupdate.player = GAMEServer.getPlayer(action.asker);
-                            server.sendToTCP(action.askerID, askerupdate);
+                    PacketUpdatePlayer askerupdate = new PacketUpdatePlayer();
+                    askerupdate.player = GAMEServer.getPlayer(action.asker);
+                    server.sendToTCP(action.askerID, askerupdate);
 
-                            PacketUpdatePlayer targetupdate = new PacketUpdatePlayer();
-                            targetupdate.player = GAMEServer.getPlayer(action.target);
-                            server.sendToTCP(action.targetID, targetupdate);
-                        }
-                    });
+                    PacketUpdatePlayer targetupdate = new PacketUpdatePlayer();
+                    targetupdate.player = GAMEServer.getPlayer(action.target);
+                    server.sendToTCP(action.targetID, targetupdate);
+
+                    if (Objects.equals(status, "End")) {
+                        GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
+                    } else {
+                        GAME_sendPlayerTurn(GAMEServer.getCurrentPlayer());
+                    }
+                   /*     }
+                    });*/
                 }
             }
         });
@@ -125,7 +132,7 @@ public class ChatServer implements ChatInterface {
 
     }
 
-    public void GAME_sendPlayerTurn(Player player) {
+    public static void GAME_sendPlayerTurn(Player player) {
         PacketPlayerTurn packet = new PacketPlayerTurn();
         packet.id = player.getID();
         packet.name = player.getName();

@@ -123,7 +123,7 @@ public class GameServer extends GameBase {
         }
 
         asker.addMultipleCards(stolencards);
-        NETWORK.GAME_sendPlayerTurn(this.getCurrentPlayer());
+//        NETWORK.GAME_sendPlayerTurn(this.getCurrentPlayer());
     }
 
     private void playerGoFish(Player asker) {
@@ -132,7 +132,7 @@ public class GameServer extends GameBase {
         } else {
             asker.addCard(this.deck.getRandomCard());
         }
-        NETWORK.GAME_sendPlayerTurn(this.getNextPlayer());
+//        NETWORK.GAME_sendPlayerTurn(this.getNextPlayer());
     }
 
     public void checkPlayerCard(Player asker, Player target, String rank) {
@@ -146,18 +146,19 @@ public class GameServer extends GameBase {
         this.getCard(asker, target, rank);
     }
 
-    public void NETWORK_checkPlayerCard(int askerid, int targetid, String rank) {
+    public String NETWORK_checkPlayerCard(int askerid, int targetid, String rank) {
         Player asker = this.players.getPlayer(askerid);
         Player target = this.players.getPlayer(targetid);
 
         if (!target.checkHand(rank)) {
             System.out.println("Go fish");
             this.playerGoFish(asker);
-            return;
+            return "End";
         }
 
         System.out.println("Stolen");
         this.getCard(asker, target, rank);
+        return "Again";
     }
 
     public void displayPlayerHand(String playername) {
