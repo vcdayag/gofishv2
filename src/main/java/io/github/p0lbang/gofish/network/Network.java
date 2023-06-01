@@ -6,10 +6,7 @@ import io.github.p0lbang.gofish.game.Card;
 import io.github.p0lbang.gofish.game.Deck;
 import io.github.p0lbang.gofish.game.Player;
 import io.github.p0lbang.gofish.game.PlayerGroup;
-import io.github.p0lbang.gofish.network.packets.PacketChatMessage;
-import io.github.p0lbang.gofish.network.packets.PacketGameStart;
-import io.github.p0lbang.gofish.network.packets.PacketPlayerAction;
-import io.github.p0lbang.gofish.network.packets.PacketPlayerJoin;
+import io.github.p0lbang.gofish.network.packets.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,9 +29,9 @@ public class Network {
         kryo.register(Card.class);
         kryo.register(PacketChatMessage.class);
         kryo.register(PacketGameStart.class);
-        kryo.register(PacketPlayerJoin.class);
         kryo.register(PacketPlayerAction.class);
-        kryo.register(PacketGameStart.class);
+        kryo.register(PacketPlayerJoin.class);
+        kryo.register(PacketUpdatePlayer.class);
 
     }
 

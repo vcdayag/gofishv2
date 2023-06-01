@@ -4,6 +4,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import io.github.p0lbang.gofish.MainApp;
+import io.github.p0lbang.gofish.game.GameBase;
 import io.github.p0lbang.gofish.game.Player;
 import io.github.p0lbang.gofish.network.packets.*;
 import javafx.application.Platform;
@@ -18,6 +19,8 @@ public class ChatClient implements ChatInterface {
 
     private static MainApp GUI;
 
+    public static GameBase gameHandler;
+
     private static String IPADDR;
     private static int PORT;
 
@@ -26,6 +29,7 @@ public class ChatClient implements ChatInterface {
         USERNAME = name;
         IPADDR = ipaddr;
         PORT = port;
+        gameHandler = new GameBase(GUI);
         try {
             initialize();
         } catch (IOException e) {
@@ -47,10 +51,10 @@ public class ChatClient implements ChatInterface {
                     GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
                 } else if (object instanceof PacketGameStart) {
                     PacketGameStart packetGameStart = (PacketGameStart) object;
-                    GUI.gameHandler.setSelf(packetGameStart.player);
-                    GUI.gameHandler.players = packetGameStart.playerGroup;
-//                    GUI.gameHandler.targetPlayers = packetGameStart.targets;
-                    GUI.gameHandler.PlayerMap = packetGameStart.PlayerMap;
+                    gameHandler.setSelf(packetGameStart.player);
+                    gameHandler.players = packetGameStart.playerGroup;
+//                    gameHandler.targetPlayers = packetGameStart.targets;
+                    gameHandler.PlayerMap = packetGameStart.PlayerMap;
 
                     Platform.runLater(new Runnable() {
                         @Override
@@ -60,7 +64,7 @@ public class ChatClient implements ChatInterface {
                     });
                 } else if (object instanceof PacketUpdatePlayer) {
                     PacketUpdatePlayer packet = (PacketUpdatePlayer) object;
-                    GUI.gameHandler.setSelf(packet.player);
+                    gameHandler.setSelf(packet.player);
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {

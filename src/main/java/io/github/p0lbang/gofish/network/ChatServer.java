@@ -26,7 +26,7 @@ public class ChatServer implements ChatInterface {
         USERNAME = name;
         IPADDR = ipaddr;
         PORT = port;
-        GAMEServer = (GameServer) GUI.gameHandler;
+        GAMEServer = new GameServer(GUI);
         try {
             initialize();
         } catch (IOException e) {

@@ -1,9 +1,7 @@
 package io.github.p0lbang.gofish;
 
-import io.github.p0lbang.gofish.game.GameBase;
 import io.github.p0lbang.gofish.game.GameServer;
 import io.github.p0lbang.gofish.network.ChatClient;
-import io.github.p0lbang.gofish.network.ChatInterface;
 import io.github.p0lbang.gofish.network.ChatServer;
 import javafx.animation.Interpolator;
 import javafx.animation.SequentialTransition;
@@ -38,9 +36,9 @@ public class MainApp extends Application {
     final int WINDOW_HEIGHT = 700;
     final int WINDOW_WIDTH = 1200;
     public String currentPlayerName = "Player";
-    public ChatInterface NetworkClient;
+    public ChatClient NetworkClient;
     public ChatServer NetworkServer = null;
-    public GameBase gameHandler;
+//    public GameBase NetworkClient.gameHandler;
 
     // This is our PrimaryStage (It contains everything)
     private Stage primaryStage;
@@ -160,7 +158,6 @@ public class MainApp extends Application {
                 return;
             }
             this.currentPlayerName = clientName.getText();
-            gameHandler = new GameBase(this);
             NetworkClient = (ChatClient) new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
             NetworkClient.joinServer(this.currentPlayerName);
             startGame();
@@ -195,7 +192,7 @@ public class MainApp extends Application {
                 return;
             }
             this.currentPlayerName = serverName.getText();
-            gameHandler = new GameServer(this);
+            NetworkClient.gameHandler = new GameServer(this);
             NetworkServer = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             NetworkClient = (ChatClient) new ChatClient(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             NetworkClient.joinServer(this.currentPlayerName);
@@ -302,19 +299,19 @@ public class MainApp extends Application {
     }
 
     public void DoActionAction() {
-//        Player Pasker = gameHandler.getSelf();
-//        Player Ptarget = gameHandler.targetPlayers.;
+//        Player Pasker = NetworkClient.gameHandler.getSelf();
+//        Player Ptarget = NetworkClient.gameHandler.targetPlayers.;
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                System.out.println(gameHandler.getSelf().toString());
+                System.out.println(NetworkClient.gameHandler.getSelf().toString());
                 System.out.println(playerSelectedTarget);
-                System.out.println(gameHandler.PlayerMap.size());
-                System.out.println(gameHandler.PlayerMap.keySet());
-                System.out.println(gameHandler.PlayerMap.values());
-                System.out.println(gameHandler.PlayerMap.get(playerSelectedTarget).name);
+                System.out.println(NetworkClient.gameHandler.PlayerMap.size());
+                System.out.println(NetworkClient.gameHandler.PlayerMap.keySet());
+                System.out.println(NetworkClient.gameHandler.PlayerMap.values());
+                System.out.println(NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget).name);
                 System.out.println(playerSelectedRank);
-                NetworkClient.checkPlayerCard(gameHandler.getSelf(), gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
+                NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
             }
         });
 //        this.updateUI();
@@ -473,7 +470,7 @@ public class MainApp extends Application {
             rootLayout = new StackPane();
             mainLayout = new BorderPane();
             mainLayout.setCenter(rootLayout);
-//            gameHandler = new GameServer(this);
+//            NetworkClient.gameHandler = new GameServer(this);
             /*Button gameloop = new Button("Game Loop");
             rootLayout.getChildren().add(gameloop);
             gameloop.setTranslateY(50);
@@ -519,7 +516,7 @@ public class MainApp extends Application {
 
     private void AITurnAction() {
         System.out.println("Run Gameloop again");
-        //gameHandler.AITurn();
+        //NetworkClient.gameHandler.AITurn();
     }
 
     public void updateUI() {
@@ -527,9 +524,9 @@ public class MainApp extends Application {
             @Override
             public void run() {
                 //display the player's deck
-                displayPlayerDeck(gameHandler.getSelf().getHand());
-                displayRanksSelectionButtons(gameHandler.getSelf().getHandRanks());
-                ArrayList<String> targets = new ArrayList<>(gameHandler.PlayerMap.keySet());
+                displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
+                displayRanksSelectionButtons(NetworkClient.gameHandler.getSelf().getHandRanks());
+                ArrayList<String> targets = new ArrayList<>(NetworkClient.gameHandler.PlayerMap.keySet());
                 displayTargetsSelectionButtons(targets);
                 displayTargets(targets);
                 displaySelected();
@@ -555,12 +552,12 @@ public class MainApp extends Application {
 
         /*for (int i = 0; i < ranklen; i++) {
             String target = targetplayers.get(i);
-            int handCount = gameHandler.getPlayer(target).getHandCount();
+            int handCount = NetworkClient.gameHandler.getPlayer(target).getHandCount();
 
             // Create label for target player
             String lbltext = target
                     + "\n" + handCount + " cards"
-                    + "\n" + gameHandler.getPlayer(target).getCompletedSuits() + " suits completed";
+                    + "\n" + NetworkClient.gameHandler.getPlayer(target).getCompletedSuits() + " suits completed";
             Label temp = new Label(lbltext);
             temp.setTranslateY(-270);
             temp.setTranslateX((i - halfrank) * transval);
@@ -601,8 +598,8 @@ public class MainApp extends Application {
         temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
 
-        lbltext = gameHandler.getSelf().getHandCount() + " cards | "
-                + gameHandler.getSelf().getCompletedSuits() + " suites completed";
+        lbltext = NetworkClient.gameHandler.getSelf().getHandCount() + " cards | "
+                + NetworkClient.gameHandler.getSelf().getCompletedSuits() + " suites completed";
         temp = new Label(lbltext);
         temp.setTranslateX(-300);
         temp.setTranslateY(initialY + 25);
