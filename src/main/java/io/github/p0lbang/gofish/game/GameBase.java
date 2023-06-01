@@ -3,6 +3,7 @@ package io.github.p0lbang.gofish.game;
 import io.github.p0lbang.gofish.MainApp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GameBase {
     MainApp GUI;
@@ -11,6 +12,8 @@ public class GameBase {
     public PlayerGroup players;
 
     public ArrayList<String> targetPlayers;
+
+    public HashMap<String, Player> PlayerMap;
 
     public GameBase(MainApp gui) {
         this.GUI = gui;
