@@ -92,18 +92,26 @@ public class MainApp extends Application {
         Button themeButton = new Button("Choose Theme");
         themeButton.setOnAction(evt -> chooseTheme());
 
-        mainMenuLayout = new VBox(10); // Spacing between buttons
-        mainMenuLayout.getChildren().addAll(startButton, multiplayerButton, themeButton);
-        mainMenuLayout.setAlignment(Pos.CENTER);
+        // Create an ImageView for the image
+        URL imageUrl = Objects.requireNonNull(MainApp.class.getResource("logo.png"));
+        Image image = new Image(imageUrl.toString());
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(500); // Set the desired width of the image
+        imageView.setPreserveRatio(true); // Preserve the image's aspect ratio
 
-        // Background Image
-        URL url = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
-        Image backgroundImage = new Image(url.toString());
+        // Create a VBox to stack the image and buttons vertically
+        VBox mainMenuLayout = new VBox(10); // Spacing between image and buttons
+        mainMenuLayout.setAlignment(Pos.CENTER);
+        mainMenuLayout.getChildren().addAll(imageView, startButton, multiplayerButton, themeButton);
+
 
         BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
-        BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
-        Background background = new Background(backgroundImageObject);
-        mainMenuLayout.setBackground(background); // Set background to the main menu layout
+        // Background Image
+        URL backgroundUrl = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
+        Image backgroundImage = new Image(backgroundUrl.toString());
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        Background background = new Background(backgroundImg);
+        mainMenuLayout.setBackground(background);
 
         Scene mainMenuScene = new Scene(mainMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(mainMenuScene);
