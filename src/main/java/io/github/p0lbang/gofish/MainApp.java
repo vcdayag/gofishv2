@@ -53,8 +53,6 @@ public class MainApp extends Application {
     @SuppressWarnings("FieldMayBeFinal")
     private HashMap<ImageView, double[]> playerDeckImageViewsSelected = new HashMap<>();
     @SuppressWarnings("FieldMayBeFinal")
-    private ArrayList<Button> playerRanksButtons = new ArrayList<>();
-    @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Button> playerTargetsButtons = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Label> TargetsLabels = new ArrayList<>();
@@ -77,10 +75,7 @@ public class MainApp extends Application {
         // Optional: Set a title for primary stage
         this.primaryStage.setTitle("Go Fish");
 
-
         showMainMenu();
-
-
     }
 
     public void setCurrentPlayer(int id, String name) {
@@ -263,11 +258,6 @@ public class MainApp extends Application {
 
     private void startGame() {
         initRootLayout();
-    }
-
-    public void RanksSelectionAction(String rank) {
-        this.playerSelectedRank = rank;
-        displaySelected();
     }
 
     public void TargetSelectionAction(String asker, String target) {
@@ -479,7 +469,10 @@ public class MainApp extends Application {
                 Button StartGame = new Button("Start Game");
                 rootLayout.getChildren().add(StartGame);
                 StartGame.setTranslateY(100);
-                StartGame.setOnAction(evt -> NetworkServer.GUI_startGame());
+                StartGame.setOnAction(evt -> {
+                    NetworkServer.GUI_startGame();
+                    rootLayout.getChildren().remove(StartGame);
+                });
             }
 
 
@@ -505,11 +498,6 @@ public class MainApp extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void AITurnAction() {
-        System.out.println("Run Gameloop again");
-        //NetworkClient.gameHandler.AITurn();
     }
 
     public void updateUI() {
@@ -595,13 +583,6 @@ public class MainApp extends Application {
         temp.setTranslateY(initialY + 25);
         temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
-
-        /*lbltext = "Selected Rank: " + this.playerSelectedRank + " | "
-                + "Selected Target: " + this.playerSelectedTarget;
-        temp = new Label(lbltext);
-        temp.setTranslateX(-300);
-        temp.setTranslateY(initialY+50);
-        this.playerInfoLabels.add(temp);*/
 
         rootLayout.getChildren().addAll(this.playerInfoLabels);
     }
