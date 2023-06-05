@@ -270,25 +270,6 @@ public class MainApp extends Application {
         displaySelected();
     }
 
-    public void displayRanksSelectionButtons(String[] Ranks) {
-        rootLayout.getChildren().removeAll(playerRanksButtons);
-        playerRanksButtons.clear();
-
-        int ranklen = Ranks.length;
-        int halfrank = ranklen / 2;
-        int transval = 25;
-
-        for (int i = 0; i < ranklen; i++) {
-            Button temp = new Button(Ranks[i]);
-            playerRanksButtons.add(temp);
-            int finalI = i;
-            temp.setOnAction(evt -> RanksSelectionAction(Ranks[finalI]));
-            temp.setTranslateX((i - halfrank) * transval);
-        }
-
-        rootLayout.getChildren().addAll(playerRanksButtons);
-    }
-
     public void TargetSelectionAction(String asker, String target) {
         this.playerSelectedTarget = target;
         this.displaySelected();
@@ -535,7 +516,6 @@ public class MainApp extends Application {
         Platform.runLater(() -> {
             //display the player's deck
             displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
-//                displayRanksSelectionButtons(NetworkClient.gameHandler.getSelf().getHandRanks());
             ArrayList<String> targets = new ArrayList<>(NetworkClient.gameHandler.PlayerMap.keySet());
             displayTargetsSelectionButtons(targets);
             displayTargets(targets);
