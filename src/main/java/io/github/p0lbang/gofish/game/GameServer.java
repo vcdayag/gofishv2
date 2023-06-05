@@ -23,7 +23,7 @@ public class GameServer extends GameBase {
         super(gui);
         this.deck = new Deck();
         this.deck.initializeDeck();
-        this.TurnIndex = 0;
+        this.TurnIndex = -1;
         this.NETWORK = network;
 
         this.start();
@@ -34,7 +34,7 @@ public class GameServer extends GameBase {
     }
 
     public Player getNextPlayer() {
-        return this.players.getPlayer(this.players.playerIDS.get(TurnIndex++ % this.players.PlayerCount));
+        return this.players.getPlayer(this.players.playerIDS.get(++TurnIndex % this.players.PlayerCount));
     }
 
     public Player getCurrentPlayer() {
