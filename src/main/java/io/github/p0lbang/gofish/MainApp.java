@@ -81,6 +81,7 @@ public class MainApp extends Application {
     public void setCurrentPlayer(int id, String name) {
         CurrentPlayersTurnID = id;
         CurrentPlayersTurnName = name;
+        displayCurrentPlayer();
     }
 
     private void showMainMenu() {

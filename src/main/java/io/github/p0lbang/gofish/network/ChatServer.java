@@ -55,28 +55,14 @@ public class ChatServer implements ChatInterface {
                         System.out.println(connection.getID());
                     });
                 } else if (object instanceof PacketPlayerAction) {
-                    /*Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {*/
-
                     PacketPlayerAction action = (PacketPlayerAction) object;
                     String status = GAMEServer.NETWORK_checkPlayerCard(action.askerID, action.targetID, action.rank);
-
-                    PacketUpdatePlayer askerupdate = new PacketUpdatePlayer();
-                    askerupdate.player = GAMEServer.getPlayer(action.asker);
-                    server.sendToTCP(action.askerID, askerupdate);
-
-                    PacketUpdatePlayer targetupdate = new PacketUpdatePlayer();
-                    targetupdate.player = GAMEServer.getPlayer(action.target);
-                    server.sendToTCP(action.targetID, targetupdate);
-
+                    startgameminimal();
                     if (Objects.equals(status, "End")) {
                         GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
                     } else {
                         GAME_sendPlayerTurn(GAMEServer.getCurrentPlayer());
                     }
-                   /*     }
-                    });*/
                 }
             }
         });
@@ -92,17 +78,20 @@ public class ChatServer implements ChatInterface {
         server.sendToAllTCP(packet);
     }
 
-    public void GUI_startGame() {
+    public static void startgameminimal() {
+        for (Player player : GAMEServer.players.PlayerList()) {
+            PacketGameStart packet = new PacketGameStart();
+            packet.player = player;
+            packet.PlayerMap = GAMEServer.getTargetPlayersMap(player.getName());
+            server.sendToTCP(player.getID(), packet);
+            player.displayHand();
+        }
+    }
+
+    public static void GUI_startGame() {
         Platform.runLater(() -> {
             GAMEServer.setupCards();
-            for (Player player : GAMEServer.players.PlayerList()) {
-                PacketGameStart packet = new PacketGameStart();
-                packet.player = player;
-//                    packet.targets = GAMEServer.getTargetPlayers(player.getName());
-                packet.PlayerMap = GAMEServer.getTargetPlayersMap(player.getName());
-                server.sendToTCP(player.getID(), packet);
-                player.displayHand();
-            }
+            startgameminimal();
             GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
         });
 

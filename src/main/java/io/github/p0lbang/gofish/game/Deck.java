@@ -98,6 +98,7 @@ public class Deck {
     }
 
     public Card getRandomCard() {
+        System.out.println(this.deck.size());
         int index = new Random().nextInt(this.deck.size());
         return this.removeCard(index);
     }

@@ -50,15 +50,9 @@ public class ChatClient implements ChatInterface {
                     PacketGameStart packetGameStart = (PacketGameStart) object;
                     gameHandler.setSelf(packetGameStart.player);
                     gameHandler.players = packetGameStart.playerGroup;
-//                    gameHandler.targetPlayers = packetGameStart.targets;
                     gameHandler.PlayerMap = packetGameStart.PlayerMap;
+                    Platform.runLater(() -> GUI.updateUI());
 
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            GUI.updateUI();
-                        }
-                    });
                 } else if (object instanceof PacketUpdatePlayer) {
                     PacketUpdatePlayer packet = (PacketUpdatePlayer) object;
                     gameHandler.setSelf(packet.player);
@@ -86,11 +80,6 @@ public class ChatClient implements ChatInterface {
     }
 
     public void GAME_Action() {
-
-    }
-
-    @Override
-    public void GUI_startGame() {
 
     }
 
