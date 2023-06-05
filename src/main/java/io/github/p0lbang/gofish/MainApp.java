@@ -493,11 +493,6 @@ public class MainApp extends Application {
             rootLayout = new StackPane();
             mainLayout = new BorderPane();
             mainLayout.setCenter(rootLayout);
-//            NetworkClient.gameHandler = new GameServer(this);
-            /*Button gameloop = new Button("Game Loop");
-            rootLayout.getChildren().add(gameloop);
-            gameloop.setTranslateY(50);
-            gameloop.setOnAction(evt -> AITurnAction());*/
 
             Button DoAction = new Button("Do Action");
             rootLayout.getChildren().add(DoAction);

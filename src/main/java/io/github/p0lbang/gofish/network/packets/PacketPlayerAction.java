@@ -8,7 +8,4 @@ public class PacketPlayerAction {
     public String rank;
     public int amount;
 
-//    public PacketPlayerAction(int askerID) {
-//        this.askerID = askerID;
-//    }
 }

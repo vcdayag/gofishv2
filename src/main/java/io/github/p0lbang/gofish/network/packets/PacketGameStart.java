@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PacketGameStart {
-//    public String playername;
-//    public int playerID;
-//    public String[] cards;
 
     public Player player;
     public PlayerGroup playerGroup;

@@ -16,18 +16,14 @@ import java.util.Objects;
 public class ChatServer implements ChatInterface {
     public static String USERNAME;
     private static Server server;
-    private static MainApp GUI;
     private static GameServer GAMEServer;
 
-    private static String IPADDR;
     private static int PORT;
 
     public ChatServer(MainApp gui, String name, String ipaddr, int port) {
-        GUI = gui;
         USERNAME = name;
-        IPADDR = ipaddr;
         PORT = port;
-        GAMEServer = new GameServer(GUI, this);
+        GAMEServer = new GameServer(gui, this);
         try {
             initialize();
         } catch (IOException e) {
@@ -41,6 +37,7 @@ public class ChatServer implements ChatInterface {
         System.out.println(server.getConnections().size());
 
         server.addListener(new Listener() {
+            @Override
             public void connected(Connection connection) {
 
             }
@@ -116,10 +113,6 @@ public class ChatServer implements ChatInterface {
     }
 
     public void sendMessage(String message) {
-        /*PacketChatMessage chatMessage = new PacketChatMessage();
-        chatMessage.senderName = USERNAME;
-        chatMessage.messageText = message;
-        server.sendToAllTCP(chatMessage);*/
     }
 
     @Override
@@ -138,21 +131,3 @@ public class ChatServer implements ChatInterface {
         packet.name = player.getName();
         server.sendToAllTCP(packet);
     }
-
-    /*public void sendAction(PlayerAction action) {
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.senderName = USERNAME;
-        chatMessage.messageText = message;
-        server.sendToAllTCP(chatMessage);
-    }*/
-}
-
-/*
- Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            }
-                        }
-                    });
-
-*/
