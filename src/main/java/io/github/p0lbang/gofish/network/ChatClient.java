@@ -62,20 +62,10 @@ public class ChatClient implements ChatInterface {
                 } else if (object instanceof PacketUpdatePlayer) {
                     PacketUpdatePlayer packet = (PacketUpdatePlayer) object;
                     gameHandler.setSelf(packet.player);
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            GUI.updateUI();
-                        }
-                    });
+                    Platform.runLater(() -> GUI.updateUI());
                 } else if (object instanceof PacketPlayerTurn) {
                     PacketPlayerTurn packet = (PacketPlayerTurn) object;
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            GUI.setCurrentPlayer(packet.id, packet.name);
-                        }
-                    });
+                    Platform.runLater(() -> GUI.setCurrentPlayer(packet.id, packet.name));
                 }
             }
         });
@@ -106,17 +96,14 @@ public class ChatClient implements ChatInterface {
 
     @Override
     public void checkPlayerCard(Player asker, Player target, String playerSelectedRank) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                PacketPlayerAction packet = new PacketPlayerAction();
-                packet.askerID = asker.getID();
-                packet.asker = asker.getName();
-                packet.target = target.getName();
-                packet.targetID = target.getID();
-                packet.rank = playerSelectedRank;
-                client.sendTCP(packet);
-            }
+        Platform.runLater(() -> {
+            PacketPlayerAction packet = new PacketPlayerAction();
+            packet.askerID = asker.getID();
+            packet.asker = asker.getName();
+            packet.target = target.getName();
+            packet.targetID = target.getID();
+            packet.rank = playerSelectedRank;
+            client.sendTCP(packet);
         });
 
     }

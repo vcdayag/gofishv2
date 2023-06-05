@@ -49,13 +49,10 @@ public class ChatServer implements ChatInterface {
                     server.sendToAllExceptTCP(connection.getID(), chatMessage);
                 } else if (object instanceof PacketPlayerJoin) {
                     PacketPlayerJoin packet = (PacketPlayerJoin) object;
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            GAMEServer.Network_AddPlayer(packet.name, connection.getID());
-                            System.out.println(packet.name);
-                            System.out.println(connection.getID());
-                        }
+                    Platform.runLater(() -> {
+                        GAMEServer.Network_AddPlayer(packet.name, connection.getID());
+                        System.out.println(packet.name);
+                        System.out.println(connection.getID());
                     });
                 } else if (object instanceof PacketPlayerAction) {
                     /*Platform.runLater(new Runnable() {
@@ -88,21 +85,25 @@ public class ChatServer implements ChatInterface {
         server.bind(PORT);
     }
 
+    public static void GAME_sendPlayerTurn(Player player) {
+        PacketPlayerTurn packet = new PacketPlayerTurn();
+        packet.id = player.getID();
+        packet.name = player.getName();
+        server.sendToAllTCP(packet);
+    }
+
     public void GUI_startGame() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                GAMEServer.setupCards();
-                for (Player player : GAMEServer.players.PlayerList()) {
-                    PacketGameStart packet = new PacketGameStart();
-                    packet.player = player;
+        Platform.runLater(() -> {
+            GAMEServer.setupCards();
+            for (Player player : GAMEServer.players.PlayerList()) {
+                PacketGameStart packet = new PacketGameStart();
+                packet.player = player;
 //                    packet.targets = GAMEServer.getTargetPlayers(player.getName());
-                    packet.PlayerMap = GAMEServer.getTargetPlayersMap(player.getName());
-                    server.sendToTCP(player.getID(), packet);
-                    player.displayHand();
-                }
-                GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
+                packet.PlayerMap = GAMEServer.getTargetPlayersMap(player.getName());
+                server.sendToTCP(player.getID(), packet);
+                player.displayHand();
             }
+            GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
         });
 
     }
@@ -124,10 +125,4 @@ public class ChatServer implements ChatInterface {
     public void GAME_Action() {
 
     }
-
-    public static void GAME_sendPlayerTurn(Player player) {
-        PacketPlayerTurn packet = new PacketPlayerTurn();
-        packet.id = player.getID();
-        packet.name = player.getName();
-        server.sendToAllTCP(packet);
-    }
+}

@@ -184,7 +184,7 @@ public class GameServer extends GameBase {
 
     public HashMap<String, Player> getTargetPlayersMap(String askername) {
 
-        HashMap<String, Player> targets = new HashMap<String, Player>(this.players.players);
+        HashMap<String, Player> targets = new HashMap<>(this.players.players);
         targets.remove(askername);
         System.out.println("gettargetplayersmap");
         System.out.println(targets.size());

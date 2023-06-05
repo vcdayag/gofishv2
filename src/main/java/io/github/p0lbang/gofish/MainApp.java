@@ -51,7 +51,7 @@ public class MainApp extends Application {
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<ImageView> playerDeckImageViews = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
-    private HashMap<ImageView, double[]> playerDeckImageViewsSelected = new HashMap<ImageView, double[]>();
+    private HashMap<ImageView, double[]> playerDeckImageViewsSelected = new HashMap<>();
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Button> playerRanksButtons = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
@@ -90,14 +90,10 @@ public class MainApp extends Application {
 
     private void showMainMenu() {
         Button startButton = new Button("Start Game");
-        startButton.setOnAction(evt -> {
-            startGame();
-        });
+        startButton.setOnAction(evt -> startGame());
 
         Button multiplayerButton = new Button("Multiplayer");
-        multiplayerButton.setOnAction(evt -> {
-            showMultiplayerMenu();
-        });
+        multiplayerButton.setOnAction(evt -> showMultiplayerMenu());
 
         Button themeButton = new Button("Choose Theme");
         themeButton.setOnAction(evt -> chooseTheme());
@@ -168,7 +164,7 @@ public class MainApp extends Application {
                 return;
             }
             this.currentPlayerName = clientName.getText();
-            NetworkClient = (ChatClient) new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
+            NetworkClient = new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
             NetworkClient.joinServer(this.currentPlayerName);
             startGame();
         });
@@ -204,15 +200,13 @@ public class MainApp extends Application {
             this.currentPlayerName = serverName.getText();
 //            NetworkClient.gameHandler = new GameServer(this);
             NetworkServer = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
-            NetworkClient = (ChatClient) new ChatClient(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
+            NetworkClient = new ChatClient(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             NetworkClient.joinServer(this.currentPlayerName);
             startGame();
         });
 
         Button backButton = new Button("Back");
-        backButton.setOnAction(evt -> {
-            showMainMenu();
-        });
+        backButton.setOnAction(evt -> showMainMenu());
 
 
         mainMenuLayout.getChildren().addAll(clientnameGroup, ipaddrGroup, portGroup, clientButton, new Label("or"), servernameGroup, serverportGroup, serverButton, backButton, ErrorPrompt);
@@ -234,24 +228,16 @@ public class MainApp extends Application {
 
     public void chooseTheme() {
         Button animalThemeButton = new Button("Animal Theme");
-        animalThemeButton.setOnAction(evt -> {
-            theme = "animal";
-        });
+        animalThemeButton.setOnAction(evt -> theme = "animal");
 
         Button fruitThemeButton = new Button("Fruit Theme");
-        fruitThemeButton.setOnAction(evt -> {
-            theme = "fruit";
-        });
+        fruitThemeButton.setOnAction(evt -> theme = "fruit");
 
         Button defaultThemeButton = new Button("Default Theme");
-        defaultThemeButton.setOnAction(evt -> {
-            theme = "default";
-        });
+        defaultThemeButton.setOnAction(evt -> theme = "default");
 
         Button okButton = new Button("OK");
-        okButton.setOnAction(evt -> {
-            showMainMenu();
-        });
+        okButton.setOnAction(evt -> showMainMenu());
 
         HBox buttonContainer = new HBox(10);
         buttonContainer.getChildren().addAll(animalThemeButton, fruitThemeButton, defaultThemeButton);
@@ -388,8 +374,7 @@ public class MainApp extends Application {
     }
 
     public void takeCardAnimation(String cardid) {
-        for (int i = 0; i < this.playerDeckImageViews.size(); i++) {
-            ImageView imageView = this.playerDeckImageViews.get(i);
+        for (ImageView imageView : this.playerDeckImageViews) {
             if (imageView.getId().equals(cardid)) {
                 this.giveCardAnimation(imageView);
             }
@@ -430,18 +415,15 @@ public class MainApp extends Application {
 
     public void addToChatBar(String chatinput) {
 //        required to wrap gui code into this platform runlater to work
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Text text;
-                if (chatLayout.getChildren().size() == 0) {
-                    text = new Text(chatinput);
-                } else {
-                    // Add new line if not the first child
-                    text = new Text("\n" + chatinput);
-                }
-                chatLayout.getChildren().add(text);
+        Platform.runLater(() -> {
+            Text text;
+            if (chatLayout.getChildren().size() == 0) {
+                text = new Text(chatinput);
+            } else {
+                // Add new line if not the first child
+                text = new Text("\n" + chatinput);
             }
+            chatLayout.getChildren().add(text);
         });
 
     }
@@ -498,32 +480,25 @@ public class MainApp extends Application {
             rootLayout.getChildren().add(DoAction);
             DoAction.setTranslateY(100);
             DoAction.setTranslateX(100);
-            DoAction.setOnAction(evt -> {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (CurrentPlayersTurnID != NetworkClient.gameHandler.getSelf().getID()) {
-                            System.out.println("not your turn");
-                            return;
-                        }
-                        if (playerSelectedTarget.isBlank() || playerSelectedTarget.isEmpty() || playerSelectedRank.isBlank() || playerSelectedRank.isEmpty()) {
-                            System.out.println("please select a target and rank");
-                            return;
-                        }
-                        NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
-                        selectedImageRank = null;
-                        playerSelectedRank = "";
-                        playerSelectedTarget = "";
-                    }
-                });
-            });
+            DoAction.setOnAction(evt -> Platform.runLater(() -> {
+                if (CurrentPlayersTurnID != NetworkClient.gameHandler.getSelf().getID()) {
+                    System.out.println("not your turn");
+                    return;
+                }
+                if (playerSelectedTarget.isBlank() || playerSelectedTarget.isEmpty() || playerSelectedRank.isBlank() || playerSelectedRank.isEmpty()) {
+                    System.out.println("please select a target and rank");
+                    return;
+                }
+                NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
+                selectedImageRank = null;
+                playerSelectedRank = "";
+                playerSelectedTarget = "";
+            }));
             if (NetworkServer != null) {
                 Button StartGame = new Button("Start Game");
                 rootLayout.getChildren().add(StartGame);
                 StartGame.setTranslateY(100);
-                StartGame.setOnAction(evt -> {
-                    NetworkServer.GUI_startGame();
-                });
+                StartGame.setOnAction(evt -> NetworkServer.GUI_startGame());
             }
 
 
@@ -557,18 +532,15 @@ public class MainApp extends Application {
     }
 
     public void updateUI() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                //display the player's deck
-                displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
+        Platform.runLater(() -> {
+            //display the player's deck
+            displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
 //                displayRanksSelectionButtons(NetworkClient.gameHandler.getSelf().getHandRanks());
-                ArrayList<String> targets = new ArrayList<>(NetworkClient.gameHandler.PlayerMap.keySet());
-                displayTargetsSelectionButtons(targets);
-                displayTargets(targets);
-                displaySelected();
-                displayCurrentPlayer();
-            }
+            ArrayList<String> targets = new ArrayList<>(NetworkClient.gameHandler.PlayerMap.keySet());
+            displayTargetsSelectionButtons(targets);
+            displayTargets(targets);
+            displaySelected();
+            displayCurrentPlayer();
         });
     }
 
@@ -588,14 +560,14 @@ public class MainApp extends Application {
         int imageWidth = 30;
         int imageHeight = 30;
 
-        /*for (int i = 0; i < ranklen; i++) {
+        for (int i = 0; i < ranklen; i++) {
             String target = targetplayers.get(i);
-            int handCount = NetworkClient.gameHandler.getPlayer(target).getHandCount();
+            int handCount = NetworkClient.gameHandler.PlayerMap.get(target).getHandCount();
 
             // Create label for target player
             String lbltext = target
                     + "\n" + handCount + " cards"
-                    + "\n" + NetworkClient.gameHandler.getPlayer(target).getCompletedSuits() + " suits completed";
+                    + "\n" + NetworkClient.gameHandler.PlayerMap.get(target).getCompletedSuits() + " suits completed";
             Label temp = new Label(lbltext);
             temp.setTranslateY(-270);
             temp.setTranslateX((i - halfrank) * transval);
@@ -616,7 +588,7 @@ public class MainApp extends Application {
                 // Add the image view to the ArrayList
                 targetImages.add(backCardImageImageView);
             }
-        }*/
+        }
 
         rootLayout.getChildren().addAll(TargetsLabels);
         rootLayout.getChildren().addAll(targetImages); // Add the ImageView instances to the root layout
