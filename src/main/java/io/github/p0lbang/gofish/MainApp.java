@@ -157,59 +157,120 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
-    private void showaboutMenu() {
+    private void showNextAbout(){
+        URL backURL = Objects.requireNonNull(MainApp.class.getResource("about_exit.png"));
+        Image backImage = new Image(backURL.toString());
+        ImageView backImageView = new ImageView(backImage);
+        backImageView.setFitWidth(90);  // Set the desired width of the image
+        backImageView.setFitHeight(90);  // Set the desired height of the image
 
-        Button backButton = new Button("Back");
+        Button backButton = new Button();
+        backButton.setGraphic(backImageView);
+
+        backButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
+
         backButton.setOnAction(evt -> {
             showMainMenu();
         });
 
-        Label paragraph = new Label("Object of the Game\n" +
-                "The goal is to win the most \"books\" of cards. A book is any four of a kind, such as four\n" +
-                "kings, four aces, and so on."+"\n \n"+
-                "The Standard Play (Easy)\n" +
-                "The current player can ask any opponent, for example,\"Give me your kings,\" usually\n" +
-                "addressing the opponent by name and specifying the rank that they want, from ace\n" +
-                "down to two.\n" +
-                "The player who is fishing must have at least one card of the rank that was asked for in\n" +
-                "their hand. The player who is addressed must hand over all the cards requested. If the\n" +
-                "player has none, they say, \"Go fish!\" and the player who made the request draws the\n" +
-                "top card of the stock and places it in their hand.\n" +
-                "The player can ask for the same card or a different one to any of the opponents. So\n" +
-                "long as the player succeeds in getting cards (makes a catch), their turn continues.\n" +
-                "When a player makes a catch, they must reveal the card so that the catch is verified. If\n" +
-                "a player gets the fourth card of a book, the player shows all four cards, places them on\n" +
-                "the table face up in front of everyone, and plays again.\n" +
-                "\n" +
-                "If the player goes fishing without \"making a catch\" (does not receive a card he asked\n" +
-                "for), the turn passes to the next player.\n" +
-                "The game ends when all thirteen books have been won. The winner is the player with\n" +
-                "the most books. During the game, if a player is left without cards, they may (when it's\n" +
-                "their turn to play), draw from the stock, and then ask for cards of that rank. If there are\n" +
-                "no cards left in the stock, they are out of the game.");
 
-        // Set background color and transparency for overlay effect
+        URL nextURL = Objects.requireNonNull(MainApp.class.getResource("about_back.png"));
+        Image nextImage = new Image(nextURL.toString());
+        ImageView nextImageView = new ImageView(nextImage);
+        nextImageView.setFitWidth(90);  // Set the desired width of the image
+        nextImageView.setFitHeight(90);  // Set the desired height of the image
 
-        paragraph.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-text-fill: white; -fx-font-size: 16px;");
+        Button nextButton = new Button();
+        nextButton.setGraphic(nextImageView);
+
+        nextButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
+
+        nextButton.setOnAction(evt -> {
+            showaboutMenu();
+        });
 
 
-
-
+        // Create a VBox to stack the image and buttons horizontally
+        HBox buttonContainer = new HBox(10); // Spacing between image and buttons
+        buttonContainer.setTranslateY(295);
+        buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.getChildren().addAll(backButton,nextButton);
 
 
         // Create a VBox to stack the image and buttons vertically
-        VBox mainMenuLayout = new VBox(10); // Spacing between image and buttons
+        HBox mainMenuLayout = new HBox(10); // Spacing between image and buttons
         mainMenuLayout.setAlignment(Pos.CENTER);
-        mainMenuLayout.getChildren().addAll(paragraph,backButton);
+        mainMenuLayout.getChildren().addAll(buttonContainer);
 
-
+        //about_1
         BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
         // Background Image
-        URL backgroundUrl = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
+        URL backgroundUrl = Objects.requireNonNull(MainApp.class.getResource("about_2.png"));
         Image backgroundImage = new Image(backgroundUrl.toString());
         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
         Background background = new Background(backgroundImg);
         mainMenuLayout.setBackground(background);
+
+
+        Scene mainMenuScene = new Scene(mainMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+        primaryStage.setScene(mainMenuScene);
+        primaryStage.show();
+
+    }
+    private void showaboutMenu() {
+        URL backURL = Objects.requireNonNull(MainApp.class.getResource("about_exit.png"));
+        Image backImage = new Image(backURL.toString());
+                ImageView backImageView = new ImageView(backImage);
+        backImageView.setFitWidth(90);  // Set the desired width of the image
+        backImageView.setFitHeight(90);  // Set the desired height of the image
+
+        Button backButton = new Button();
+        backButton.setGraphic(backImageView);
+
+        backButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
+
+        backButton.setOnAction(evt -> {
+            showMainMenu();
+        });
+
+
+        URL nextURL = Objects.requireNonNull(MainApp.class.getResource("about_next.png"));
+        Image nextImage = new Image(nextURL.toString());
+        ImageView nextImageView = new ImageView(nextImage);
+        nextImageView.setFitWidth(90);  // Set the desired width of the image
+        nextImageView.setFitHeight(90);  // Set the desired height of the image
+
+        Button nextButton = new Button();
+        nextButton.setGraphic(nextImageView);
+
+        nextButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
+
+        nextButton.setOnAction(evt -> {
+            showNextAbout();
+        });
+
+
+        // Create a VBox to stack the image and buttons horizontally
+        HBox buttonContainer = new HBox(10); // Spacing between image and buttons
+        buttonContainer.setTranslateY(295);
+        buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.getChildren().addAll(backButton,nextButton);
+
+
+        // Create a VBox to stack the image and buttons vertically
+        HBox mainMenuLayout = new HBox(10); // Spacing between image and buttons
+        mainMenuLayout.setAlignment(Pos.CENTER);
+        mainMenuLayout.getChildren().addAll(buttonContainer);
+
+        //about_1
+        BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+        // Background Image
+        URL backgroundUrl = Objects.requireNonNull(MainApp.class.getResource("about_1.png"));
+        Image backgroundImage = new Image(backgroundUrl.toString());
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        Background background = new Background(backgroundImg);
+        mainMenuLayout.setBackground(background);
+
 
         Scene mainMenuScene = new Scene(mainMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(mainMenuScene);
@@ -390,6 +451,29 @@ public class MainApp extends Application {
         Button backButton = new Button("Back");
         backButton.setOnAction(evt -> showMainMenu());
 
+        String buttonStyle = "-fx-background-color: #007bff; " +
+                "-fx-text-fill: #ffffff; " +
+                "-fx-background-radius: 20; " +
+                "-fx-border-color: #00aaff; " +
+                "-fx-border-width: 2px;" +
+                "-fx-border-radius: 20;";
+
+        String hoverStyle = "-fx-background-color: #00aaff;";
+
+        clientButton.setStyle(buttonStyle);
+        clientButton.setOnMouseEntered(e -> clientButton.setStyle(buttonStyle + hoverStyle));
+        clientButton.setOnMouseExited(e -> clientButton.setStyle(buttonStyle));
+
+
+        serverButton.setStyle(buttonStyle);
+        serverButton.setOnMouseEntered(e -> serverButton.setStyle(buttonStyle + hoverStyle));
+        serverButton.setOnMouseExited(e -> serverButton.setStyle(buttonStyle));
+
+
+        backButton.setStyle(buttonStyle);
+        backButton.setOnMouseEntered(e -> backButton.setStyle(buttonStyle + hoverStyle));
+        backButton.setOnMouseExited(e -> backButton.setStyle(buttonStyle));
+
 
         mainMenuLayout.getChildren().addAll(clientnameGroup, ipaddrGroup, portGroup, clientButton, new Label("or"), servernameGroup, serverportGroup, serverButton, backButton, ErrorPrompt);
         mainMenuLayout.setAlignment(Pos.CENTER);
@@ -448,8 +532,8 @@ public class MainApp extends Application {
         URL url2 = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/" + "background" + ".png"));
         Image bgimage = new Image(url2.toString());
         ImageView imageView2 = new ImageView(bgimage);
-        imageView2.setFitWidth(75);
-        imageView2.setFitHeight(125);
+        imageView2.setFitWidth(200);
+        imageView2.setFitHeight(150);
 
 
 
@@ -570,7 +654,7 @@ public class MainApp extends Application {
 
     public void displayCurrentPlayer() {
         rootLayout.getChildren().removeAll(CurrentPlayerLabel);
-        CurrentPlayerLabel = new Label(CurrentPlayersTurnName);
+        CurrentPlayerLabel = new Label("Current Player's Turn: " + CurrentPlayersTurnName);
         CurrentPlayerLabel.setTranslateX(-300);
         CurrentPlayerLabel.setTranslateY(0);
         CurrentPlayerLabel.setTextFill(Color.WHITE);
@@ -623,7 +707,7 @@ public class MainApp extends Application {
             imageView.setId(Deck[i]);
             imageView.setStyle("-fx-border-color: red; -fx-border-width: 5px;");
             rootLayout.getChildren().add(imageView);
-            playerDeckImageViews.add(imageView);
+            playerDeckImageViews.add(imageView);fix: move info labels
         }
     }
 
@@ -697,6 +781,18 @@ public class MainApp extends Application {
         container.getChildren().addAll(box, new HBox(textField, button));
 
 
+        if (theme == "default"){
+            container.setStyle("-fx-background-color: #6e593f;");
+
+        } else if (theme == "animal") {
+            container.setStyle("-fx-background-color: #228B22;");
+        }
+        else{
+            container.setStyle("-fx-background-color: #800020;");
+
+        }
+
+
         VBox.setVgrow(sp, Priority.ALWAYS);
         VBox.setVgrow(chatLayout, Priority.ALWAYS);
 
@@ -716,11 +812,12 @@ public class MainApp extends Application {
         VBox vb = new VBox();
         vb.getChildren().addAll(chatLayout);
         sp.setVmax(440);
-        sp.setPrefSize(200, 300);
+        sp.setPrefSize(200, 700);
         sp.setContent(vb);
         sp.vvalueProperty().bind(vb.heightProperty());
         sp.setPannable(true);
         mainLayout.setLeft(container);
+
     }
 
     // Initializes the root layout.
@@ -730,6 +827,40 @@ public class MainApp extends Application {
             mainLayout.setCenter(rootLayout);
 
             Button DoAction = new Button("Do Action");
+            String hoverStyle;
+
+            String buttonStyle;
+
+            if (theme.equals("animal")) {
+                buttonStyle = "-fx-background-color: #228B22; " +
+                        "-fx-text-fill: #ffffff; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 20;";
+                hoverStyle = "-fx-background-color: #7CFC00;"; // Lighter hover color
+            } else if (theme.equals("default")) {
+                buttonStyle = "-fx-background-color: #6e593f; " +
+                        "-fx-text-fill: #ffffff; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 20;";
+                hoverStyle = "-fx-background-color: #8B4513;"; // Lighter hover color
+            } else {
+                buttonStyle = "-fx-background-color: #800020; " +
+                        "-fx-text-fill: #ffffff; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 20;";
+                hoverStyle = "-fx-background-color: #B22222;"; // Lighter hover color
+            }
+
+
+
+
+
+            DoAction.setStyle(buttonStyle);
+            DoAction.setOnMouseEntered(e -> DoAction.setStyle(buttonStyle + hoverStyle));
+            DoAction.setOnMouseExited(e -> DoAction.setStyle(buttonStyle));
             rootLayout.getChildren().add(DoAction);
             DoAction.setTranslateY(rootLayout.getHeight() / 2 - 20);
             DoAction.setOnAction(evt -> Platform.runLater(() -> {
@@ -746,7 +877,42 @@ public class MainApp extends Application {
                 playerSelectedRank = "";
                 playerSelectedTarget = "";
             }));
-            primaryStage.show();
+
+            if (NetworkServer != null) {
+                Button StartGame = new Button("Start Game");
+
+                StartGame.setStyle(buttonStyle);
+                StartGame.setOnMouseEntered(e -> StartGame.setStyle(buttonStyle + hoverStyle));
+                StartGame.setOnMouseExited(e -> StartGame.setStyle(buttonStyle));
+
+                rootLayout.getChildren().add(StartGame);
+                StartGame.setTranslateY(100);
+                StartGame.setOnAction(evt -> {
+                    NetworkServer.GUI_startGame();
+                    rootLayout.getChildren().remove(StartGame);
+                });
+            }
+
+
+//            this.updateUI();
+
+            //Background Image
+            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/background.png"));
+            Image backgroundImage = new Image(url.toString());
+
+            BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+            BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+            Background background = new Background(backgroundImageObject);
+            rootLayout.setBackground(background);
+            /////////////////////////////////////////////////////////////
+            // Second, show the scene containing the root layout.
+            initChatmenu();
+            Scene scene = new Scene(mainLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+            primaryStage.setScene(scene); // Set the scene in primary stage.
+            primaryStage.setResizable(false);
+
+            // Third, show the primary stage
+            primaryStage.show(); // Display the primary stage
         } catch (Exception e) {
             e.printStackTrace();
         }
