@@ -74,6 +74,8 @@ public class MainApp extends Application {
 
     private VBox targetButtonsGroup;
 
+    Button DoAction;
+
     @Override
     public void start(Stage primaryStage) {
         // 1) Declare a primary stage (Everything will be on this stage)
@@ -630,18 +632,10 @@ public class MainApp extends Application {
         targetButtonsGroup.setTranslateY(rootLayout.getHeight() / 2 + 60);
 
         Label targetslbl = new Label("Targets");
-        targetslbl.setTextFill(Color.WHITE);
         targetButtonsGroup.getChildren().addAll(targetslbl, targetButtons);
-
         targetslbl.setTextFill(Color.WHITE);
-        targetslbl.setStyle("-fx-background-color: pink;");
-        targetButtons.setStyle("-fx-background-color: yellow;");
-        targetButtonsGroup.setStyle("-fx-background-color: black;");
 
-        outer.getChildren().addAll(targetButtonsGroup);
-        outer.setFillHeight(false);
-
-        rootLayout.getChildren().addAll(outer);
+        rootLayout.getChildren().addAll(targetButtonsGroup);
     }
 
     public void displayGofishButton() {
@@ -819,64 +813,71 @@ public class MainApp extends Application {
         mainLayout.setLeft(container);
     }
 
+    public void displayActionButton() {
+        DoAction = new Button("Do Action");
+
+        String hoverStyle;
+
+        String buttonStyle;
+
+        if (theme.equals("animal")) {
+            buttonStyle = "-fx-background-color: #228B22; " +
+                    "-fx-text-fill: #ffffff; " +
+                    "-fx-background-radius: 20; " +
+                    "-fx-border-width: 2px;" +
+                    "-fx-border-radius: 20;";
+            hoverStyle = "-fx-background-color: #7CFC00;"; // Lighter hover color
+        } else if (theme.equals("default")) {
+            buttonStyle = "-fx-background-color: #6e593f; " +
+                    "-fx-text-fill: #ffffff; " +
+                    "-fx-background-radius: 20; " +
+                    "-fx-border-width: 2px;" +
+                    "-fx-border-radius: 20;";
+            hoverStyle = "-fx-background-color: #8B4513;"; // Lighter hover color
+        } else {
+            buttonStyle = "-fx-background-color: #800020; " +
+                    "-fx-text-fill: #ffffff; " +
+                    "-fx-background-radius: 20; " +
+                    "-fx-border-width: 2px;" +
+                    "-fx-border-radius: 20;";
+            hoverStyle = "-fx-background-color: #B22222;"; // Lighter hover color
+        }
+
+
+
+
+
+        DoAction.setStyle(buttonStyle);
+        DoAction.setOnMouseEntered(e -> DoAction.setStyle(buttonStyle + hoverStyle));
+        DoAction.setOnMouseExited(e -> DoAction.setStyle(buttonStyle));
+
+        rootLayout.getChildren().add(DoAction);
+        DoAction.setTranslateY(rootLayout.getHeight() / 2 - 20);
+        DoAction.setOnAction(evt -> Platform.runLater(() -> {
+            if (CurrentPlayersTurnID != NetworkClient.gameHandler.getSelf().getID()) {
+                System.out.println("not your turn");
+                return;
+            }
+            if (playerSelectedTarget.isBlank() || playerSelectedTarget.isEmpty() || playerSelectedRank.isBlank() || playerSelectedRank.isEmpty()) {
+                System.out.println("please select a target and rank");
+                return;
+            }
+
+            NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
+            selectedImageRank = null;
+            playerSelectedRank = "";
+            playerSelectedTarget = "";
+        }));
+    }
+
     // Initializes the root layout.
     public void initRootLayout() {
         try {
             rootLayout.getChildren().removeAll(rootLayout.getChildren());
             mainLayout.setCenter(rootLayout);
 
-            Button DoAction = new Button("Do Action");
-            String hoverStyle;
+            displayActionButton();
 
-            String buttonStyle;
-
-            if (theme.equals("animal")) {
-                buttonStyle = "-fx-background-color: #228B22; " +
-                        "-fx-text-fill: #ffffff; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-width: 2px;" +
-                        "-fx-border-radius: 20;";
-                hoverStyle = "-fx-background-color: #7CFC00;"; // Lighter hover color
-            } else if (theme.equals("default")) {
-                buttonStyle = "-fx-background-color: #6e593f; " +
-                        "-fx-text-fill: #ffffff; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-width: 2px;" +
-                        "-fx-border-radius: 20;";
-                hoverStyle = "-fx-background-color: #8B4513;"; // Lighter hover color
-            } else {
-                buttonStyle = "-fx-background-color: #800020; " +
-                        "-fx-text-fill: #ffffff; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-width: 2px;" +
-                        "-fx-border-radius: 20;";
-                hoverStyle = "-fx-background-color: #B22222;"; // Lighter hover color
-            }
-
-
-
-
-
-            DoAction.setStyle(buttonStyle);
-            DoAction.setOnMouseEntered(e -> DoAction.setStyle(buttonStyle + hoverStyle));
-            DoAction.setOnMouseExited(e -> DoAction.setStyle(buttonStyle));
-            rootLayout.getChildren().add(DoAction);
-            DoAction.setTranslateY(rootLayout.getHeight() / 2 - 20);
-            DoAction.setOnAction(evt -> Platform.runLater(() -> {
-                if (CurrentPlayersTurnID != NetworkClient.gameHandler.getSelf().getID()) {
-                    System.out.println("not your turn");
-                    return;
-                }
-                if (playerSelectedTarget.isBlank() || playerSelectedTarget.isEmpty() || playerSelectedRank.isBlank() || playerSelectedRank.isEmpty()) {
-                    System.out.println("please select a target and rank");
-                    return;
-                }
-
-                NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
-                selectedImageRank = null;
-                playerSelectedRank = "";
-                playerSelectedTarget = "";
-            }));
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -891,6 +892,7 @@ public class MainApp extends Application {
             displayTargets(targets);
             displaySelected();
             displayCurrentPlayer();
+            displayActionButton();
             displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
         });
     }
