@@ -72,6 +72,8 @@ public class MainApp extends Application {
     private TextFlow chatLayout;
     private String theme_clicked;
 
+    private VBox targetButtonsGroup;
+
     @Override
     public void start(Stage primaryStage) {
         // 1) Declare a primary stage (Everything will be on this stage)
@@ -529,23 +531,28 @@ public class MainApp extends Application {
     }
 
     public void displayTargetsSelectionButtons(ArrayList<String> Targets) {
-        rootLayout.getChildren().removeAll(playerTargetsButtons);
-        playerTargetsButtons.clear();
+        rootLayout.getChildren().removeAll(targetButtonsGroup);
+        targetButtonsGroup = new VBox();
 
-        int ranklen = Targets.size();
-        int halfrank = ranklen / 2;
-        int transval = 50;
+        HBox targetButtons = new HBox();
 
-        for (int i = 0; i < ranklen; i++) {
+        int targetsize = Targets.size();
+        for (int i = 0; i < targetsize; i++) {
             Button temp = new Button(Targets.get(i));
             playerTargetsButtons.add(temp);
             int finalI = i;
             temp.setOnAction(evt -> TargetSelectionAction(this.currentPlayerName, Targets.get(finalI)));
-            temp.setTranslateX((i - halfrank) * transval);
-            temp.setTranslateY(50);
+            targetButtons.getChildren().add(temp);
         }
 
-        rootLayout.getChildren().addAll(playerTargetsButtons);
+        targetButtonsGroup.setTranslateX(rootLayout.getWidth() / 2);
+        targetButtonsGroup.setTranslateY(rootLayout.getHeight() / 2 + 60);
+
+        Label targetslbl = new Label("Targets");
+        targetslbl.setTextFill(Color.WHITE);
+        targetButtonsGroup.getChildren().addAll(targetslbl, targetButtons);
+
+        rootLayout.getChildren().addAll(targetButtonsGroup);
     }
 
     public void displayGofishButton() {
@@ -724,8 +731,7 @@ public class MainApp extends Application {
 
             Button DoAction = new Button("Do Action");
             rootLayout.getChildren().add(DoAction);
-            DoAction.setTranslateY(100);
-            DoAction.setTranslateX(100);
+            DoAction.setTranslateY(rootLayout.getHeight() / 2 - 20);
             DoAction.setOnAction(evt -> Platform.runLater(() -> {
                 if (CurrentPlayersTurnID != NetworkClient.gameHandler.getSelf().getID()) {
                     System.out.println("not your turn");
