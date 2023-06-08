@@ -72,10 +72,7 @@ public class MainApp extends Application {
     private TextFlow chatLayout;
     private String theme_clicked;
     private ArrayList<ImageView> targetImages = new ArrayList<>();
-
     private VBox targetButtonsGroup;
-
-    Button DoAction;
 
     @Override
     public void start(Stage primaryStage) {
