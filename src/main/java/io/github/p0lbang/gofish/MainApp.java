@@ -152,54 +152,56 @@ public class MainApp extends Application {
     }
 
     private void showaboutMenu() {
+        URL backURL = Objects.requireNonNull(MainApp.class.getResource("about_exit.png"));
+        Image backImage = new Image(backURL.toString());
+                ImageView backImageView = new ImageView(backImage);
+        backImageView.setFitWidth(90);  // Set the desired width of the image
+        backImageView.setFitHeight(90);  // Set the desired height of the image
 
-        Button backButton = new Button("Back");
+        Button backButton = new Button();
+        backButton.setGraphic(backImageView);
+
+        backButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
+
         backButton.setOnAction(evt -> {
             showMainMenu();
         });
-
-        Label paragraph = new Label("Object of the Game\n" +
-                "The goal is to win the most \"books\" of cards. A book is any four of a kind, such as four\n" +
-                "kings, four aces, and so on."+"\n \n"+
-                "The Standard Play (Easy)\n" +
-                "The current player can ask any opponent, for example,\"Give me your kings,\" usually\n" +
-                "addressing the opponent by name and specifying the rank that they want, from ace\n" +
-                "down to two.\n" +
-                "The player who is fishing must have at least one card of the rank that was asked for in\n" +
-                "their hand. The player who is addressed must hand over all the cards requested. If the\n" +
-                "player has none, they say, \"Go fish!\" and the player who made the request draws the\n" +
-                "top card of the stock and places it in their hand.\n" +
-                "The player can ask for the same card or a different one to any of the opponents. So\n" +
-                "long as the player succeeds in getting cards (makes a catch), their turn continues.\n" +
-                "When a player makes a catch, they must reveal the card so that the catch is verified. If\n" +
-                "a player gets the fourth card of a book, the player shows all four cards, places them on\n" +
-                "the table face up in front of everyone, and plays again.\n" +
-                "\n" +
-                "If the player goes fishing without \"making a catch\" (does not receive a card he asked\n" +
-                "for), the turn passes to the next player.\n" +
-                "The game ends when all thirteen books have been won. The winner is the player with\n" +
-                "the most books. During the game, if a player is left without cards, they may (when it's\n" +
-                "their turn to play), draw from the stock, and then ask for cards of that rank. If there are\n" +
-                "no cards left in the stock, they are out of the game.");
-
-        // Set background color and transparency for overlay effect
-
-        paragraph.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-text-fill: white; -fx-font-size: 16px;");
+//        backButton.setLayoutX(-150);
+//        backButton.setTranslateY(295);
 
 
+        URL nextURL = Objects.requireNonNull(MainApp.class.getResource("about_next.png"));
+        Image nextImage = new Image(nextURL.toString());
+        ImageView nextImageView = new ImageView(nextImage);
+        nextImageView.setFitWidth(90);  // Set the desired width of the image
+        nextImageView.setFitHeight(90);  // Set the desired height of the image
 
+        Button nextButton = new Button();
+        nextButton.setGraphic(nextImageView);
 
+        nextButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
+
+        nextButton.setOnAction(evt -> {
+            showMainMenu();
+        });
+//        nextButton.setTranslateX(100);
+//        nextButton.setTranslateY(295);
+
+        // Create a VBox to stack the image and buttons horizontally
+        HBox buttonContainer = new HBox(10); // Spacing between image and buttons
+        buttonContainer.setTranslateY(295);
+        buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.getChildren().addAll(backButton,nextButton);
 
 
         // Create a VBox to stack the image and buttons vertically
-        VBox mainMenuLayout = new VBox(10); // Spacing between image and buttons
+        HBox mainMenuLayout = new HBox(10); // Spacing between image and buttons
         mainMenuLayout.setAlignment(Pos.CENTER);
-        mainMenuLayout.getChildren().addAll(paragraph,backButton);
-
+        mainMenuLayout.getChildren().addAll(buttonContainer);
 
         BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
         // Background Image
-        URL backgroundUrl = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
+        URL backgroundUrl = Objects.requireNonNull(MainApp.class.getResource("about_1.png"));
         Image backgroundImage = new Image(backgroundUrl.toString());
         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
         Background background = new Background(backgroundImg);
@@ -352,8 +354,8 @@ public class MainApp extends Application {
         URL url2 = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/" + "background" + ".png"));
         Image bgimage = new Image(url2.toString());
         ImageView imageView2 = new ImageView(bgimage);
-        imageView2.setFitWidth(75);
-        imageView2.setFitHeight(125);
+        imageView2.setFitWidth(200);
+        imageView2.setFitHeight(150);
 
 
 
