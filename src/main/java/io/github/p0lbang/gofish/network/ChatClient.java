@@ -12,7 +12,7 @@ import javafx.application.Platform;
 import java.io.IOException;
 
 // ChatClient.java
-public class ChatClient implements ChatInterface {
+public class ChatClient {
 
     public static Client client;
     public static String USERNAME;
@@ -42,24 +42,39 @@ public class ChatClient implements ChatInterface {
         client.connect(5000, IPADDR, PORT);
 
         client.addListener(new Listener() {
+            @Override
             public void received(Connection connection, Object object) {
-                if (object instanceof PacketChatMessage) {
+                if (object instanceof PacketStartGame) {
+                    PacketStartGame packet = (PacketStartGame) object;
+                    Platform.runLater(() -> GUI.startGame());
+                } else if (object instanceof PacketChatMessage) {
                     PacketChatMessage chatMessage = (PacketChatMessage) object;
-                    GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
-                } else if (object instanceof PacketGameStart) {
-                    PacketGameStart packetGameStart = (PacketGameStart) object;
+                    if (chatMessage.senderName.isBlank()) {
+                        GUI.addToChatBar(chatMessage.messageText);
+                    } else {
+                        GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
+                    }
+                } else if (object instanceof PacketUpdatePlayerDetails) {
+                    PacketUpdatePlayerDetails packetGameStart = (PacketUpdatePlayerDetails) object;
                     gameHandler.setSelf(packetGameStart.player);
                     gameHandler.players = packetGameStart.playerGroup;
                     gameHandler.PlayerMap = packetGameStart.PlayerMap;
                     Platform.runLater(() -> GUI.updateUI());
 
-                } else if (object instanceof PacketUpdatePlayer) {
-                    PacketUpdatePlayer packet = (PacketUpdatePlayer) object;
-                    gameHandler.setSelf(packet.player);
-                    Platform.runLater(() -> GUI.updateUI());
                 } else if (object instanceof PacketPlayerTurn) {
                     PacketPlayerTurn packet = (PacketPlayerTurn) object;
-                    Platform.runLater(() -> GUI.setCurrentPlayer(packet.id, packet.name));
+                    Platform.runLater(() -> {
+                        GUI.setCurrentPlayer(packet.id, packet.name);
+                        if (gameHandler.getSelf().getHand().length == 0) {
+                            GUI.displayGofishButton();
+                        }
+                    });
+
+                } else if (object instanceof PacketPlayersWaiting) {
+                    PacketPlayersWaiting packet = (PacketPlayersWaiting) object;
+                    Platform.runLater(() -> {
+                        GUI.addToJoinedBar(packet.PlayerMap.keySet());
+                    });
                 }
             }
         });
@@ -79,11 +94,7 @@ public class ChatClient implements ChatInterface {
         client.sendTCP(packet);
     }
 
-    public void GAME_Action() {
 
-    }
-
-    @Override
     public void checkPlayerCard(Player asker, Player target, String playerSelectedRank) {
         Platform.runLater(() -> {
             PacketPlayerAction packet = new PacketPlayerAction();
@@ -95,5 +106,11 @@ public class ChatClient implements ChatInterface {
             client.sendTCP(packet);
         });
 
+    }
+
+    public void goFish() {
+        PacketPlayerNoCard packet = new PacketPlayerNoCard();
+        packet.askerID = gameHandler.getSelf().getID();
+        client.sendTCP(packet);
     }
 }
