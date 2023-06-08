@@ -628,7 +628,7 @@ public class MainApp extends Application {
             targetButtons.getChildren().add(temp);
         }
 
-        targetButtonsGroup.setTranslateX(rootLayout.getWidth() / 2);
+        targetButtonsGroup.setTranslateX(rootLayout.getWidth() / 2 - targetButtons.getWidth());
         targetButtonsGroup.setTranslateY(rootLayout.getHeight() / 2 + 60);
 
         Label targetslbl = new Label("Targets");
@@ -956,16 +956,16 @@ public class MainApp extends Application {
         String lbltext = "Selected Rank: " + this.playerSelectedRank + " | "
                 + "Selected Target: " + this.playerSelectedTarget;
         Label temp = new Label(lbltext);
-        temp.setTranslateX(-300);
-        temp.setTranslateY(initialY);
+        temp.setTranslateY(rootLayout.getHeight() / 2 - 75);
+        temp.setStyle("-fx-background-color: gray;");
         temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
 
         lbltext = NetworkClient.gameHandler.getSelf().getHandCount() + " cards | "
                 + NetworkClient.gameHandler.getSelf().getCompletedSuits() + " suites completed";
         temp = new Label(lbltext);
-        temp.setTranslateX(-300);
-        temp.setTranslateY(initialY + 25);
+        temp.setTranslateY(rootLayout.getHeight() / 2 - 50);
+        temp.setStyle("-fx-background-color: gray;");
         temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
 
