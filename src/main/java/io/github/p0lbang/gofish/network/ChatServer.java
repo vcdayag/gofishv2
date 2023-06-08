@@ -21,10 +21,13 @@ public class ChatServer {
 
     private static int PORT;
 
+    private static boolean GAMESTARTED;
+
     public ChatServer(MainApp gui, String name, String ipaddr, int port) {
         USERNAME = name;
         PORT = port;
         GAMEServer = new GameServer(gui, this);
+        GAMESTARTED = false;
         try {
             initialize();
         } catch (IOException e) {
@@ -47,6 +50,9 @@ public class ChatServer {
                     PacketChatMessage chatMessage = (PacketChatMessage) object;
                     server.sendToAllExceptTCP(connection.getID(), chatMessage);
                 } else if (object instanceof PacketPlayerJoin) {
+                    if (GAMESTARTED) {
+                        return;
+                    }
                     PacketPlayerJoin packet = (PacketPlayerJoin) object;
                     Platform.runLater(() -> {
                         GAMEServer.Network_AddPlayer(packet.name, connection.getID());
@@ -93,6 +99,7 @@ public class ChatServer {
     }
 
     public static void GUI_startGame() {
+        GAMESTARTED = true;
         PacketStartGame packet = new PacketStartGame();
         server.sendToAllTCP(packet);
         GAMEServer.setupCards();
