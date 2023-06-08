@@ -123,6 +123,7 @@ public class GameServer extends GameBase {
         }
 
         asker.addMultipleCards(stolencards);
+        NETWORK.sendMessage(asker.getName() + " stole " + stolencards.size() + " cards from " + target.getName());
 //        NETWORK.GAME_sendPlayerTurn(this.getCurrentPlayer());
     }
 
@@ -153,6 +154,7 @@ public class GameServer extends GameBase {
         if (!target.checkHand(rank)) {
             System.out.println("Go fish");
             this.playerGoFish(asker);
+            NETWORK.sendMessage(asker.getName() + " went fishing.");
             return "End";
         }
 

@@ -103,6 +103,10 @@ public class ChatServer implements ChatInterface {
     }
 
     public void sendMessage(String message) {
+        PacketChatMessage chatMessage = new PacketChatMessage();
+        chatMessage.senderName = "";
+        chatMessage.messageText = message;
+        server.sendToAllTCP(chatMessage);
     }
 
     @Override

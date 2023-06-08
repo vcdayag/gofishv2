@@ -45,7 +45,11 @@ public class ChatClient implements ChatInterface {
             public void received(Connection connection, Object object) {
                 if (object instanceof PacketChatMessage) {
                     PacketChatMessage chatMessage = (PacketChatMessage) object;
-                    GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
+                    if (chatMessage.senderName.isBlank()) {
+                        GUI.addToChatBar(chatMessage.messageText);
+                    } else {
+                        GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
+                    }
                 } else if (object instanceof PacketGameStart) {
                     PacketGameStart packetGameStart = (PacketGameStart) object;
                     gameHandler.setSelf(packetGameStart.player);
