@@ -34,6 +34,7 @@ public class Network {
         kryo.register(PacketPlayerTurn.class);
         kryo.register(PacketPlayersWaiting.class);
         kryo.register(PacketStartGame.class);
+        kryo.register(PacketPlayerNoCard.class);
 
     }
 
