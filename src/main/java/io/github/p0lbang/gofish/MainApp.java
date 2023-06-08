@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Set;
 
 //Main class which extends from Application Class
 public class MainApp extends Application {
@@ -42,6 +43,7 @@ public class MainApp extends Application {
     String CurrentPlayersTurnName = "";
 
     Label CurrentPlayerLabel;
+    TextFlow joinedTextFlow = null;
     // This is our PrimaryStage (It contains everything)
     private Stage primaryStage;
     // This is the BorderPane of RootLayout
@@ -58,6 +60,8 @@ public class MainApp extends Application {
     private ArrayList<Label> TargetsLabels = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Label> playerInfoLabels = new ArrayList<>();
+
+    private Button gofishbtn;
     private String playerSelectedRank = "";
     private ImageView selectedImageRank = null;
     private double selectedImageRankX;
@@ -67,6 +71,8 @@ public class MainApp extends Application {
     private VBox mainMenuLayout;
     private TextFlow chatLayout;
     private String theme_clicked;
+
+    private VBox targetButtonsGroup;
 
     @Override
     public void start(Stage primaryStage) {
@@ -271,6 +277,99 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
+    private VBox createTxtFlow() {
+        ScrollPane sp = new ScrollPane();
+        joinedTextFlow = new TextFlow();
+        joinedTextFlow.setLineSpacing(10);
+        TextField textField = new TextField();
+        textField.setPrefSize(150, 30);
+        Button button = new Button("Send");
+        button.setPrefSize(80, 30);
+        VBox box = new VBox();
+        box.getChildren().addAll(sp, joinedTextFlow);
+
+        VBox.setVgrow(sp, Priority.ALWAYS);
+        VBox.setVgrow(joinedTextFlow, Priority.ALWAYS);
+
+        VBox vb = new VBox();
+        vb.getChildren().addAll(joinedTextFlow);
+        sp.setVmax(440);
+        sp.setPrefSize(200, 300);
+        sp.setContent(vb);
+        sp.vvalueProperty().bind(vb.heightProperty());
+        sp.setPannable(true);
+
+        return box;
+    }
+
+    public void addToJoinedBar(Set<String> playernames) {
+//        required to wrap gui code into this platform runlater to work
+        Platform.runLater(() -> {
+            joinedTextFlow.getChildren().removeAll(joinedTextFlow.getChildren());
+            for (String name : playernames) {
+                Text text;
+                if (joinedTextFlow.getChildren().size() == 0) {
+                    text = new Text(name);
+                } else {
+                    // Add new line if not the first child
+                    text = new Text("\n" + name);
+                }
+                joinedTextFlow.getChildren().add(text);
+            }
+        });
+    }
+
+    private void showWaitingMenu() {
+        try {
+            VBox joined = createTxtFlow();
+            // Create a VBox to stack the image and buttons vertically
+            VBox localrootLayout = new VBox(10); // Spacing between image and buttons
+            localrootLayout.setAlignment(Pos.CENTER);
+            Label playerlistlbl = new Label("Player List");
+            playerlistlbl.setTextFill(Color.WHITE);
+            localrootLayout.getChildren().addAll(playerlistlbl, joined);
+
+            rootLayout = new StackPane(localrootLayout);
+            mainLayout = new BorderPane();
+            mainLayout.setCenter(rootLayout);
+
+            if (NetworkServer != null) {
+                Button StartGame = new Button("Start Game");
+                StartGame.setTranslateY(100);
+                localrootLayout.getChildren().addAll(StartGame);
+                StartGame.setOnAction(evt -> {
+                    NetworkServer.GUI_startGame();
+                });
+            } else {
+                Label waitlbl = new Label("Waiting for Server...");
+                waitlbl.setTextFill(Color.WHITE);
+                localrootLayout.getChildren().addAll(waitlbl);
+            }
+
+            //Background Image
+            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/background.png"));
+            Image backgroundImage = new Image(url.toString());
+
+            BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+            BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+            Background background = new Background(backgroundImageObject);
+            rootLayout.setBackground(background);
+            /////////////////////////////////////////////////////////////
+            // Second, show the scene containing the root layout.
+            initChatmenu();
+            Scene scene = new Scene(mainLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+            primaryStage.setScene(scene); // Set the scene in primary stage.
+            primaryStage.setResizable(false);
+
+            // Third, show the primary stage
+            primaryStage.show(); // Display the primary stage
+
+            NetworkClient.joinServer(this.currentPlayerName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void showMultiplayerMenu() {
         mainMenuLayout = new VBox(10); // Spacing between buttons
 
@@ -312,8 +411,7 @@ public class MainApp extends Application {
             }
             this.currentPlayerName = clientName.getText();
             NetworkClient = new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
-            NetworkClient.joinServer(this.currentPlayerName);
-            startGame();
+            showWaitingMenu();
         });
 
         HBox servernameGroup = new HBox();
@@ -345,11 +443,9 @@ public class MainApp extends Application {
                 return;
             }
             this.currentPlayerName = serverName.getText();
-//            NetworkClient.gameHandler = new GameServer(this);
             NetworkServer = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             NetworkClient = new ChatClient(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
-            NetworkClient.joinServer(this.currentPlayerName);
-            startGame();
+            showWaitingMenu();
         });
 
         Button backButton = new Button("Back");
@@ -509,7 +605,7 @@ public class MainApp extends Application {
         chooseTheme();
     }
 
-    private void startGame() {
+    public void startGame() {
         initRootLayout();
     }
 
@@ -519,23 +615,41 @@ public class MainApp extends Application {
     }
 
     public void displayTargetsSelectionButtons(ArrayList<String> Targets) {
-        rootLayout.getChildren().removeAll(playerTargetsButtons);
-        playerTargetsButtons.clear();
+        rootLayout.getChildren().removeAll(targetButtonsGroup);
+        targetButtonsGroup = new VBox();
 
-        int ranklen = Targets.size();
-        int halfrank = ranklen / 2;
-        int transval = 50;
+        HBox targetButtons = new HBox();
 
-        for (int i = 0; i < ranklen; i++) {
+        int targetsize = Targets.size();
+        for (int i = 0; i < targetsize; i++) {
             Button temp = new Button(Targets.get(i));
             playerTargetsButtons.add(temp);
             int finalI = i;
             temp.setOnAction(evt -> TargetSelectionAction(this.currentPlayerName, Targets.get(finalI)));
-            temp.setTranslateX((i - halfrank) * transval);
-            temp.setTranslateY(50);
+            targetButtons.getChildren().add(temp);
         }
 
-        rootLayout.getChildren().addAll(playerTargetsButtons);
+        targetButtonsGroup.setTranslateX(rootLayout.getWidth() / 2);
+        targetButtonsGroup.setTranslateY(rootLayout.getHeight() / 2 + 60);
+
+        Label targetslbl = new Label("Targets");
+        targetslbl.setTextFill(Color.WHITE);
+        targetButtonsGroup.getChildren().addAll(targetslbl, targetButtons);
+
+        rootLayout.getChildren().addAll(targetButtonsGroup);
+    }
+
+    public void displayGofishButton() {
+        rootLayout.getChildren().removeAll(gofishbtn);
+
+        gofishbtn = new Button("No cards left, Go Fish");
+        gofishbtn.setTranslateY(50);
+        gofishbtn.setOnAction(e -> {
+            NetworkClient.goFish();
+            rootLayout.getChildren().removeAll(gofishbtn);
+        });
+
+        rootLayout.getChildren().addAll(gofishbtn);
     }
 
     public void displayCurrentPlayer() {
@@ -593,7 +707,7 @@ public class MainApp extends Application {
             imageView.setId(Deck[i]);
             imageView.setStyle("-fx-border-color: red; -fx-border-width: 5px;");
             rootLayout.getChildren().add(imageView);
-            playerDeckImageViews.add(imageView);
+            playerDeckImageViews.add(imageView);fix: move info labels
         }
     }
 
@@ -709,8 +823,7 @@ public class MainApp extends Application {
     // Initializes the root layout.
     public void initRootLayout() {
         try {
-            rootLayout = new StackPane();
-            mainLayout = new BorderPane();
+            rootLayout.getChildren().removeAll(rootLayout.getChildren());
             mainLayout.setCenter(rootLayout);
 
             Button DoAction = new Button("Do Action");
@@ -749,8 +862,7 @@ public class MainApp extends Application {
             DoAction.setOnMouseEntered(e -> DoAction.setStyle(buttonStyle + hoverStyle));
             DoAction.setOnMouseExited(e -> DoAction.setStyle(buttonStyle));
             rootLayout.getChildren().add(DoAction);
-            DoAction.setTranslateY(100);
-            DoAction.setTranslateX(100);
+            DoAction.setTranslateY(rootLayout.getHeight() / 2 - 20);
             DoAction.setOnAction(evt -> Platform.runLater(() -> {
                 if (CurrentPlayersTurnID != NetworkClient.gameHandler.getSelf().getID()) {
                     System.out.println("not your turn");
@@ -765,6 +877,7 @@ public class MainApp extends Application {
                 playerSelectedRank = "";
                 playerSelectedTarget = "";
             }));
+
             if (NetworkServer != null) {
                 Button StartGame = new Button("Start Game");
 

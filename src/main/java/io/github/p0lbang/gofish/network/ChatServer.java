@@ -10,20 +10,24 @@ import io.github.p0lbang.gofish.network.packets.*;
 import javafx.application.Platform;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Objects;
 
 // ChatServer.java
-public class ChatServer implements ChatInterface {
+public class ChatServer {
     public static String USERNAME;
     private static Server server;
     private static GameServer GAMEServer;
 
     private static int PORT;
 
+    private static boolean GAMESTARTED;
+
     public ChatServer(MainApp gui, String name, String ipaddr, int port) {
         USERNAME = name;
         PORT = port;
         GAMEServer = new GameServer(gui, this);
+        GAMESTARTED = false;
         try {
             initialize();
         } catch (IOException e) {
@@ -34,25 +38,31 @@ public class ChatServer implements ChatInterface {
     public static void initialize() throws IOException {
         server = new Server();
         Network.register(server);
-        System.out.println(server.getConnections().size());
+        InetAddress localhost = InetAddress.getLocalHost();
 
         server.addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
-
             }
 
             public void received(Connection connection, Object object) {
                 if (object instanceof PacketChatMessage) {
                     PacketChatMessage chatMessage = (PacketChatMessage) object;
-//                    GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
                     server.sendToAllExceptTCP(connection.getID(), chatMessage);
                 } else if (object instanceof PacketPlayerJoin) {
+                    if (GAMESTARTED) {
+                        return;
+                    }
                     PacketPlayerJoin packet = (PacketPlayerJoin) object;
                     Platform.runLater(() -> {
                         GAMEServer.Network_AddPlayer(packet.name, connection.getID());
                         System.out.println(packet.name);
                         System.out.println(connection.getID());
+                        sendMessage(packet.name + " joined the game.");
+                        sendMessage("Server IP: " + localhost.getHostAddress() + ":" + PORT);
+                        PacketPlayersWaiting packetwaiting = new PacketPlayersWaiting();
+                        packetwaiting.PlayerMap = GAMEServer.players.players;
+                        server.sendToAllTCP(packetwaiting);
                     });
                 } else if (object instanceof PacketPlayerAction) {
                     PacketPlayerAction action = (PacketPlayerAction) object;
@@ -63,6 +73,11 @@ public class ChatServer implements ChatInterface {
                     } else {
                         GAME_sendPlayerTurn(GAMEServer.getCurrentPlayer());
                     }
+                } else if (object instanceof PacketPlayerNoCard) {
+                    PacketPlayerNoCard packet = (PacketPlayerNoCard) object;
+                    GAMEServer.NETWORK_playerGoFish(packet.askerID);
+                    startgameminimal();
+                    GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
                 }
             }
         });
@@ -80,7 +95,7 @@ public class ChatServer implements ChatInterface {
 
     public static void startgameminimal() {
         for (Player player : GAMEServer.players.PlayerList()) {
-            PacketGameStart packet = new PacketGameStart();
+            PacketUpdatePlayerDetails packet = new PacketUpdatePlayerDetails();
             packet.player = player;
             packet.PlayerMap = GAMEServer.getTargetPlayersMap(player.getName());
             server.sendToTCP(player.getID(), packet);
@@ -89,29 +104,22 @@ public class ChatServer implements ChatInterface {
     }
 
     public static void GUI_startGame() {
+        GAMESTARTED = true;
+        PacketStartGame packet = new PacketStartGame();
+        server.sendToAllTCP(packet);
+        GAMEServer.setupCards();
         Platform.runLater(() -> {
-            GAMEServer.setupCards();
             startgameminimal();
             GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
         });
 
     }
 
-    @Override
-    public void checkPlayerCard(Player self, Player player, String playerSelectedRank) {
-
+    public static void sendMessage(String message) {
+        PacketChatMessage chatMessage = new PacketChatMessage();
+        chatMessage.senderName = "";
+        chatMessage.messageText = message;
+        server.sendToAllTCP(chatMessage);
     }
 
-    public void sendMessage(String message) {
-    }
-
-    @Override
-    public void joinServer(String name) {
-
-    }
-
-    @Override
-    public void GAME_Action() {
-
-    }
 }
