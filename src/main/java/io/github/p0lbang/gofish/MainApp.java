@@ -67,6 +67,7 @@ public class MainApp extends Application {
     private VBox mainMenuLayout;
     private TextFlow chatLayout;
     private String theme_clicked;
+    private ArrayList<ImageView> targetImages = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) {
@@ -818,12 +819,12 @@ public class MainApp extends Application {
     }
 
     void displayTargets(ArrayList<String> targetplayers) {
-        ArrayList<ImageView> targetImages = new ArrayList<>();
+
         rootLayout.getChildren().removeAll(TargetsLabels);
         TargetsLabels.clear();
 
         rootLayout.getChildren().removeAll(targetImages);
-        TargetsLabels.clear();
+        targetImages.clear();
 
         int ranklen = targetplayers.size();
         int halfrank = ranklen / 2;
@@ -836,6 +837,7 @@ public class MainApp extends Application {
         for (int i = 0; i < ranklen; i++) {
             String target = targetplayers.get(i);
             int handCount = NetworkClient.gameHandler.PlayerMap.get(target).getHandCount();
+
 
             // Create label for target player
             String lbltext = target
