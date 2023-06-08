@@ -141,7 +141,7 @@ public class MainApp extends Application {
         // Create a VBox to stack the image and buttons vertically
         VBox mainMenuLayout = new VBox(10); // Spacing between image and buttons
         mainMenuLayout.setAlignment(Pos.CENTER);
-        mainMenuLayout.getChildren().addAll(imageView, multiplayerButton,themeButton,aboutButton,exitButton);
+        mainMenuLayout.getChildren().addAll(imageView, multiplayerButton, themeButton, aboutButton, exitButton);
 
 
         BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
@@ -567,7 +567,7 @@ public class MainApp extends Application {
         fruitThemeButton.setOnMouseExited(e -> fruitThemeButton.setStyle(buttonStyle));
 
         HBox themeContainer = new HBox(10);
-        themeContainer.getChildren().addAll(imageView,imageView2);
+        themeContainer.getChildren().addAll(imageView, imageView2);
         themeContainer.setAlignment(Pos.CENTER);
 
         HBox buttonContainer = new HBox(10);
@@ -575,13 +575,13 @@ public class MainApp extends Application {
         buttonContainer.setAlignment(Pos.CENTER);
 
         HBox buttonContainer2 = new HBox(10);
-        buttonContainer2.getChildren().addAll(okButton,backButton);
+        buttonContainer2.getChildren().addAll(okButton, backButton);
         buttonContainer2.setAlignment(Pos.CENTER);
 
 
         VBox themeMenuLayout = new VBox(20);
         themeMenuLayout.setAlignment(Pos.CENTER);
-        themeMenuLayout.getChildren().addAll(themeContainer,buttonContainer,buttonContainer2);
+        themeMenuLayout.getChildren().addAll(themeContainer, buttonContainer, buttonContainer2);
 
 
         URL url3 = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
@@ -713,7 +713,6 @@ public class MainApp extends Application {
             imageView.setStyle("-fx-border-color: red; -fx-border-width: 5px;");
             rootLayout.getChildren().add(imageView);
             playerDeckImageViews.add(imageView);
-            //fix: move info labels
         }
     }
 
@@ -819,7 +818,6 @@ public class MainApp extends Application {
         sp.vvalueProperty().bind(vb.heightProperty());
         sp.setPannable(true);
         mainLayout.setLeft(container);
-
     }
 
     // Initializes the root layout.
