@@ -28,11 +28,12 @@ public class Network {
         kryo.register(Deck.class);
         kryo.register(Card.class);
         kryo.register(PacketChatMessage.class);
-        kryo.register(PacketGameStart.class);
+        kryo.register(PacketUpdatePlayerDetails.class);
         kryo.register(PacketPlayerAction.class);
         kryo.register(PacketPlayerJoin.class);
-        kryo.register(PacketUpdatePlayer.class);
         kryo.register(PacketPlayerTurn.class);
+        kryo.register(PacketPlayersWaiting.class);
+        kryo.register(PacketStartGame.class);
 
     }
 

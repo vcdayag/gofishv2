@@ -6,7 +6,7 @@ import io.github.p0lbang.gofish.game.PlayerGroup;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PacketGameStart {
+public class PacketUpdatePlayerDetails {
 
     public Player player;
     public PlayerGroup playerGroup;
