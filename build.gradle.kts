@@ -17,6 +17,7 @@ plugins {
     // id("java")
     id("org.openjfx.javafxplugin") version "0.0.13"
     id("org.beryx.jlink") version "2.26.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 repositories {
@@ -38,8 +39,7 @@ dependencies {
 application {
     // Define the main class for the application.
     mainModule.set("io.github.p0lbang.gofish")
-//    mainClass.set("io.github.p0lbang.gofish.exp2App")
-    mainClass.set("io.github.p0lbang.gofish.MainApp")
+    mainClass.set("io.github.p0lbang.gofish.App")
 }
 
 javafx {
@@ -52,9 +52,14 @@ jlink {
     launcher {
         name = "GoFish"
     }
+    imageZip.set(project.file("${project.buildDir}/image-zip/gofish.zip"))
 }
 
-tasks.named<Test>("test") {
+/*tasks.jar {
+    manifest.attributes["Main-Class"] = "io.github.p0lbang.gofish.App"
+}*/
+
+/*tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
-}
+}*/
