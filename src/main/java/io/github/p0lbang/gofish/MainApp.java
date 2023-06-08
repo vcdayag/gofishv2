@@ -166,8 +166,6 @@ public class MainApp extends Application {
         backButton.setOnAction(evt -> {
             showMainMenu();
         });
-//        backButton.setLayoutX(-150);
-//        backButton.setTranslateY(295);
 
 
         URL nextURL = Objects.requireNonNull(MainApp.class.getResource("about_next.png"));
@@ -184,8 +182,7 @@ public class MainApp extends Application {
         nextButton.setOnAction(evt -> {
             showMainMenu();
         });
-//        nextButton.setTranslateX(100);
-//        nextButton.setTranslateY(295);
+
 
         // Create a VBox to stack the image and buttons horizontally
         HBox buttonContainer = new HBox(10); // Spacing between image and buttons
@@ -295,6 +292,29 @@ public class MainApp extends Application {
 
         Button backButton = new Button("Back");
         backButton.setOnAction(evt -> showMainMenu());
+
+        String buttonStyle = "-fx-background-color: #007bff; " +
+                "-fx-text-fill: #ffffff; " +
+                "-fx-background-radius: 20; " +
+                "-fx-border-color: #00aaff; " +
+                "-fx-border-width: 2px;" +
+                "-fx-border-radius: 20;";
+
+        String hoverStyle = "-fx-background-color: #00aaff;";
+
+        clientButton.setStyle(buttonStyle);
+        clientButton.setOnMouseEntered(e -> clientButton.setStyle(buttonStyle + hoverStyle));
+        clientButton.setOnMouseExited(e -> clientButton.setStyle(buttonStyle));
+
+
+        serverButton.setStyle(buttonStyle);
+        serverButton.setOnMouseEntered(e -> serverButton.setStyle(buttonStyle + hoverStyle));
+        serverButton.setOnMouseExited(e -> serverButton.setStyle(buttonStyle));
+
+
+        backButton.setStyle(buttonStyle);
+        backButton.setOnMouseEntered(e -> backButton.setStyle(buttonStyle + hoverStyle));
+        backButton.setOnMouseExited(e -> backButton.setStyle(buttonStyle));
 
 
         mainMenuLayout.getChildren().addAll(clientnameGroup, ipaddrGroup, portGroup, clientButton, new Label("or"), servernameGroup, serverportGroup, serverButton, backButton, ErrorPrompt);
@@ -458,7 +478,7 @@ public class MainApp extends Application {
 
     public void displayCurrentPlayer() {
         rootLayout.getChildren().removeAll(CurrentPlayerLabel);
-        CurrentPlayerLabel = new Label(CurrentPlayersTurnName);
+        CurrentPlayerLabel = new Label("Current Player's Turn: " + CurrentPlayersTurnName);
         CurrentPlayerLabel.setTranslateX(-300);
         CurrentPlayerLabel.setTranslateY(0);
         CurrentPlayerLabel.setTextFill(Color.WHITE);
@@ -585,6 +605,18 @@ public class MainApp extends Application {
         container.getChildren().addAll(box, new HBox(textField, button));
 
 
+        if (theme == "default"){
+            container.setStyle("-fx-background-color: #6e593f;");
+
+        } else if (theme == "animal") {
+            container.setStyle("-fx-background-color: #228B22;");
+        }
+        else{
+            container.setStyle("-fx-background-color: #800020;");
+
+        }
+
+
         VBox.setVgrow(sp, Priority.ALWAYS);
         VBox.setVgrow(chatLayout, Priority.ALWAYS);
 
@@ -619,6 +651,40 @@ public class MainApp extends Application {
             mainLayout.setCenter(rootLayout);
 
             Button DoAction = new Button("Do Action");
+            String hoverStyle;
+
+            String buttonStyle;
+
+            if (theme.equals("animal")) {
+                buttonStyle = "-fx-background-color: #228B22; " +
+                        "-fx-text-fill: #ffffff; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 20;";
+                hoverStyle = "-fx-background-color: #7CFC00;"; // Lighter hover color
+            } else if (theme.equals("default")) {
+                buttonStyle = "-fx-background-color: #6e593f; " +
+                        "-fx-text-fill: #ffffff; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 20;";
+                hoverStyle = "-fx-background-color: #8B4513;"; // Lighter hover color
+            } else {
+                buttonStyle = "-fx-background-color: #800020; " +
+                        "-fx-text-fill: #ffffff; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 20;";
+                hoverStyle = "-fx-background-color: #B22222;"; // Lighter hover color
+            }
+
+
+
+
+
+            DoAction.setStyle(buttonStyle);
+            DoAction.setOnMouseEntered(e -> DoAction.setStyle(buttonStyle + hoverStyle));
+            DoAction.setOnMouseExited(e -> DoAction.setStyle(buttonStyle));
             rootLayout.getChildren().add(DoAction);
             DoAction.setTranslateY(100);
             DoAction.setTranslateX(100);
@@ -638,6 +704,11 @@ public class MainApp extends Application {
             }));
             if (NetworkServer != null) {
                 Button StartGame = new Button("Start Game");
+
+                StartGame.setStyle(buttonStyle);
+                StartGame.setOnMouseEntered(e -> StartGame.setStyle(buttonStyle + hoverStyle));
+                StartGame.setOnMouseExited(e -> StartGame.setStyle(buttonStyle));
+
                 rootLayout.getChildren().add(StartGame);
                 StartGame.setTranslateY(100);
                 StartGame.setOnAction(evt -> {
