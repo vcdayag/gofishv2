@@ -10,6 +10,7 @@ import io.github.p0lbang.gofish.network.packets.*;
 import javafx.application.Platform;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Objects;
 
 // ChatServer.java
@@ -34,7 +35,7 @@ public class ChatServer {
     public static void initialize() throws IOException {
         server = new Server();
         Network.register(server);
-        System.out.println(server.getConnections().size());
+        InetAddress localhost = InetAddress.getLocalHost();
 
         server.addListener(new Listener() {
             @Override
@@ -44,7 +45,6 @@ public class ChatServer {
             public void received(Connection connection, Object object) {
                 if (object instanceof PacketChatMessage) {
                     PacketChatMessage chatMessage = (PacketChatMessage) object;
-//                    GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
                     server.sendToAllExceptTCP(connection.getID(), chatMessage);
                 } else if (object instanceof PacketPlayerJoin) {
                     PacketPlayerJoin packet = (PacketPlayerJoin) object;
@@ -53,6 +53,8 @@ public class ChatServer {
                         System.out.println(packet.name);
                         System.out.println(connection.getID());
                         sendMessage(packet.name + " joined the game.");
+                        sendMessage("Server IP: " + localhost.getHostAddress() + ":" + PORT);
+
                     });
                 } else if (object instanceof PacketPlayerAction) {
                     PacketPlayerAction action = (PacketPlayerAction) object;

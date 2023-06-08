@@ -42,6 +42,7 @@ public class ChatClient {
         client.connect(5000, IPADDR, PORT);
 
         client.addListener(new Listener() {
+            @Override
             public void received(Connection connection, Object object) {
                 if (object instanceof PacketChatMessage) {
                     PacketChatMessage chatMessage = (PacketChatMessage) object;
