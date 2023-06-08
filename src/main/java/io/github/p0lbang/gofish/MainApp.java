@@ -210,6 +210,77 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
+    private VBox createTxtFlow(TextFlow txtflow) {
+        ScrollPane sp = new ScrollPane();
+        txtflow = new TextFlow();
+        txtflow.setLineSpacing(10);
+        TextField textField = new TextField();
+        textField.setPrefSize(150, 30);
+        Button button = new Button("Send");
+        button.setPrefSize(80, 30);
+        VBox box = new VBox();
+        box.getChildren().addAll(sp, txtflow);
+
+        VBox.setVgrow(sp, Priority.ALWAYS);
+        VBox.setVgrow(txtflow, Priority.ALWAYS);
+
+        VBox vb = new VBox();
+        vb.getChildren().addAll(txtflow);
+        sp.setVmax(440);
+        sp.setPrefSize(200, 300);
+        sp.setContent(vb);
+        sp.vvalueProperty().bind(vb.heightProperty());
+        sp.setPannable(true);
+
+        return box;
+    }
+
+    private void showWaitingMenu() {
+        try {
+            TextFlow example = null;
+            VBox containplease = createTxtFlow(example);
+
+            TextFlow txtflow1 = null;
+            VBox joined = createTxtFlow(txtflow1);
+
+            Button startButton = new Button("Start Game");
+            startButton.setOnAction(evt -> startGame());
+
+            HBox horizontal = new HBox();
+
+            horizontal.getChildren().setAll(containplease, joined);
+
+            // Create a VBox to stack the image and buttons vertically
+            VBox localrootLayout = new VBox(10); // Spacing between image and buttons
+            localrootLayout.setAlignment(Pos.CENTER);
+            localrootLayout.getChildren().addAll(horizontal, startButton);
+
+            rootLayout = new StackPane(localrootLayout);
+            mainLayout = new BorderPane();
+            mainLayout.setCenter(rootLayout);
+
+            //Background Image
+            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/background.png"));
+            Image backgroundImage = new Image(url.toString());
+
+            BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+            BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+            Background background = new Background(backgroundImageObject);
+            rootLayout.setBackground(background);
+            /////////////////////////////////////////////////////////////
+            // Second, show the scene containing the root layout.
+            initChatmenu();
+            Scene scene = new Scene(mainLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+            primaryStage.setScene(scene); // Set the scene in primary stage.
+            primaryStage.setResizable(false);
+
+            // Third, show the primary stage
+            primaryStage.show(); // Display the primary stage
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void showMultiplayerMenu() {
         mainMenuLayout = new VBox(10); // Spacing between buttons
 
@@ -284,11 +355,10 @@ public class MainApp extends Application {
                 return;
             }
             this.currentPlayerName = serverName.getText();
-//            NetworkClient.gameHandler = new GameServer(this);
+            showWaitingMenu();
             NetworkServer = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             NetworkClient = new ChatClient(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             NetworkClient.joinServer(this.currentPlayerName);
-            startGame();
         });
 
         Button backButton = new Button("Back");
@@ -612,8 +682,7 @@ public class MainApp extends Application {
     // Initializes the root layout.
     public void initRootLayout() {
         try {
-            rootLayout = new StackPane();
-            mainLayout = new BorderPane();
+            rootLayout.getChildren().removeAll(rootLayout.getChildren());
             mainLayout.setCenter(rootLayout);
 
             Button DoAction = new Button("Do Action");
@@ -643,27 +712,7 @@ public class MainApp extends Application {
                     rootLayout.getChildren().remove(StartGame);
                 });
             }
-
-
-//            this.updateUI();
-
-            //Background Image
-            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/background.png"));
-            Image backgroundImage = new Image(url.toString());
-
-            BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
-            BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
-            Background background = new Background(backgroundImageObject);
-            rootLayout.setBackground(background);
-            /////////////////////////////////////////////////////////////
-            // Second, show the scene containing the root layout.
-            initChatmenu();
-            Scene scene = new Scene(mainLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
-            primaryStage.setScene(scene); // Set the scene in primary stage.
-            primaryStage.setResizable(false);
-
-            // Third, show the primary stage
-            primaryStage.show(); // Display the primary stage
+            primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
