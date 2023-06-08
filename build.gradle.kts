@@ -16,7 +16,7 @@ plugins {
     application
     // id("java")
     id("org.openjfx.javafxplugin") version "0.0.13"
-    // id("org.beryx.jlink") version "2.26.0"
+    id("org.beryx.jlink") version "2.26.0"
 }
 
 repositories {
@@ -47,21 +47,12 @@ javafx {
     modules("javafx.controls", "javafx.fxml")
 }
 
-// jlink {
-//     // imageZip.set(File("$buildDir/image-zip/hellofx.zip"))
-//     addOptions("--bind-services", "--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages")
-//     // if("true".equals(System.getenv("CI"))) {
-//     //     listOf("win", "linux", "mac").forEach { name ->
-//     //         targetPlatform(name) {
-//     //             jdkHome = System.getenv("JDK_HOME_" + name.toUpperCase())
-//     //             addExtraModulePath(System.getenv("OPENJFX_MODS_" + name.toUpperCase()))
-//     //         }
-//     //     }
-//     // }
-//     launcher {
-//         name = "App"
-//     }
-// }
+jlink {
+    addOptions("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages")
+    launcher {
+        name = "GoFish"
+    }
+}
 
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
