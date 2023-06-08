@@ -707,7 +707,8 @@ public class MainApp extends Application {
             imageView.setId(Deck[i]);
             imageView.setStyle("-fx-border-color: red; -fx-border-width: 5px;");
             rootLayout.getChildren().add(imageView);
-            playerDeckImageViews.add(imageView);fix: move info labels
+            playerDeckImageViews.add(imageView);
+            //fix: move info labels
         }
     }
 
