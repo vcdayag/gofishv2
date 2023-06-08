@@ -658,12 +658,7 @@ public class MainApp extends Application {
     }
 
     public void displayCurrentPlayer() {
-        rootLayout.getChildren().removeAll(CurrentPlayerLabel);
-        CurrentPlayerLabel = new Label(CurrentPlayersTurnName);
-        CurrentPlayerLabel.setTranslateX(-300);
-        CurrentPlayerLabel.setTranslateY(0);
-        CurrentPlayerLabel.setTextFill(Color.WHITE);
-        rootLayout.getChildren().addAll(CurrentPlayerLabel);
+        CurrentPlayerLabel.setText(CurrentPlayersTurnName);
     }
 
 
@@ -783,7 +778,11 @@ public class MainApp extends Application {
         VBox box = new VBox();
         box.getChildren().addAll(sp, chatLayout);
         container.setPadding(new Insets(10));
-        container.getChildren().addAll(box, new HBox(textField, button));
+
+        CurrentPlayerLabel = new Label(CurrentPlayersTurnName);
+
+
+        container.getChildren().addAll(box, new HBox(textField, button), new Label("Current Player:"), CurrentPlayerLabel);
 
 
         if (theme == "default"){
@@ -872,6 +871,7 @@ public class MainApp extends Application {
                     System.out.println("please select a target and rank");
                     return;
                 }
+
                 NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
                 selectedImageRank = null;
                 playerSelectedRank = "";
