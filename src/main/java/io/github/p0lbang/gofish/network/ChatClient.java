@@ -44,27 +44,31 @@ public class ChatClient {
         client.addListener(new Listener() {
             @Override
             public void received(Connection connection, Object object) {
-                if (object instanceof PacketChatMessage) {
+                if (object instanceof PacketStartGame) {
+                    PacketStartGame packet = (PacketStartGame) object;
+                    Platform.runLater(() -> GUI.startGame());
+                } else if (object instanceof PacketChatMessage) {
                     PacketChatMessage chatMessage = (PacketChatMessage) object;
                     if (chatMessage.senderName.isBlank()) {
                         GUI.addToChatBar(chatMessage.messageText);
                     } else {
                         GUI.addToChatBar(chatMessage.senderName + ": " + chatMessage.messageText);
                     }
-                } else if (object instanceof PacketGameStart) {
-                    PacketGameStart packetGameStart = (PacketGameStart) object;
+                } else if (object instanceof PacketUpdatePlayerDetails) {
+                    PacketUpdatePlayerDetails packetGameStart = (PacketUpdatePlayerDetails) object;
                     gameHandler.setSelf(packetGameStart.player);
                     gameHandler.players = packetGameStart.playerGroup;
                     gameHandler.PlayerMap = packetGameStart.PlayerMap;
                     Platform.runLater(() -> GUI.updateUI());
 
-                } else if (object instanceof PacketUpdatePlayer) {
-                    PacketUpdatePlayer packet = (PacketUpdatePlayer) object;
-                    gameHandler.setSelf(packet.player);
-                    Platform.runLater(() -> GUI.updateUI());
                 } else if (object instanceof PacketPlayerTurn) {
                     PacketPlayerTurn packet = (PacketPlayerTurn) object;
                     Platform.runLater(() -> GUI.setCurrentPlayer(packet.id, packet.name));
+                } else if (object instanceof PacketPlayersWaiting) {
+                    PacketPlayersWaiting packet = (PacketPlayersWaiting) object;
+                    Platform.runLater(() -> {
+                        GUI.addToJoinedBar(packet.PlayerMap.keySet());
+                    });
                 }
             }
         });

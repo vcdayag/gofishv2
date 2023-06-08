@@ -28,6 +28,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Set;
 
 //Main class which extends from Application Class
 public class MainApp extends Application {
@@ -42,6 +43,7 @@ public class MainApp extends Application {
     String CurrentPlayersTurnName = "";
 
     Label CurrentPlayerLabel;
+    TextFlow joinedTextFlow = null;
     // This is our PrimaryStage (It contains everything)
     private Stage primaryStage;
     // This is the BorderPane of RootLayout
@@ -210,22 +212,22 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
-    private VBox createTxtFlow(TextFlow txtflow) {
+    private VBox createTxtFlow() {
         ScrollPane sp = new ScrollPane();
-        txtflow = new TextFlow();
-        txtflow.setLineSpacing(10);
+        joinedTextFlow = new TextFlow();
+        joinedTextFlow.setLineSpacing(10);
         TextField textField = new TextField();
         textField.setPrefSize(150, 30);
         Button button = new Button("Send");
         button.setPrefSize(80, 30);
         VBox box = new VBox();
-        box.getChildren().addAll(sp, txtflow);
+        box.getChildren().addAll(sp, joinedTextFlow);
 
         VBox.setVgrow(sp, Priority.ALWAYS);
-        VBox.setVgrow(txtflow, Priority.ALWAYS);
+        VBox.setVgrow(joinedTextFlow, Priority.ALWAYS);
 
         VBox vb = new VBox();
-        vb.getChildren().addAll(txtflow);
+        vb.getChildren().addAll(joinedTextFlow);
         sp.setVmax(440);
         sp.setPrefSize(200, 300);
         sp.setContent(vb);
@@ -235,29 +237,49 @@ public class MainApp extends Application {
         return box;
     }
 
+    public void addToJoinedBar(Set<String> playernames) {
+//        required to wrap gui code into this platform runlater to work
+        Platform.runLater(() -> {
+            joinedTextFlow.getChildren().removeAll(joinedTextFlow.getChildren());
+            for (String name : playernames) {
+                Text text;
+                if (joinedTextFlow.getChildren().size() == 0) {
+                    text = new Text(name);
+                } else {
+                    // Add new line if not the first child
+                    text = new Text("\n" + name);
+                }
+                joinedTextFlow.getChildren().add(text);
+            }
+        });
+    }
+
     private void showWaitingMenu() {
         try {
-            TextFlow example = null;
-            VBox containplease = createTxtFlow(example);
-
-            TextFlow txtflow1 = null;
-            VBox joined = createTxtFlow(txtflow1);
-
-            Button startButton = new Button("Start Game");
-            startButton.setOnAction(evt -> startGame());
-
-            HBox horizontal = new HBox();
-
-            horizontal.getChildren().setAll(containplease, joined);
-
+            VBox joined = createTxtFlow();
             // Create a VBox to stack the image and buttons vertically
             VBox localrootLayout = new VBox(10); // Spacing between image and buttons
             localrootLayout.setAlignment(Pos.CENTER);
-            localrootLayout.getChildren().addAll(horizontal, startButton);
+            Label playerlistlbl = new Label("Player List");
+            playerlistlbl.setTextFill(Color.WHITE);
+            localrootLayout.getChildren().addAll(playerlistlbl, joined);
 
             rootLayout = new StackPane(localrootLayout);
             mainLayout = new BorderPane();
             mainLayout.setCenter(rootLayout);
+
+            if (NetworkServer != null) {
+                Button StartGame = new Button("Start Game");
+                StartGame.setTranslateY(100);
+                localrootLayout.getChildren().addAll(StartGame);
+                StartGame.setOnAction(evt -> {
+                    NetworkServer.GUI_startGame();
+                });
+            } else {
+                Label waitlbl = new Label("Waiting for Server...");
+                waitlbl.setTextFill(Color.WHITE);
+                localrootLayout.getChildren().addAll(waitlbl);
+            }
 
             //Background Image
             URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/background.png"));
@@ -276,6 +298,8 @@ public class MainApp extends Application {
 
             // Third, show the primary stage
             primaryStage.show(); // Display the primary stage
+
+            NetworkClient.joinServer(this.currentPlayerName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -322,8 +346,7 @@ public class MainApp extends Application {
             }
             this.currentPlayerName = clientName.getText();
             NetworkClient = new ChatClient(this, clientName.getText(), txtipaddr.getText(), Integer.parseInt(txtport.getText()));
-            NetworkClient.joinServer(this.currentPlayerName);
-            startGame();
+            showWaitingMenu();
         });
 
         HBox servernameGroup = new HBox();
@@ -355,10 +378,9 @@ public class MainApp extends Application {
                 return;
             }
             this.currentPlayerName = serverName.getText();
-            showWaitingMenu();
             NetworkServer = new ChatServer(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
             NetworkClient = new ChatClient(this, serverName.getText(), "localhost", Integer.parseInt(txtserverport.getText()));
-            NetworkClient.joinServer(this.currentPlayerName);
+            showWaitingMenu();
         });
 
         Button backButton = new Button("Back");
@@ -495,7 +517,7 @@ public class MainApp extends Application {
         chooseTheme();
     }
 
-    private void startGame() {
+    public void startGame() {
         initRootLayout();
     }
 
@@ -703,15 +725,6 @@ public class MainApp extends Application {
                 playerSelectedRank = "";
                 playerSelectedTarget = "";
             }));
-            if (NetworkServer != null) {
-                Button StartGame = new Button("Start Game");
-                rootLayout.getChildren().add(StartGame);
-                StartGame.setTranslateY(100);
-                StartGame.setOnAction(evt -> {
-                    NetworkServer.GUI_startGame();
-                    rootLayout.getChildren().remove(StartGame);
-                });
-            }
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();

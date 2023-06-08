@@ -54,7 +54,9 @@ public class ChatServer {
                         System.out.println(connection.getID());
                         sendMessage(packet.name + " joined the game.");
                         sendMessage("Server IP: " + localhost.getHostAddress() + ":" + PORT);
-
+                        PacketPlayersWaiting packetwaiting = new PacketPlayersWaiting();
+                        packetwaiting.PlayerMap = GAMEServer.players.players;
+                        server.sendToAllTCP(packetwaiting);
                     });
                 } else if (object instanceof PacketPlayerAction) {
                     PacketPlayerAction action = (PacketPlayerAction) object;
@@ -82,7 +84,7 @@ public class ChatServer {
 
     public static void startgameminimal() {
         for (Player player : GAMEServer.players.PlayerList()) {
-            PacketGameStart packet = new PacketGameStart();
+            PacketUpdatePlayerDetails packet = new PacketUpdatePlayerDetails();
             packet.player = player;
             packet.PlayerMap = GAMEServer.getTargetPlayersMap(player.getName());
             server.sendToTCP(player.getID(), packet);
@@ -91,8 +93,10 @@ public class ChatServer {
     }
 
     public static void GUI_startGame() {
+        PacketStartGame packet = new PacketStartGame();
+        server.sendToAllTCP(packet);
+        GAMEServer.setupCards();
         Platform.runLater(() -> {
-            GAMEServer.setupCards();
             startgameminimal();
             GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
         });
