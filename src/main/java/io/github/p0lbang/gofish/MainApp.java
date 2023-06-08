@@ -288,9 +288,6 @@ public class MainApp extends Application {
         VBox box = new VBox();
         box.getChildren().addAll(sp, joinedTextFlow);
 
-        VBox.setVgrow(sp, Priority.ALWAYS);
-        VBox.setVgrow(joinedTextFlow, Priority.ALWAYS);
-
         VBox vb = new VBox();
         vb.getChildren().addAll(joinedTextFlow);
         sp.setVmax(440);
@@ -617,8 +614,8 @@ public class MainApp extends Application {
     public void displayTargetsSelectionButtons(ArrayList<String> Targets) {
         rootLayout.getChildren().removeAll(targetButtonsGroup);
         targetButtonsGroup = new VBox();
-
         HBox targetButtons = new HBox();
+        HBox outer = new HBox();
 
         int targetsize = Targets.size();
         for (int i = 0; i < targetsize; i++) {
@@ -636,7 +633,15 @@ public class MainApp extends Application {
         targetslbl.setTextFill(Color.WHITE);
         targetButtonsGroup.getChildren().addAll(targetslbl, targetButtons);
 
-        rootLayout.getChildren().addAll(targetButtonsGroup);
+        targetslbl.setTextFill(Color.WHITE);
+        targetslbl.setStyle("-fx-background-color: pink;");
+        targetButtons.setStyle("-fx-background-color: yellow;");
+        targetButtonsGroup.setStyle("-fx-background-color: black;");
+
+        outer.getChildren().addAll(targetButtonsGroup);
+        outer.setFillHeight(false);
+
+        rootLayout.getChildren().addAll(outer);
     }
 
     public void displayGofishButton() {
@@ -654,7 +659,7 @@ public class MainApp extends Application {
 
     public void displayCurrentPlayer() {
         rootLayout.getChildren().removeAll(CurrentPlayerLabel);
-        CurrentPlayerLabel = new Label("Current Player's Turn: " + CurrentPlayersTurnName);
+        CurrentPlayerLabel = new Label(CurrentPlayersTurnName);
         CurrentPlayerLabel.setTranslateX(-300);
         CurrentPlayerLabel.setTranslateY(0);
         CurrentPlayerLabel.setTextFill(Color.WHITE);
@@ -793,10 +798,6 @@ public class MainApp extends Application {
 
         }
 
-
-        VBox.setVgrow(sp, Priority.ALWAYS);
-        VBox.setVgrow(chatLayout, Priority.ALWAYS);
-
         // On Enter press
         textField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
@@ -813,7 +814,7 @@ public class MainApp extends Application {
         VBox vb = new VBox();
         vb.getChildren().addAll(chatLayout);
         sp.setVmax(440);
-        sp.setPrefSize(200, 700);
+        sp.setPrefSize(200, 300);
         sp.setContent(vb);
         sp.vvalueProperty().bind(vb.heightProperty());
         sp.setPannable(true);
@@ -878,42 +879,7 @@ public class MainApp extends Application {
                 playerSelectedRank = "";
                 playerSelectedTarget = "";
             }));
-
-            if (NetworkServer != null) {
-                Button StartGame = new Button("Start Game");
-
-                StartGame.setStyle(buttonStyle);
-                StartGame.setOnMouseEntered(e -> StartGame.setStyle(buttonStyle + hoverStyle));
-                StartGame.setOnMouseExited(e -> StartGame.setStyle(buttonStyle));
-
-                rootLayout.getChildren().add(StartGame);
-                StartGame.setTranslateY(100);
-                StartGame.setOnAction(evt -> {
-                    NetworkServer.GUI_startGame();
-                    rootLayout.getChildren().remove(StartGame);
-                });
-            }
-
-
-//            this.updateUI();
-
-            //Background Image
-            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/background.png"));
-            Image backgroundImage = new Image(url.toString());
-
-            BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
-            BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
-            Background background = new Background(backgroundImageObject);
-            rootLayout.setBackground(background);
-            /////////////////////////////////////////////////////////////
-            // Second, show the scene containing the root layout.
-            initChatmenu();
-            Scene scene = new Scene(mainLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
-            primaryStage.setScene(scene); // Set the scene in primary stage.
-            primaryStage.setResizable(false);
-
-            // Third, show the primary stage
-            primaryStage.show(); // Display the primary stage
+            primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -922,12 +888,12 @@ public class MainApp extends Application {
     public void updateUI() {
         Platform.runLater(() -> {
             //display the player's deck
-            displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
             ArrayList<String> targets = new ArrayList<>(NetworkClient.gameHandler.PlayerMap.keySet());
             displayTargetsSelectionButtons(targets);
             displayTargets(targets);
             displaySelected();
             displayCurrentPlayer();
+            displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
         });
     }
 
