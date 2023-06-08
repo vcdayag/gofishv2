@@ -12,7 +12,7 @@ import javafx.application.Platform;
 import java.io.IOException;
 
 // ChatClient.java
-public class ChatClient implements ChatInterface {
+public class ChatClient {
 
     public static Client client;
     public static String USERNAME;
@@ -83,11 +83,7 @@ public class ChatClient implements ChatInterface {
         client.sendTCP(packet);
     }
 
-    public void GAME_Action() {
 
-    }
-
-    @Override
     public void checkPlayerCard(Player asker, Player target, String playerSelectedRank) {
         Platform.runLater(() -> {
             PacketPlayerAction packet = new PacketPlayerAction();

@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 // ChatServer.java
-public class ChatServer implements ChatInterface {
+public class ChatServer {
     public static String USERNAME;
     private static Server server;
     private static GameServer GAMEServer;
@@ -39,7 +39,6 @@ public class ChatServer implements ChatInterface {
         server.addListener(new Listener() {
             @Override
             public void connected(Connection connection) {
-
             }
 
             public void received(Connection connection, Object object) {
@@ -53,6 +52,7 @@ public class ChatServer implements ChatInterface {
                         GAMEServer.Network_AddPlayer(packet.name, connection.getID());
                         System.out.println(packet.name);
                         System.out.println(connection.getID());
+                        sendMessage(packet.name + " joined the game.");
                     });
                 } else if (object instanceof PacketPlayerAction) {
                     PacketPlayerAction action = (PacketPlayerAction) object;
@@ -97,25 +97,11 @@ public class ChatServer implements ChatInterface {
 
     }
 
-    @Override
-    public void checkPlayerCard(Player self, Player player, String playerSelectedRank) {
-
-    }
-
-    public void sendMessage(String message) {
+    public static void sendMessage(String message) {
         PacketChatMessage chatMessage = new PacketChatMessage();
         chatMessage.senderName = "";
         chatMessage.messageText = message;
         server.sendToAllTCP(chatMessage);
     }
 
-    @Override
-    public void joinServer(String name) {
-
-    }
-
-    @Override
-    public void GAME_Action() {
-
-    }
 }
