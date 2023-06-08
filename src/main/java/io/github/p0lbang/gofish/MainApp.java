@@ -66,6 +66,7 @@ public class MainApp extends Application {
     private String theme = "animal";
     private VBox mainMenuLayout;
     private TextFlow chatLayout;
+    private String theme_clicked;
 
     @Override
     public void start(Stage primaryStage) {
@@ -85,14 +86,44 @@ public class MainApp extends Application {
     }
 
     private void showMainMenu() {
-        Button startButton = new Button("Start Game");
-        startButton.setOnAction(evt -> startGame());
-
-        Button multiplayerButton = new Button("Multiplayer");
-        multiplayerButton.setOnAction(evt -> showMultiplayerMenu());
+        Button multiplayerButton = new Button("Start Game");
+        multiplayerButton.setOnAction(evt -> {
+            showMultiplayerMenu();
+        });
 
         Button themeButton = new Button("Choose Theme");
         themeButton.setOnAction(evt -> chooseTheme());
+
+        Button aboutButton = new Button("About the game");
+        aboutButton.setOnAction(evt -> showaboutMenu());
+
+        Button exitButton = new Button("Exit");
+        exitButton.setOnAction(evt -> Platform.exit());
+
+        String buttonStyle = "-fx-background-color: #007bff; " +
+                "-fx-text-fill: #ffffff; " +
+                "-fx-background-radius: 20; " +
+                "-fx-border-color: #00aaff; " +
+                "-fx-border-width: 2px;" +
+                "-fx-border-radius: 20;";
+
+        String hoverStyle = "-fx-background-color: #00aaff;";
+
+        multiplayerButton.setStyle(buttonStyle);
+        multiplayerButton.setOnMouseEntered(e -> multiplayerButton.setStyle(buttonStyle + hoverStyle));
+        multiplayerButton.setOnMouseExited(e -> multiplayerButton.setStyle(buttonStyle));
+
+        themeButton.setStyle(buttonStyle);
+        themeButton.setOnMouseEntered(e -> themeButton.setStyle(buttonStyle + hoverStyle));
+        themeButton.setOnMouseExited(e -> themeButton.setStyle(buttonStyle));
+
+        aboutButton.setStyle(buttonStyle);
+        aboutButton.setOnMouseEntered(e -> aboutButton.setStyle(buttonStyle + hoverStyle));
+        aboutButton.setOnMouseExited(e -> aboutButton.setStyle(buttonStyle));
+
+        exitButton.setStyle(buttonStyle);
+        exitButton.setOnMouseEntered(e -> exitButton.setStyle(buttonStyle + hoverStyle));
+        exitButton.setOnMouseExited(e -> exitButton.setStyle(buttonStyle));
 
         // Create an ImageView for the image
         URL imageUrl = Objects.requireNonNull(MainApp.class.getResource("logo.png"));
@@ -104,7 +135,66 @@ public class MainApp extends Application {
         // Create a VBox to stack the image and buttons vertically
         VBox mainMenuLayout = new VBox(10); // Spacing between image and buttons
         mainMenuLayout.setAlignment(Pos.CENTER);
-        mainMenuLayout.getChildren().addAll(imageView, startButton, multiplayerButton, themeButton);
+        mainMenuLayout.getChildren().addAll(imageView, multiplayerButton,themeButton,aboutButton,exitButton);
+
+
+        BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+        // Background Image
+        URL backgroundUrl = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
+        Image backgroundImage = new Image(backgroundUrl.toString());
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        Background background = new Background(backgroundImg);
+        mainMenuLayout.setBackground(background);
+
+        Scene mainMenuScene = new Scene(mainMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+        primaryStage.setScene(mainMenuScene);
+        primaryStage.show();
+    }
+
+    private void showaboutMenu() {
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(evt -> {
+            showMainMenu();
+        });
+
+        Label paragraph = new Label("Object of the Game\n" +
+                "The goal is to win the most \"books\" of cards. A book is any four of a kind, such as four\n" +
+                "kings, four aces, and so on."+"\n \n"+
+                "The Standard Play (Easy)\n" +
+                "The current player can ask any opponent, for example,\"Give me your kings,\" usually\n" +
+                "addressing the opponent by name and specifying the rank that they want, from ace\n" +
+                "down to two.\n" +
+                "The player who is fishing must have at least one card of the rank that was asked for in\n" +
+                "their hand. The player who is addressed must hand over all the cards requested. If the\n" +
+                "player has none, they say, \"Go fish!\" and the player who made the request draws the\n" +
+                "top card of the stock and places it in their hand.\n" +
+                "The player can ask for the same card or a different one to any of the opponents. So\n" +
+                "long as the player succeeds in getting cards (makes a catch), their turn continues.\n" +
+                "When a player makes a catch, they must reveal the card so that the catch is verified. If\n" +
+                "a player gets the fourth card of a book, the player shows all four cards, places them on\n" +
+                "the table face up in front of everyone, and plays again.\n" +
+                "\n" +
+                "If the player goes fishing without \"making a catch\" (does not receive a card he asked\n" +
+                "for), the turn passes to the next player.\n" +
+                "The game ends when all thirteen books have been won. The winner is the player with\n" +
+                "the most books. During the game, if a player is left without cards, they may (when it's\n" +
+                "their turn to play), draw from the stock, and then ask for cards of that rank. If there are\n" +
+                "no cards left in the stock, they are out of the game.");
+
+        // Set background color and transparency for overlay effect
+
+        paragraph.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-text-fill: white; -fx-font-size: 16px;");
+
+
+
+
+
+
+        // Create a VBox to stack the image and buttons vertically
+        VBox mainMenuLayout = new VBox(10); // Spacing between image and buttons
+        mainMenuLayout.setAlignment(Pos.CENTER);
+        mainMenuLayout.getChildren().addAll(paragraph,backButton);
 
 
         BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
@@ -223,29 +313,102 @@ public class MainApp extends Application {
     }
 
     public void chooseTheme() {
+
+
         Button animalThemeButton = new Button("Animal Theme");
-        animalThemeButton.setOnAction(evt -> theme = "animal");
+        animalThemeButton.setOnAction(evt -> {
+            theme_clicked = "animal";
+        });
 
         Button fruitThemeButton = new Button("Fruit Theme");
-        fruitThemeButton.setOnAction(evt -> theme = "fruit");
+        fruitThemeButton.setOnAction(evt -> {
+            theme_clicked = "fruit";
+        });
 
         Button defaultThemeButton = new Button("Default Theme");
-        defaultThemeButton.setOnAction(evt -> theme = "default");
+        defaultThemeButton.setOnAction(evt -> {
+            theme_clicked = "default";
+        });
 
-        Button okButton = new Button("OK");
-        okButton.setOnAction(evt -> showMainMenu());
+        Button okButton = new Button("Apply");
+        okButton.setOnAction(evt -> {
+            theme = theme_clicked;
+            resetThemeSelectionPage();
+        });
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(evt -> {
+            showMainMenu();
+        });
+
+
+
+        URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/" + "A_S" + ".png"));
+        Image cardImage = new Image(url.toString());
+        ImageView imageView = new ImageView(cardImage);
+        imageView.setFitWidth(100);
+        imageView.setFitHeight(150);
+
+        URL url2 = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/" + "background" + ".png"));
+        Image bgimage = new Image(url2.toString());
+        ImageView imageView2 = new ImageView(bgimage);
+        imageView2.setFitWidth(75);
+        imageView2.setFitHeight(125);
+
+
+
+
+
+
+        String buttonStyle = "-fx-background-color: #007bff; " +
+                "-fx-text-fill: #ffffff; " +
+                "-fx-background-radius: 20; " +
+                "-fx-border-color: #00aaff; " +
+                "-fx-border-width: 2px;" +
+                "-fx-border-radius: 20;";
+
+        String hoverStyle = "-fx-background-color: #00aaff;";
+
+        okButton.setStyle(buttonStyle);
+        okButton.setOnMouseEntered(e -> okButton.setStyle(buttonStyle + hoverStyle));
+        okButton.setOnMouseExited(e -> okButton.setStyle(buttonStyle));
+
+        backButton.setStyle(buttonStyle);
+        backButton.setOnMouseEntered(e -> backButton.setStyle(buttonStyle + hoverStyle));
+        backButton.setOnMouseExited(e -> backButton.setStyle(buttonStyle));
+
+        animalThemeButton.setStyle(buttonStyle);
+        animalThemeButton.setOnMouseEntered(e -> animalThemeButton.setStyle(buttonStyle + hoverStyle));
+        animalThemeButton.setOnMouseExited(e -> animalThemeButton.setStyle(buttonStyle));
+
+        defaultThemeButton.setStyle(buttonStyle);
+        defaultThemeButton.setOnMouseEntered(e -> defaultThemeButton.setStyle(buttonStyle + hoverStyle));
+        defaultThemeButton.setOnMouseExited(e -> defaultThemeButton.setStyle(buttonStyle));
+
+        fruitThemeButton.setStyle(buttonStyle);
+        fruitThemeButton.setOnMouseEntered(e -> fruitThemeButton.setStyle(buttonStyle + hoverStyle));
+        fruitThemeButton.setOnMouseExited(e -> fruitThemeButton.setStyle(buttonStyle));
+
+        HBox themeContainer = new HBox(10);
+        themeContainer.getChildren().addAll(imageView,imageView2);
+        themeContainer.setAlignment(Pos.CENTER);
 
         HBox buttonContainer = new HBox(10);
         buttonContainer.getChildren().addAll(animalThemeButton, fruitThemeButton, defaultThemeButton);
         buttonContainer.setAlignment(Pos.CENTER);
 
-        VBox themeMenuLayout = new VBox(10);
+        HBox buttonContainer2 = new HBox(10);
+        buttonContainer2.getChildren().addAll(okButton,backButton);
+        buttonContainer2.setAlignment(Pos.CENTER);
+
+
+        VBox themeMenuLayout = new VBox(20);
         themeMenuLayout.setAlignment(Pos.CENTER);
-        themeMenuLayout.getChildren().addAll(buttonContainer, okButton);
+        themeMenuLayout.getChildren().addAll(themeContainer,buttonContainer,buttonContainer2);
 
 
-        URL url = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
-        Image backgroundImage = new Image(url.toString());
+        URL url3 = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
+        Image backgroundImage = new Image(url3.toString());
 
         BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
         BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
@@ -254,8 +417,13 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(themeMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(scene);
+
+
     }
 
+    private void resetThemeSelectionPage() {
+        chooseTheme();
+    }
 
     private void startGame() {
         initRootLayout();
