@@ -48,7 +48,7 @@ public class GameServer extends GameBase {
     }
 
     public void setupCards() {
-        int amountofcards = 10;
+        int amountofcards = 8;
         Random rand = new Random();
         for (int index = 0; index < amountofcards; index++) {
             for (Player currentPlayer : this.players.PlayerList()) {
@@ -161,6 +161,13 @@ public class GameServer extends GameBase {
         System.out.println("Stolen");
         this.getCard(asker, target, rank);
         return "Again";
+    }
+
+    public void NETWORK_playerGoFish(int askerid) {
+        Player asker = this.players.getPlayer(askerid);
+        System.out.println("Go fish");
+        this.playerGoFish(asker);
+        NETWORK.sendMessage(asker.getName() + " went fishing.");
     }
 
     public void displayPlayerHand(String playername) {

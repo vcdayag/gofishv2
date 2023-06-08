@@ -73,6 +73,11 @@ public class ChatServer {
                     } else {
                         GAME_sendPlayerTurn(GAMEServer.getCurrentPlayer());
                     }
+                } else if (object instanceof PacketPlayerNoCard) {
+                    PacketPlayerNoCard packet = (PacketPlayerNoCard) object;
+                    GAMEServer.NETWORK_playerGoFish(packet.askerID);
+                    startgameminimal();
+                    GAME_sendPlayerTurn(GAMEServer.getNextPlayer());
                 }
             }
         });

@@ -60,6 +60,8 @@ public class MainApp extends Application {
     private ArrayList<Label> TargetsLabels = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Label> playerInfoLabels = new ArrayList<>();
+
+    private Button gofishbtn;
     private String playerSelectedRank = "";
     private ImageView selectedImageRank = null;
     private double selectedImageRankX;
@@ -544,6 +546,19 @@ public class MainApp extends Application {
         }
 
         rootLayout.getChildren().addAll(playerTargetsButtons);
+    }
+
+    public void displayGofishButton() {
+        rootLayout.getChildren().removeAll(gofishbtn);
+
+        gofishbtn = new Button("No cards left, Go Fish");
+        gofishbtn.setTranslateY(50);
+        gofishbtn.setOnAction(e -> {
+            NetworkClient.goFish();
+            rootLayout.getChildren().removeAll(gofishbtn);
+        });
+
+        rootLayout.getChildren().addAll(gofishbtn);
     }
 
     public void displayCurrentPlayer() {

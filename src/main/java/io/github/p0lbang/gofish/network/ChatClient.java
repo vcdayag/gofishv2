@@ -63,7 +63,13 @@ public class ChatClient {
 
                 } else if (object instanceof PacketPlayerTurn) {
                     PacketPlayerTurn packet = (PacketPlayerTurn) object;
-                    Platform.runLater(() -> GUI.setCurrentPlayer(packet.id, packet.name));
+                    Platform.runLater(() -> {
+                        GUI.setCurrentPlayer(packet.id, packet.name);
+                        if (gameHandler.getSelf().getHand().length == 0) {
+                            GUI.displayGofishButton();
+                        }
+                    });
+
                 } else if (object instanceof PacketPlayersWaiting) {
                     PacketPlayersWaiting packet = (PacketPlayersWaiting) object;
                     Platform.runLater(() -> {
@@ -100,5 +106,11 @@ public class ChatClient {
             client.sendTCP(packet);
         });
 
+    }
+
+    public void goFish() {
+        PacketPlayerNoCard packet = new PacketPlayerNoCard();
+        packet.askerID = gameHandler.getSelf().getID();
+        client.sendTCP(packet);
     }
 }
