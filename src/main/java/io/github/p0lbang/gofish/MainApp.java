@@ -151,6 +151,66 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
+    private void showNextAbout(){
+        URL backURL = Objects.requireNonNull(MainApp.class.getResource("about_exit.png"));
+        Image backImage = new Image(backURL.toString());
+        ImageView backImageView = new ImageView(backImage);
+        backImageView.setFitWidth(90);  // Set the desired width of the image
+        backImageView.setFitHeight(90);  // Set the desired height of the image
+
+        Button backButton = new Button();
+        backButton.setGraphic(backImageView);
+
+        backButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
+
+        backButton.setOnAction(evt -> {
+            showMainMenu();
+        });
+
+
+        URL nextURL = Objects.requireNonNull(MainApp.class.getResource("about_back.png"));
+        Image nextImage = new Image(nextURL.toString());
+        ImageView nextImageView = new ImageView(nextImage);
+        nextImageView.setFitWidth(90);  // Set the desired width of the image
+        nextImageView.setFitHeight(90);  // Set the desired height of the image
+
+        Button nextButton = new Button();
+        nextButton.setGraphic(nextImageView);
+
+        nextButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
+
+        nextButton.setOnAction(evt -> {
+            showaboutMenu();
+        });
+
+
+        // Create a VBox to stack the image and buttons horizontally
+        HBox buttonContainer = new HBox(10); // Spacing between image and buttons
+        buttonContainer.setTranslateY(295);
+        buttonContainer.setAlignment(Pos.CENTER);
+        buttonContainer.getChildren().addAll(backButton,nextButton);
+
+
+        // Create a VBox to stack the image and buttons vertically
+        HBox mainMenuLayout = new HBox(10); // Spacing between image and buttons
+        mainMenuLayout.setAlignment(Pos.CENTER);
+        mainMenuLayout.getChildren().addAll(buttonContainer);
+
+        //about_1
+        BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
+        // Background Image
+        URL backgroundUrl = Objects.requireNonNull(MainApp.class.getResource("about_2.png"));
+        Image backgroundImage = new Image(backgroundUrl.toString());
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        Background background = new Background(backgroundImg);
+        mainMenuLayout.setBackground(background);
+
+
+        Scene mainMenuScene = new Scene(mainMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
+        primaryStage.setScene(mainMenuScene);
+        primaryStage.show();
+
+    }
     private void showaboutMenu() {
         URL backURL = Objects.requireNonNull(MainApp.class.getResource("about_exit.png"));
         Image backImage = new Image(backURL.toString());
@@ -180,7 +240,7 @@ public class MainApp extends Application {
         nextButton.setStyle("-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;");
 
         nextButton.setOnAction(evt -> {
-            showMainMenu();
+            showNextAbout();
         });
 
 
@@ -196,6 +256,7 @@ public class MainApp extends Application {
         mainMenuLayout.setAlignment(Pos.CENTER);
         mainMenuLayout.getChildren().addAll(buttonContainer);
 
+        //about_1
         BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
         // Background Image
         URL backgroundUrl = Objects.requireNonNull(MainApp.class.getResource("about_1.png"));
@@ -203,6 +264,7 @@ public class MainApp extends Application {
         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
         Background background = new Background(backgroundImg);
         mainMenuLayout.setBackground(background);
+
 
         Scene mainMenuScene = new Scene(mainMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(mainMenuScene);
@@ -636,11 +698,12 @@ public class MainApp extends Application {
         VBox vb = new VBox();
         vb.getChildren().addAll(chatLayout);
         sp.setVmax(440);
-        sp.setPrefSize(200, 300);
+        sp.setPrefSize(200, 700);
         sp.setContent(vb);
         sp.vvalueProperty().bind(vb.heightProperty());
         sp.setPannable(true);
         mainLayout.setLeft(container);
+
     }
 
     // Initializes the root layout.
